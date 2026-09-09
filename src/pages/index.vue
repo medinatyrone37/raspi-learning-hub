@@ -1,81 +1,57 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+  <q-page class="flex flex-center">
+    <div class="text-center">
+      <div class="text-h4 q-mb-md">
+        Raspi Web Server
+      </div>
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+      <q-spinner v-if="loading" size="40px" />
 
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
+      <div v-else>
+        <div class="text-h6">
+          Status:
+          <span :class="status === 'online' ? 'text-positive' : 'text-negative'">
+            {{ status }}
+          </span>
+        </div>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Essential Links </q-item-label>
-
-        <EssentialLink v-for="link in linksList" :key="link.label" v-bind="link" />
-      </q-list>
-    </q-drawer>
-
-    <q-page-container>
-      <router-view />
-    </q-page-container>
-  </q-layout>
+        <div class="text-body1 q-mt-sm">
+          {{ message }}
+        </div>
+      </div>
+    </div>
+  </q-page>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import EssentialLink from '@/components/EssentialLink.vue'
+import { onMounted, ref } from 'vue'
 
-const linksList = [
-  {
-    label: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    label: 'GitHub',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    label: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    label: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    label: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    label: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    label: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-]
+const status = ref('')
+const message = ref('')
+const loading = ref(true)
 
-const leftDrawerOpen = ref(false)
+const getServerStatus = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/status/')
 
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value
+    if (!response.ok) {
+      throw new Error('API request failed')
+    }
+
+    const data = await response.json()
+
+    status.value = data.status
+    message.value = data.message
+  } catch (error) {
+    status.value = 'offline'
+    message.value = 'Unable to connect to Django API.'
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
 }
+
+onMounted(() => {
+  getServerStatus()
+})
 </script>
