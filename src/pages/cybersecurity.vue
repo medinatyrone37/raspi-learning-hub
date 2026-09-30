@@ -1,15 +1,10 @@
 <template>
   <q-page class="cyber-page">
     <div class="cyber-container">
-
       <!-- HERO -->
       <section class="cyber-hero">
-
         <div class="hero-content">
-
-          <div class="eyebrow">
-            CYBERSECURITY LEARNING MODULE
-          </div>
+          <div class="eyebrow">CYBERSECURITY LEARNING MODULE</div>
 
           <h1>
             Understand.
@@ -18,9 +13,8 @@
           </h1>
 
           <p>
-            Learn the fundamental concepts, threats, defensive techniques,
-            and security practices used to protect modern systems,
-            networks, applications, and data.
+            Learn the fundamental concepts, threats, defensive techniques, and security practices
+            used to protect modern systems, networks, applications, and data.
           </p>
 
           <div class="hero-tags">
@@ -31,12 +25,7 @@
               text-color="green-9"
             />
 
-            <q-chip
-              icon="language"
-              label="Network Security"
-              color="blue-1"
-              text-color="blue-9"
-            />
+            <q-chip icon="language" label="Network Security" color="blue-1" text-color="blue-9" />
 
             <q-chip
               icon="computer"
@@ -46,14 +35,27 @@
             />
           </div>
 
+          <!-- START LEARNING -->
+          <div class="hero-actions">
+            <q-btn
+              unelevated
+              no-caps
+              class="start-learning-btn"
+              icon="play_arrow"
+              label="Start Learning"
+              @click="openLearning(1)"
+            />
+
+            <div class="keyboard-hint">
+              <q-icon name="keyboard" />
+              19 lessons · Presentation-based learning
+            </div>
+          </div>
         </div>
 
         <div class="hero-shield">
           <div class="shield-circle">
-            <q-icon
-              name="shield"
-              size="80px"
-            />
+            <q-icon name="shield" size="80px" />
           </div>
 
           <div class="shield-status">
@@ -61,45 +63,31 @@
             Security Learning
           </div>
         </div>
-
       </section>
-
 
       <!-- OVERVIEW -->
       <section class="overview-section">
+        <div class="section-label">LEARNING OVERVIEW</div>
 
-        <div class="section-label">
-          LEARNING OVERVIEW
-        </div>
-
-        <h2>
-          Your Cybersecurity Roadmap
-        </h2>
+        <h2>Your Cybersecurity Roadmap</h2>
 
         <p class="section-intro">
-          Build your understanding from security fundamentals to
-          practical Raspberry Pi server protection.
+          Build your understanding from security fundamentals to practical Raspberry Pi server
+          protection.
         </p>
 
-
         <div class="stats-grid">
-
           <div class="stat-card">
             <div class="stat-icon green">
               <q-icon name="menu_book" />
             </div>
 
             <div>
-              <div class="stat-number">
-                6+
-              </div>
+              <div class="stat-number">19</div>
 
-              <div class="stat-label">
-                Core Topics
-              </div>
+              <div class="stat-label">Learning Lessons</div>
             </div>
           </div>
-
 
           <div class="stat-card">
             <div class="stat-icon orange">
@@ -107,16 +95,11 @@
             </div>
 
             <div>
-              <div class="stat-number">
-                6+
-              </div>
+              <div class="stat-number">6+</div>
 
-              <div class="stat-label">
-                Common Threats
-              </div>
+              <div class="stat-label">Common Threats</div>
             </div>
           </div>
-
 
           <div class="stat-card">
             <div class="stat-icon blue">
@@ -124,16 +107,11 @@
             </div>
 
             <div>
-              <div class="stat-number">
-                4+
-              </div>
+              <div class="stat-number">4+</div>
 
-              <div class="stat-label">
-                Security Areas
-              </div>
+              <div class="stat-label">Security Areas</div>
             </div>
           </div>
-
 
           <div class="stat-card">
             <div class="stat-icon purple">
@@ -141,45 +119,27 @@
             </div>
 
             <div>
-              <div class="stat-number">
-                1
-              </div>
+              <div class="stat-number">1</div>
 
-              <div class="stat-label">
-                Raspberry Pi Focus
-              </div>
+              <div class="stat-label">Raspberry Pi Focus</div>
             </div>
           </div>
-
         </div>
-
       </section>
-
 
       <!-- FUNDAMENTALS -->
       <section class="topic-section">
-
         <div class="section-heading">
-
           <div>
-            <div class="section-label">
-              01 · FUNDAMENTALS
-            </div>
+            <div class="section-label">01 · FUNDAMENTALS</div>
 
-            <h2>
-              Security Fundamentals
-            </h2>
+            <h2>Security Fundamentals</h2>
           </div>
 
-          <div class="section-description">
-            The foundation of cybersecurity.
-          </div>
-
+          <div class="section-description">The foundation of cybersecurity.</div>
         </div>
 
-
         <div class="topic-grid">
-
           <q-card
             v-for="topic in fundamentals"
             :key="topic.title"
@@ -189,17 +149,9 @@
             clickable
             @click="openTopic(topic)"
           >
-
             <q-card-section>
-
-              <div
-                class="topic-icon"
-                :class="topic.color"
-              >
-                <q-icon
-                  :name="topic.icon"
-                  size="30px"
-                />
+              <div class="topic-icon" :class="topic.color">
+                <q-icon :name="topic.icon" size="30px" />
               </div>
 
               <div class="topic-title">
@@ -210,44 +162,32 @@
                 {{ topic.description }}
               </div>
 
-              <div class="topic-link">
-                Explore topic
-                <q-icon name="arrow_forward" />
-              </div>
-
+              <q-btn
+                flat
+                no-caps
+                class="topic-link"
+                label="Open Lesson"
+                icon-right="arrow_forward"
+                @click.stop="openLearning(topic.lesson)"
+              />
             </q-card-section>
-
           </q-card>
-
         </div>
-
       </section>
-
 
       <!-- THREATS -->
       <section class="topic-section">
-
         <div class="section-heading">
-
           <div>
-            <div class="section-label threat-label">
-              02 · THREATS
-            </div>
+            <div class="section-label threat-label">02 · THREATS</div>
 
-            <h2>
-              Common Cyber Threats
-            </h2>
+            <h2>Common Cyber Threats</h2>
           </div>
 
-          <div class="section-description">
-            Understand how attacks target systems and users.
-          </div>
-
+          <div class="section-description">Understand how attacks target systems and users.</div>
         </div>
 
-
         <div class="threat-grid">
-
           <q-card
             v-for="threat in threats"
             :key="threat.title"
@@ -257,24 +197,13 @@
             clickable
             @click="openTopic(threat)"
           >
-
             <q-card-section>
-
               <div class="threat-top">
-
                 <div class="threat-icon">
-                  <q-icon
-                    :name="threat.icon"
-                    size="28px"
-                  />
+                  <q-icon :name="threat.icon" size="28px" />
                 </div>
 
-                <q-badge
-                  :label="threat.level"
-                  color="red-1"
-                  text-color="red-8"
-                />
-
+                <q-badge :label="threat.level" color="red-1" text-color="red-8" />
               </div>
 
               <div class="topic-title">
@@ -285,52 +214,43 @@
                 {{ threat.description }}
               </div>
 
+              <q-btn
+                flat
+                no-caps
+                class="topic-link threat-link"
+                label="Open Lesson"
+                icon-right="arrow_forward"
+                @click.stop="openLearning(threat.lesson)"
+              />
             </q-card-section>
-
           </q-card>
-
         </div>
-
       </section>
-
 
       <!-- NETWORK / WEB -->
       <section class="topic-section">
-
         <div class="section-heading">
-
           <div>
-            <div class="section-label">
-              03 · NETWORK & WEB
-            </div>
+            <div class="section-label">03 · NETWORK & WEB</div>
 
-            <h2>
-              Network & Web Security
-            </h2>
+            <h2>Network & Web Security</h2>
           </div>
 
-          <div class="section-description">
-            Protect communication and web applications.
-          </div>
-
+          <div class="section-description">Protect communication and web applications.</div>
         </div>
 
-
         <div class="security-list">
-
           <div
             v-for="item in networkSecurity"
             :key="item.title"
             class="security-item"
             @click="openTopic(item)"
           >
-
             <div class="security-item-icon">
               <q-icon :name="item.icon" />
             </div>
 
             <div class="security-item-content">
-
               <div class="security-item-title">
                 {{ item.title }}
               </div>
@@ -338,81 +258,59 @@
               <div class="security-item-description">
                 {{ item.description }}
               </div>
-
             </div>
 
-            <q-icon
-              name="arrow_forward"
-              class="security-arrow"
-            />
-
+            <q-icon name="arrow_forward" class="security-arrow" />
           </div>
-
         </div>
-
       </section>
-
 
       <!-- SYSTEM SECURITY -->
       <section class="system-section">
-
         <div class="system-content">
+          <div class="section-label system-label">04 · SYSTEM SECURITY</div>
 
-          <div class="section-label">
-            04 · SYSTEM SECURITY
-          </div>
-
-          <h2>
-            Secure the Operating System
-          </h2>
+          <h2>Secure the Operating System</h2>
 
           <p>
-            System security focuses on protecting operating systems,
-            accounts, services, files, and system resources from
-            unauthorized access and attacks.
+            System security focuses on protecting operating systems, accounts, services, files, and
+            system resources from unauthorized access and attacks.
           </p>
 
           <div class="system-points">
-
-            <div
-              v-for="item in systemSecurity"
-              :key="item"
-              class="system-point"
-            >
-              <q-icon
-                name="check_circle"
-                color="positive"
-              />
+            <div v-for="item in systemSecurity" :key="item" class="system-point">
+              <q-icon name="check_circle" color="positive" />
 
               <span>{{ item }}</span>
             </div>
-
           </div>
 
+          <q-btn
+            unelevated
+            no-caps
+            class="system-learning-btn"
+            icon="school"
+            label="Study System Security"
+            @click="openLearning(11)"
+          />
         </div>
 
         <div class="terminal-card">
-
           <div class="terminal-header">
             <span></span>
             <span></span>
             <span></span>
 
-            <div>
-              SECURITY CHECK
-            </div>
+            <div>SECURITY CHECK</div>
           </div>
 
           <div class="terminal-body">
-
             <div>
               <span class="terminal-green">$</span>
               whoami
             </div>
 
-            <div class="terminal-output">
-              secure-user
-            </div>
+            <div class="terminal-output">secure-user</div>
 
             <div>
               <span class="terminal-green">$</span>
@@ -421,9 +319,7 @@
 
             <div class="terminal-output">
               ● ssh.service
-              <span class="terminal-online">
-                active
-              </span>
+              <span class="terminal-online"> active </span>
             </div>
 
             <div>
@@ -431,44 +327,28 @@
               sudo ufw status
             </div>
 
-            <div class="terminal-output">
-              Status: active
-            </div>
-
+            <div class="terminal-output">Status: active</div>
           </div>
-
         </div>
-
       </section>
 
-
       <!-- RASPBERRY PI -->
-      <section class="raspi-security">
-
+      <section class="raspi-security" @click="openLearning(18)">
         <div class="raspi-icon">
-          <q-icon
-            name="memory"
-            size="42px"
-          />
+          <q-icon name="memory" size="42px" />
         </div>
 
         <div class="raspi-content">
+          <div class="section-label">05 · RASPBERRY PI SECURITY</div>
 
-          <div class="section-label">
-            05 · RASPBERRY PI SECURITY
-          </div>
-
-          <h2>
-            Securing the Raspberry Pi Server
-          </h2>
+          <h2>Securing the Raspberry Pi Server</h2>
 
           <p>
-            Apply cybersecurity concepts directly to the Raspberry Pi
-            that hosts this learning platform.
+            Apply cybersecurity concepts directly to the Raspberry Pi that hosts this learning
+            platform.
           </p>
 
           <div class="raspi-tags">
-
             <q-chip
               v-for="item in raspiSecurity"
               :key="item"
@@ -476,59 +356,32 @@
               icon="verified_user"
               outline
             />
-
           </div>
-
         </div>
 
-        <q-icon
-          name="arrow_forward"
-          size="32px"
-          class="raspi-arrow"
-        />
-
+        <q-icon name="arrow_forward" size="32px" class="raspi-arrow" />
       </section>
-
 
       <!-- TOPIC DIALOG -->
       <q-dialog v-model="dialogOpen">
-
         <q-card class="topic-dialog">
-
           <q-card-section class="dialog-header">
-
             <div>
-
-              <div class="section-label">
-                CYBERSECURITY TOPIC
-              </div>
+              <div class="section-label">CYBERSECURITY TOPIC</div>
 
               <div class="dialog-title">
                 {{ selectedTopic?.title }}
               </div>
-
             </div>
 
-            <q-btn
-              flat
-              round
-              icon="close"
-              v-close-popup
-            />
-
+            <q-btn flat round icon="close" v-close-popup />
           </q-card-section>
-
 
           <q-separator />
 
-
           <q-card-section>
-
             <div class="dialog-icon">
-              <q-icon
-                :name="selectedTopic?.icon"
-                size="36px"
-              />
+              <q-icon :name="selectedTopic?.icon" size="36px" />
             </div>
 
             <p class="dialog-description">
@@ -536,227 +389,223 @@
             </p>
 
             <div class="dialog-info">
-
-              <div class="info-title">
-                Why it matters
-              </div>
+              <div class="info-title">Why it matters</div>
 
               <p>
                 Understanding {{ selectedTopic?.title }}
-                helps IT professionals recognize risks,
-                protect systems, and make better security decisions.
+                helps IT professionals recognize risks, protect systems, and make better security
+                decisions.
               </p>
 
+              <q-btn
+                unelevated
+                no-caps
+                class="dialog-learning-btn"
+                icon="school"
+                label="Open Full Lesson"
+                @click="openLearning(selectedTopic?.lesson)"
+              />
             </div>
-
           </q-card-section>
-
         </q-card>
-
       </q-dialog>
-
     </div>
   </q-page>
 </template>
 
-
 <script setup>
-
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 
 const dialogOpen = ref(false)
-
 const selectedTopic = ref(null)
 
+/* OPEN TOPIC DIALOG */
 
 const openTopic = (topic) => {
-
   selectedTopic.value = topic
-
   dialogOpen.value = true
-
 }
 
+/* OPEN PRESENTATION VIEWER */
+
+const openLearning = async (lesson = 1) => {
+  const lessonNumber = Number(lesson) || 1
+
+  dialogOpen.value = false
+
+  try {
+    await router.push({
+      path: '/cybersecurity/learn',
+      query: {
+        lesson: String(lessonNumber),
+      },
+    })
+  } catch (error) {
+    console.error('Navigation error:', error)
+  }
+}
 
 /* FUNDAMENTALS */
 
 const fundamentals = [
-
   {
     title: 'CIA Triad',
     icon: 'security',
     color: 'green',
+    lesson: 3,
     description:
-      'Confidentiality, Integrity, and Availability form the foundation of information security.'
+      'Confidentiality, Integrity, and Availability form the foundation of information security.',
   },
 
   {
     title: 'Authentication',
     icon: 'lock',
     color: 'blue',
-    description:
-      'Verify the identity of users before allowing access to systems and resources.'
+    lesson: 7,
+    description: 'Verify the identity of users before allowing access to systems and resources.',
   },
 
   {
     title: 'Authorization',
     icon: 'admin_panel_settings',
     color: 'purple',
-    description:
-      'Determine what authenticated users are allowed to access or perform.'
+    lesson: 7,
+    description: 'Determine what authenticated users are allowed to access or perform.',
   },
 
   {
     title: 'Least Privilege',
     icon: 'key',
     color: 'orange',
+    lesson: 7,
     description:
-      'Users and services should receive only the permissions required to perform their tasks.'
-  }
-
+      'Users and services should receive only the permissions required to perform their tasks.',
+  },
 ]
-
 
 /* THREATS */
 
 const threats = [
-
   {
     title: 'Malware',
     icon: 'bug_report',
     level: 'HIGH',
+    lesson: 4,
     description:
-      'Malicious software designed to damage systems, steal information, or gain unauthorized access.'
+      'Malicious software designed to damage systems, steal information, or gain unauthorized access.',
   },
 
   {
     title: 'Phishing',
     icon: 'phishing',
     level: 'HIGH',
+    lesson: 4,
     description:
-      'Social engineering attacks that attempt to trick users into revealing sensitive information.'
+      'Social engineering attacks that attempt to trick users into revealing sensitive information.',
   },
 
   {
     title: 'Ransomware',
     icon: 'lock',
     level: 'CRITICAL',
-    description:
-      'Malware that encrypts data and demands payment in exchange for restoring access.'
+    lesson: 4,
+    description: 'Malware that encrypts data and demands payment in exchange for restoring access.',
   },
 
   {
     title: 'Brute Force',
     icon: 'password',
     level: 'HIGH',
+    lesson: 4,
     description:
-      'An attack that repeatedly attempts different credentials until a valid combination is discovered.'
+      'An attack that repeatedly attempts different credentials until a valid combination is discovered.',
   },
 
   {
     title: 'Social Engineering',
     icon: 'people',
     level: 'HIGH',
+    lesson: 4,
     description:
-      'Manipulating people into revealing information or performing actions that compromise security.'
+      'Manipulating people into revealing information or performing actions that compromise security.',
   },
 
   {
     title: 'DoS / DDoS',
     icon: 'cloud_off',
     level: 'HIGH',
+    lesson: 4,
     description:
-      'Attempts to overwhelm services or networks so legitimate users cannot access them.'
-  }
-
+      'Attempts to overwhelm services or networks so legitimate users cannot access them.',
+  },
 ]
-
 
 /* NETWORK SECURITY */
 
 const networkSecurity = [
-
   {
     title: 'Firewalls',
     icon: 'security',
-    description:
-      'Control network traffic based on predefined security rules.'
+    lesson: 6,
+    description: 'Control network traffic based on predefined security rules.',
   },
 
   {
     title: 'Network Ports',
     icon: 'lan',
-    description:
-      'Understand how services communicate through TCP and UDP ports.'
+    lesson: 6,
+    description: 'Understand how services communicate through TCP and UDP ports.',
   },
 
   {
     title: 'HTTPS & TLS',
     icon: 'https',
-    description:
-      'Protect web communication through encryption and secure transport protocols.'
+    lesson: 10,
+    description: 'Protect web communication through encryption and secure transport protocols.',
   },
 
   {
     title: 'VPN',
     icon: 'vpn_lock',
-    description:
-      'Create encrypted communication channels across untrusted networks.'
+    lesson: 5,
+    description: 'Create encrypted communication channels across untrusted networks.',
   },
 
   {
     title: 'Web Security',
     icon: 'language',
-    description:
-      'Protect applications from vulnerabilities such as XSS, CSRF, and SQL injection.'
-  }
-
+    lesson: 10,
+    description: 'Protect applications from vulnerabilities such as XSS, CSRF, and SQL injection.',
+  },
 ]
-
 
 /* SYSTEM SECURITY */
 
 const systemSecurity = [
-
   'Linux permissions and ownership',
-
   'SSH access control',
-
   'System updates and patching',
-
   'User and group management',
-
   'Logging and monitoring',
-
-  'Firewall configuration'
-
+  'Firewall configuration',
 ]
-
 
 /* RASPBERRY PI SECURITY */
 
 const raspiSecurity = [
-
   'SSH Hardening',
-
   'Firewall',
-
   'User Permissions',
-
   'Docker Security',
-
   'System Updates',
-
-  'Monitoring'
-
+  'Monitoring',
 ]
-
 </script>
 
-
 <style scoped>
-
 .cyber-page {
   min-height: 100vh;
   background: #f5f7fb;
@@ -767,7 +616,6 @@ const raspiSecurity = [
   margin: auto;
   padding: 40px;
 }
-
 
 /* HERO */
 
@@ -781,18 +629,11 @@ const raspiSecurity = [
 
   border-radius: 26px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #07111f,
-      #0f172a 50%,
-      #064e3b
-    );
+  background: linear-gradient(135deg, #07111f, #0f172a 50%, #064e3b);
 
   color: white;
 
-  box-shadow:
-    0 20px 50px rgba(15, 23, 42, .18);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
 }
 
 .eyebrow {
@@ -831,6 +672,49 @@ const raspiSecurity = [
   margin-top: 25px;
 }
 
+.hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+
+  margin-top: 28px;
+}
+
+.start-learning-btn {
+  min-height: 46px;
+
+  padding: 0 22px;
+
+  border-radius: 12px;
+
+  background: #10b981;
+  color: white;
+
+  font-weight: 800;
+
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.start-learning-btn:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+.keyboard-hint {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
 .hero-shield {
   display: flex;
   flex-direction: column;
@@ -847,14 +731,13 @@ const raspiSecurity = [
 
   border-radius: 50%;
 
-  background: rgba(52, 211, 153, .12);
+  background: rgba(52, 211, 153, 0.12);
 
-  border: 1px solid rgba(52, 211, 153, .3);
+  border: 1px solid rgba(52, 211, 153, 0.3);
 
   color: #34d399;
 
-  box-shadow:
-    0 0 60px rgba(52, 211, 153, .12);
+  box-shadow: 0 0 60px rgba(52, 211, 153, 0.12);
 }
 
 .shield-status {
@@ -878,7 +761,6 @@ const raspiSecurity = [
 
   background: #10b981;
 }
-
 
 /* SECTIONS */
 
@@ -916,14 +798,12 @@ h2 {
   color: #64748b;
 }
 
-
 /* STATS */
 
 .stats-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 
   gap: 18px;
 
@@ -989,14 +869,12 @@ h2 {
   color: #64748b;
 }
 
-
 /* TOPICS */
 
 .topic-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 
   gap: 18px;
 }
@@ -1007,15 +885,14 @@ h2 {
   background: white;
 
   transition:
-    transform .2s ease,
-    box-shadow .2s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .topic-card:hover {
   transform: translateY(-5px);
 
-  box-shadow:
-    0 15px 35px rgba(15, 23, 42, .1);
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.1);
 }
 
 .topic-icon {
@@ -1071,22 +948,35 @@ h2 {
   align-items: center;
   justify-content: space-between;
 
+  width: 100%;
+
   margin-top: 20px;
+
+  padding: 0;
 
   color: #059669;
 
   font-size: 13px;
   font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
+.topic-link:hover {
+  color: #047857;
+  transform: translateX(3px);
+}
 
 /* THREATS */
 
 .threat-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 
   gap: 18px;
 }
@@ -1096,11 +986,15 @@ h2 {
 
   background: white;
 
-  transition: transform .2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .threat-card:hover {
   transform: translateY(-4px);
+
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
 }
 
 .threat-top {
@@ -1123,14 +1017,16 @@ h2 {
   color: #dc2626;
 }
 
+.threat-link {
+  margin-top: 18px;
+}
 
 /* NETWORK */
 
 .security-list {
   display: grid;
 
-  grid-template-columns:
-    repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 
   gap: 12px;
 }
@@ -1151,13 +1047,15 @@ h2 {
 
   cursor: pointer;
 
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .security-item:hover {
   border-color: #10b981;
 
   transform: translateX(4px);
+
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
 }
 
 .security-item-icon {
@@ -1195,14 +1093,12 @@ h2 {
   color: #94a3b8;
 }
 
-
 /* SYSTEM */
 
 .system-section {
   display: grid;
 
-  grid-template-columns:
-    1fr 1fr;
+  grid-template-columns: 1fr 1fr;
 
   gap: 30px;
 
@@ -1221,6 +1117,10 @@ h2 {
   color: white;
 }
 
+.system-label {
+  color: #34d399;
+}
+
 .system-content > p {
   max-width: 650px;
 
@@ -1232,8 +1132,7 @@ h2 {
 .system-points {
   display: grid;
 
-  grid-template-columns:
-    repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 
   gap: 12px;
 
@@ -1251,6 +1150,24 @@ h2 {
   font-size: 14px;
 }
 
+.system-learning-btn {
+  margin-top: 28px;
+
+  min-height: 44px;
+
+  padding: 0 18px;
+
+  border-radius: 10px;
+
+  background: #10b981;
+  color: white;
+
+  font-weight: 800;
+}
+
+.system-learning-btn:hover {
+  background: #059669;
+}
 
 /* TERMINAL */
 
@@ -1316,7 +1233,6 @@ h2 {
   color: #34d399;
 }
 
-
 /* RASPI */
 
 .raspi-security {
@@ -1331,14 +1247,21 @@ h2 {
 
   border-radius: 20px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #ecfdf5,
-      #f0fdf4
-    );
+  background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
 
   border: 1px solid #bbf7d0;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.raspi-security:hover {
+  transform: translateY(-3px);
+
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
 }
 
 .raspi-icon {
@@ -1377,6 +1300,9 @@ h2 {
   gap: 5px;
 }
 
+.raspi-arrow {
+  color: #059669;
+}
 
 /* DIALOG */
 
@@ -1444,37 +1370,43 @@ h2 {
 }
 
 .dialog-info p {
-  margin-bottom: 0;
+  margin-bottom: 15px;
 
   color: #64748b;
 
   line-height: 1.6;
 }
 
+.dialog-learning-btn {
+  min-height: 42px;
+
+  padding: 0 16px;
+
+  border-radius: 10px;
+
+  background: #10b981;
+  color: white;
+
+  font-weight: 800;
+}
 
 /* RESPONSIVE */
 
 @media (max-width: 1100px) {
-
   .stats-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .topic-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .threat-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
-
 }
 
 @media (max-width: 800px) {
-
   .cyber-container {
     padding: 20px;
   }
@@ -1491,6 +1423,11 @@ h2 {
 
   .cyber-hero h1 {
     font-size: 40px;
+  }
+
+  .hero-actions {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .section-heading {
@@ -1510,11 +1447,9 @@ h2 {
   .raspi-security {
     align-items: flex-start;
   }
-
 }
 
 @media (max-width: 600px) {
-
   .stats-grid,
   .topic-grid,
   .threat-grid,
@@ -1533,7 +1468,5 @@ h2 {
   .raspi-arrow {
     display: none;
   }
-
 }
-
 </style>

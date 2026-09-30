@@ -1,13 +1,10 @@
 <template>
   <q-page class="dashboard-page">
     <div class="dashboard-container">
-
       <!-- Hero -->
       <section class="hero-section">
         <div>
-          <div class="eyebrow">
-            RASPI LEARNING HUB
-          </div>
+          <div class="eyebrow">RASPI LEARNING HUB</div>
 
           <h1>
             Welcome to the
@@ -15,8 +12,8 @@
           </h1>
 
           <p>
-            Explore cybersecurity concepts, Docker commands, and
-            Raspberry Pi server technologies through interactive learning modules.
+            Explore cybersecurity concepts, Docker commands, and Raspberry Pi server technologies
+            through interactive learning modules.
           </p>
 
           <div class="hero-actions">
@@ -47,21 +44,16 @@
             <q-icon name="dns" size="42px" />
           </div>
 
-          <div class="server-title">
-            Raspberry Pi Server
-          </div>
+          <div class="server-title">Raspberry Pi Server</div>
 
           <div class="server-status">
             <span class="status-dot"></span>
             {{ apiStatus }}
           </div>
 
-          <div class="server-description">
-            Django REST API
-          </div>
+          <div class="server-description">Django REST API</div>
         </div>
       </section>
-
 
       <!-- Learning Modules -->
       <section class="section">
@@ -77,7 +69,6 @@
         </div>
 
         <div class="module-grid">
-
           <!-- Cybersecurity -->
           <q-card
             flat
@@ -91,13 +82,11 @@
                 <q-icon name="security" size="30px" />
               </div>
 
-              <div class="module-title">
-                Cybersecurity
-              </div>
+              <div class="module-title">Cybersecurity</div>
 
               <div class="module-description">
-                Learn how systems, networks, applications, and data
-                are protected against cyber threats.
+                Learn how systems, networks, applications, and data are protected against cyber
+                threats.
               </div>
 
               <div class="module-footer">
@@ -106,7 +95,6 @@
               </div>
             </q-card-section>
           </q-card>
-
 
           <!-- Docker -->
           <q-card
@@ -121,13 +109,11 @@
                 <q-icon name="terminal" size="30px" />
               </div>
 
-              <div class="module-title">
-                Docker Commands
-              </div>
+              <div class="module-title">Docker Commands</div>
 
               <div class="module-description">
-                Learn container management, images, Docker Compose,
-                networking, volumes, and essential commands.
+                Learn container management, images, Docker Compose, networking, volumes, and
+                essential commands.
               </div>
 
               <div class="module-footer">
@@ -137,25 +123,18 @@
             </q-card-section>
           </q-card>
 
-
           <!-- Raspberry Pi -->
-          <q-card
-            flat
-            bordered
-            class="module-card raspberry-card"
-          >
+          <q-card flat bordered class="module-card raspberry-card">
             <q-card-section>
               <div class="module-icon raspberry-icon">
                 <q-icon name="memory" size="30px" />
               </div>
 
-              <div class="module-title">
-                Raspberry Pi Server
-              </div>
+              <div class="module-title">Raspberry Pi Server</div>
 
               <div class="module-description">
-                Understand server deployment, networking, services,
-                and hosting applications on Raspberry Pi.
+                Understand server deployment, networking, services, and hosting applications on
+                Raspberry Pi.
               </div>
 
               <div class="module-footer">
@@ -164,10 +143,8 @@
               </div>
             </q-card-section>
           </q-card>
-
         </div>
       </section>
-
 
       <!-- System Status -->
       <section class="section">
@@ -179,7 +156,6 @@
         </div>
 
         <div class="status-grid">
-
           <div class="status-card">
             <div class="status-card-icon">
               <q-icon name="api" size="26px" />
@@ -193,7 +169,6 @@
               </div>
             </div>
           </div>
-
 
           <div class="status-card">
             <div class="status-card-icon">
@@ -209,7 +184,6 @@
             </div>
           </div>
 
-
           <div class="status-card">
             <div class="status-card-icon">
               <q-icon name="layers" size="26px" />
@@ -223,29 +197,23 @@
               </div>
             </div>
           </div>
-
         </div>
       </section>
-
 
       <!-- Architecture -->
       <section class="architecture-card">
         <div>
           <div class="section-label">PROJECT ARCHITECTURE</div>
 
-          <h2>
-            Learning Platform Powered by Raspberry Pi
-          </h2>
+          <h2>Learning Platform Powered by Raspberry Pi</h2>
 
           <p>
-            This platform combines a Quasar frontend, Django REST API,
-            MySQL database, and Docker containers into a single
-            Raspberry Pi-hosted learning environment.
+            This platform combines a Quasar frontend, Django REST API, MySQL database, and Docker
+            containers into a single Raspberry Pi-hosted learning environment.
           </p>
         </div>
 
         <div class="architecture-flow">
-
           <div class="architecture-node">
             <q-icon name="web" />
             <span>Quasar</span>
@@ -271,14 +239,11 @@
             <q-icon name="memory" />
             <span>Raspberry Pi</span>
           </div>
-
         </div>
       </section>
-
     </div>
   </q-page>
 </template>
-
 
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -287,9 +252,7 @@ const apiStatus = ref('Checking...')
 
 const checkApi = async () => {
   try {
-    const response = await fetch(
-      'http://127.0.0.1:8000/api/status/'
-    )
+    const response = await fetch('http://127.0.0.1:8000/api/status/')
 
     if (!response.ok) {
       throw new Error('API unavailable')
@@ -297,11 +260,7 @@ const checkApi = async () => {
 
     const data = await response.json()
 
-    apiStatus.value =
-      data.status === 'online'
-        ? 'Online'
-        : 'Offline'
-
+    apiStatus.value = data.status === 'online' ? 'Online' : 'Offline'
   } catch {
     apiStatus.value = 'Offline'
   }
@@ -312,9 +271,7 @@ onMounted(() => {
 })
 </script>
 
-
 <style scoped>
-
 .dashboard-page {
   background: #f5f7fb;
   min-height: 100vh;
@@ -325,7 +282,6 @@ onMounted(() => {
   margin: 0 auto;
   padding: 40px;
 }
-
 
 /* HERO */
 
@@ -338,13 +294,7 @@ onMounted(() => {
   padding: 45px;
   border-radius: 24px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #0f172a 0%,
-      #172554 55%,
-      #064e3b 100%
-    );
+  background: linear-gradient(135deg, #0f172a 0%, #172554 55%, #064e3b 100%);
 
   color: white;
 
@@ -383,7 +333,6 @@ onMounted(() => {
   gap: 12px;
   margin-top: 28px;
 }
-
 
 /* SERVER CARD */
 
@@ -445,7 +394,6 @@ onMounted(() => {
   font-size: 13px;
 }
 
-
 /* SECTIONS */
 
 .section {
@@ -473,7 +421,6 @@ onMounted(() => {
   color: #64748b;
 }
 
-
 /* MODULE CARDS */
 
 .module-grid {
@@ -495,8 +442,7 @@ onMounted(() => {
 .module-card:hover {
   transform: translateY(-5px);
 
-  box-shadow:
-    0 15px 35px rgba(15, 23, 42, 0.10);
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.1);
 }
 
 .module-card .q-card__section {
@@ -557,7 +503,6 @@ onMounted(() => {
   font-weight: 700;
 }
 
-
 /* STATUS */
 
 .status-grid {
@@ -609,7 +554,6 @@ onMounted(() => {
   font-weight: 800;
   color: #059669;
 }
-
 
 /* ARCHITECTURE */
 
@@ -664,11 +608,9 @@ onMounted(() => {
   color: #94a3b8;
 }
 
-
 /* RESPONSIVE */
 
 @media (max-width: 1000px) {
-
   .hero-section {
     grid-template-columns: 1fr;
   }
@@ -681,12 +623,9 @@ onMounted(() => {
   .architecture-flow {
     flex-wrap: wrap;
   }
-
 }
 
-
 @media (max-width: 600px) {
-
   .dashboard-container {
     padding: 20px;
   }
@@ -706,7 +645,5 @@ onMounted(() => {
   .section-heading {
     display: block;
   }
-
 }
-
 </style>

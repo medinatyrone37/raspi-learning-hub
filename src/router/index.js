@@ -1,5 +1,4 @@
 import { defineRouter } from '#q-app'
-import { routes, handleHotUpdate } from 'vue-router/auto-routes'
 import {
   createMemoryHistory,
   createRouter,
@@ -7,36 +6,65 @@ import {
   createWebHistory,
 } from 'vue-router'
 
-/*
- * If not building with SSR mode, you can
- * directly export the Router instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Router instance.
- */
+import MainLayout from '../layouts/MainLayout.vue'
 
-export default defineRouter((/* { store, ssrContext } */) => {
+import IndexPage from '../pages/index.vue'
+import CybersecurityPage from '../pages/cybersecurity.vue'
+import CybersecurityLearnPage from '../pages/cybersecurity/learn.vue'
+import DockerPage from '../pages/docker.vue'
+import DockerLearningPage from '../pages/docker-learning.vue'
+
+export default defineRouter(() => {
   const createHistory = import.meta.env.QUASAR_SERVER
     ? createMemoryHistory
     : import.meta.env.QUASAR_VUE_ROUTER_MODE === 'history'
       ? createWebHistory
       : createWebHashHistory
 
+  const routes = [
+    {
+      path: '/',
+      component: MainLayout,
+      children: [
+        {
+          path: '',
+          component: IndexPage,
+        },
+        {
+          path: 'cybersecurity',
+          component: CybersecurityPage,
+        },
+        {
+          path: 'cybersecurity/learn',
+          component: CybersecurityLearnPage,
+        },
+        {
+          path: 'docker',
+          component: DockerPage,
+        },
+        {
+          path: 'docker-learning',
+          component: DockerLearningPage,
+        },
+      ],
+    },
+
+    {
+      path: '/:catchAll(.*)*',
+      component: () => import('../pages/[...path].vue'),
+    },
+  ]
+
   const Router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
+    scrollBehavior: () => ({
+      left: 0,
+      top: 0,
+    }),
+
     routes,
 
-    // Leave this as is and make changes in quasar.conf.js instead!
-    // quasar.conf.js -> build -> vueRouterMode
-    // quasar.conf.js -> build -> publicPath
     history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE),
   })
-
-  // enable HMR for it
-  if (import.meta.hot) {
-    handleHotUpdate(Router)
-  }
 
   return Router
 })

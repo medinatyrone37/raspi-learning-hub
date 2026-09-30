@@ -15,8 +15,18 @@ const routes = [
       },
 
       {
+        path: 'cybersecurity/learn',
+        component: () => import('pages/cybersecurity/learn.vue'),
+      },
+
+      {
         path: 'docker',
         component: () => import('pages/docker.vue'),
+      },
+
+      {
+        path: 'docker-learning',
+        component: () => import('pages/docker-learning.vue'),
       },
     ],
   },
@@ -28,6 +38,3 @@ const routes = [
 ]
 
 export default routes
-
-
-
