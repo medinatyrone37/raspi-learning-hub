@@ -1,649 +1,556 @@
 <template>
-  <q-page class="dashboard-page">
-    <div class="dashboard-container">
-      <!-- Hero -->
-      <section class="hero-section">
-        <div>
-          <div class="eyebrow">RASPI LEARNING HUB</div>
+  <q-page ref="root" class="home">
+    <!-- NAVIGATION -->
+    <header class="nav" :class="{ scrolled }">
+      <div class="wrap nav-inner">
+        <a class="brand" href="#top" @click.prevent="goTo('top')">
+          <span class="brand-mark"><q-icon name="memory" size="20px" /></span>
+          <span class="brand-name">Raspi Learning Hub</span>
+        </a>
 
-          <h1>
-            Welcome to the
-            <span>IT Learning Platform</span>
-          </h1>
+        <nav class="nav-links" aria-label="Primary">
+          <a v-for="link in navLinks" :key="link.id" :href="`#${link.id}`" @click.prevent="goTo(link.id)">
+            {{ link.label }}
+          </a>
+        </nav>
 
-          <p>
-            Explore cybersecurity concepts, Docker commands, and Raspberry Pi server technologies
-            through interactive learning modules.
+        <q-btn
+          class="nav-toggle"
+          flat
+          round
+          dense
+          :icon="menuOpen ? 'close' : 'menu'"
+          aria-label="Toggle menu"
+          @click="menuOpen = !menuOpen"
+        />
+      </div>
+
+      <div v-if="menuOpen" class="nav-sheet">
+        <a v-for="link in navLinks" :key="link.id" :href="`#${link.id}`" @click.prevent="goTo(link.id)">
+          {{ link.label }}
+        </a>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section id="top" class="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <div class="pill reveal"><span class="pill-dot"></span> Hands-on IT learning, self-hosted</div>
+
+          <h1 class="reveal" style="--d: 60ms">Learn. Build. <span>Deploy.</span></h1>
+
+          <p class="hero-sub reveal" style="--d: 120ms">Your hands-on learning hub for modern IT technologies.</p>
+
+          <p class="hero-desc reveal" style="--d: 180ms">
+            Explore practical lessons in cybersecurity, Docker, Linux, networking, and modern web
+            technologies through structured, easy-to-follow learning experiences built for IT
+            students and aspiring developers.
           </p>
 
-          <div class="hero-actions">
+          <div class="hero-actions reveal" style="--d: 240ms">
+            <q-btn unelevated no-caps class="btn-primary" label="Explore Learning Hub" icon-right="arrow_downward" @click="goTo('areas')" />
+            <q-btn outline no-caps class="btn-ghost" label="View Courses" @click="goTo('areas')" />
+          </div>
+        </div>
+
+        <div class="visual reveal" style="--d: 200ms" aria-hidden="true">
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span></span><span></span><span></span>
+              <em>raspberrypi ~ docker</em>
+            </div>
+            <div class="terminal-body">
+              <div v-for="(line, i) in terminalLines" :key="i" :class="line.type">
+                <template v-if="line.type === 'cmd'"><b>$</b> {{ line.text }}</template>
+                <template v-else>{{ line.text }}</template>
+              </div>
+              <div class="cursor"></div>
+            </div>
+          </div>
+
+          <div class="chip chip-status">
+            <span class="status-dot" :class="{ off: apiStatus !== 'Online' }"></span>
+            Django API · {{ apiStatus }}
+          </div>
+
+          <div class="chip chip-nodes">
+            <div v-for="node in nodes" :key="node.icon" class="node"><q-icon :name="node.icon" size="18px" /></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="wrap stats reveal">
+      <div v-for="stat in stats" :key="stat.label" class="stat">
+        <div class="stat-value">{{ stat.value }}</div>
+        <div class="stat-label">{{ stat.label }}</div>
+      </div>
+    </section>
+
+    <!-- LEARNING AREAS -->
+    <section id="areas" class="section">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="label">Courses</div>
+          <h2>Explore Learning Areas</h2>
+          <p>Build practical knowledge across essential IT technologies.</p>
+        </div>
+
+        <div class="area-grid">
+          <article
+            v-for="(area, i) in areas"
+            :key="area.key"
+            class="area-card reveal"
+            :class="[`accent-${area.key}`, { soon: !area.to }]"
+            :style="{ '--d': `${i * 70}ms` }"
+          >
+            <div class="area-top">
+              <div class="area-icon"><q-icon :name="area.icon" size="26px" /></div>
+              <span v-if="!area.to" class="badge">Coming soon</span>
+              <span v-else class="area-category">{{ area.category }}</span>
+            </div>
+
+            <h3>{{ area.title }}</h3>
+            <p>{{ area.desc }}</p>
+
+            <ul class="topics">
+              <li v-for="topic in area.topics" :key="topic">{{ topic }}</li>
+            </ul>
+
             <q-btn
+              v-if="area.to"
               unelevated
-              rounded
-              color="primary"
-              label="Explore Cybersecurity"
-              icon="security"
-              to="/cybersecurity"
               no-caps
+              class="area-cta"
+              :label="area.cta"
+              icon-right="arrow_forward"
+              :to="area.to"
             />
+          </article>
+        </div>
+      </div>
+    </section>
 
-            <q-btn
-              outline
-              rounded
-              color="primary"
-              label="Learn Docker"
-              icon="terminal"
-              to="/docker"
-              no-caps
-            />
-          </div>
+    <!-- FEATURES -->
+    <section id="features" class="section section-alt">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="label">About</div>
+          <h2>Built for Practical Learning</h2>
+          <p>A focused platform that keeps the learning clear, structured, and hands-on.</p>
         </div>
 
-        <div class="server-card">
-          <div class="server-icon">
-            <q-icon name="dns" size="42px" />
-          </div>
-
-          <div class="server-title">Raspberry Pi Server</div>
-
-          <div class="server-status">
-            <span class="status-dot"></span>
-            {{ apiStatus }}
-          </div>
-
-          <div class="server-description">Django REST API</div>
-        </div>
-      </section>
-
-      <!-- Learning Modules -->
-      <section class="section">
-        <div class="section-heading">
-          <div>
-            <div class="section-label">LEARNING MODULES</div>
-            <h2>Explore IT Topics</h2>
-          </div>
-
-          <div class="section-description">
-            Build your knowledge through structured technical modules.
+        <div class="feature-grid">
+          <div v-for="(f, i) in features" :key="f.title" class="feature reveal" :style="{ '--d': `${i * 70}ms` }">
+            <div class="feature-icon"><q-icon :name="f.icon" size="22px" /></div>
+            <h3>{{ f.title }}</h3>
+            <p>{{ f.text }}</p>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="module-grid">
-          <!-- Cybersecurity -->
-          <q-card
-            flat
-            bordered
-            class="module-card cybersecurity-card"
-            clickable
-            @click="$router.push('/cybersecurity')"
-          >
-            <q-card-section>
-              <div class="module-icon cybersecurity-icon">
-                <q-icon name="security" size="30px" />
-              </div>
-
-              <div class="module-title">Cybersecurity</div>
-
-              <div class="module-description">
-                Learn how systems, networks, applications, and data are protected against cyber
-                threats.
-              </div>
-
-              <div class="module-footer">
-                <span>Security Fundamentals</span>
-                <q-icon name="arrow_forward" />
-              </div>
-            </q-card-section>
-          </q-card>
-
-          <!-- Docker -->
-          <q-card
-            flat
-            bordered
-            class="module-card docker-card"
-            clickable
-            @click="$router.push('/docker')"
-          >
-            <q-card-section>
-              <div class="module-icon docker-icon">
-                <q-icon name="terminal" size="30px" />
-              </div>
-
-              <div class="module-title">Docker Commands</div>
-
-              <div class="module-description">
-                Learn container management, images, Docker Compose, networking, volumes, and
-                essential commands.
-              </div>
-
-              <div class="module-footer">
-                <span>Containerization</span>
-                <q-icon name="arrow_forward" />
-              </div>
-            </q-card-section>
-          </q-card>
-
-          <!-- Raspberry Pi -->
-          <q-card flat bordered class="module-card raspberry-card">
-            <q-card-section>
-              <div class="module-icon raspberry-icon">
-                <q-icon name="memory" size="30px" />
-              </div>
-
-              <div class="module-title">Raspberry Pi Server</div>
-
-              <div class="module-description">
-                Understand server deployment, networking, services, and hosting applications on
-                Raspberry Pi.
-              </div>
-
-              <div class="module-footer">
-                <span>Server Technology</span>
-                <q-icon name="arrow_forward" />
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-      </section>
-
-      <!-- System Status -->
-      <section class="section">
-        <div class="section-heading">
-          <div>
-            <div class="section-label">SYSTEM</div>
-            <h2>Server Status</h2>
-          </div>
+    <!-- LEARNING FLOW -->
+    <section id="how" class="section">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="label">Learning</div>
+          <h2>How You'll Learn</h2>
+          <p>A simple path from picking a topic to building something real.</p>
         </div>
 
-        <div class="status-grid">
-          <div class="status-card">
-            <div class="status-card-icon">
-              <q-icon name="api" size="26px" />
-            </div>
+        <ol class="steps">
+          <li v-for="(s, i) in steps" :key="s.title" class="step reveal" :style="{ '--d': `${i * 80}ms` }">
+            <div class="step-num">{{ String(i + 1).padStart(2, '0') }}</div>
+            <h3>{{ s.title }}</h3>
+            <p>{{ s.text }}</p>
+          </li>
+        </ol>
+      </div>
+    </section>
 
-            <div>
-              <div class="status-name">Django API</div>
-              <div class="status-value">
-                <span class="online-dot"></span>
-                {{ apiStatus }}
-              </div>
-            </div>
+    <!-- CTA -->
+    <section class="wrap cta-wrap">
+      <div class="cta reveal">
+        <div class="cta-ring cta-ring-a" aria-hidden="true"></div>
+        <div class="cta-ring cta-ring-b" aria-hidden="true"></div>
+        <h2>Start Learning Today</h2>
+        <p>
+          Explore practical IT lessons designed to help you understand the technologies behind
+          modern applications and infrastructure.
+        </p>
+        <q-btn unelevated no-caps class="btn-light" label="Explore Learning Hub" icon-right="arrow_upward" @click="goTo('areas')" />
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="wrap footer-grid">
+        <div class="footer-brand">
+          <div class="brand">
+            <span class="brand-mark"><q-icon name="memory" size="20px" /></span>
+            <span class="brand-name">Raspi Learning Hub</span>
           </div>
-
-          <div class="status-card">
-            <div class="status-card-icon">
-              <q-icon name="storage" size="26px" />
-            </div>
-
-            <div>
-              <div class="status-name">MySQL Database</div>
-              <div class="status-value">
-                <span class="online-dot"></span>
-                Connected
-              </div>
-            </div>
-          </div>
-
-          <div class="status-card">
-            <div class="status-card-icon">
-              <q-icon name="layers" size="26px" />
-            </div>
-
-            <div>
-              <div class="status-name">Docker</div>
-              <div class="status-value">
-                <span class="online-dot"></span>
-                Running
-              </div>
-            </div>
-          </div>
+          <p>Practical IT learning, one topic at a time.</p>
         </div>
-      </section>
 
-      <!-- Architecture -->
-      <section class="architecture-card">
         <div>
-          <div class="section-label">PROJECT ARCHITECTURE</div>
-
-          <h2>Learning Platform Powered by Raspberry Pi</h2>
-
-          <p>
-            This platform combines a Quasar frontend, Django REST API, MySQL database, and Docker
-            containers into a single Raspberry Pi-hosted learning environment.
-          </p>
+          <div class="footer-title">Navigation</div>
+          <router-link to="/">Home</router-link>
+          <router-link to="/cybersecurity">Cybersecurity</router-link>
+          <router-link to="/docker">Docker</router-link>
         </div>
 
-        <div class="architecture-flow">
-          <div class="architecture-node">
-            <q-icon name="web" />
-            <span>Quasar</span>
-          </div>
-
-          <q-icon name="arrow_forward" class="flow-arrow" />
-
-          <div class="architecture-node">
-            <q-icon name="api" />
-            <span>Django API</span>
-          </div>
-
-          <q-icon name="arrow_forward" class="flow-arrow" />
-
-          <div class="architecture-node">
-            <q-icon name="storage" />
-            <span>MySQL</span>
-          </div>
-
-          <q-icon name="arrow_forward" class="flow-arrow" />
-
-          <div class="architecture-node">
-            <q-icon name="memory" />
-            <span>Raspberry Pi</span>
-          </div>
+        <div>
+          <div class="footer-title">Technology</div>
+          <span v-for="tech in techStack" :key="tech">{{ tech }}</span>
         </div>
-      </section>
-    </div>
+      </div>
+      <div class="wrap footer-base">Raspi Learning Hub</div>
+    </footer>
   </q-page>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
+const root = ref(null)
 const apiStatus = ref('Checking...')
+const menuOpen = ref(false)
+const scrolled = ref(false)
 
-const checkApi = async () => {
+/* ---------- Static content ---------- */
+
+const navLinks = [
+  { id: 'top', label: 'Home' },
+  { id: 'how', label: 'Learning' },
+  { id: 'areas', label: 'Courses' },
+  { id: 'features', label: 'About' },
+]
+
+const terminalLines = [
+  { type: 'cmd', text: 'docker compose up -d' },
+  { type: 'ok', text: '✔ network  learning-hub_default' },
+  { type: 'ok', text: '✔ api      started' },
+  { type: 'ok', text: '✔ db       healthy' },
+  { type: 'cmd', text: 'docker ps' },
+]
+
+const nodes = [{ icon: 'memory' }, { icon: 'inventory_2' }, { icon: 'api' }]
+
+/* `to` is the existing route. Areas without `to` render as "Coming soon". */
+const areas = [
+  {
+    key: 'cyber',
+    category: 'Security',
+    title: 'Cybersecurity',
+    icon: 'security',
+    desc: 'Learn how systems, networks, applications, and data are protected against cyber threats.',
+    topics: ['Security fundamentals', 'Threats and defensive concepts', 'Practical security knowledge'],
+    to: '/cybersecurity',
+    cta: 'Explore Cybersecurity',
+  },
+  {
+    key: 'docker',
+    category: 'Containers',
+    title: 'Docker',
+    icon: 'inventory_2',
+    desc: 'Work with containers the way modern teams ship software, from first image to running stack.',
+    topics: ['Containers and images', 'Docker Compose', 'Networks and volumes', 'Container security'],
+    to: '/docker',
+    cta: 'Explore Docker',
+  },
+  {
+    key: 'linux',
+    category: 'Systems',
+    title: 'Linux',
+    icon: 'terminal',
+    desc: 'Command-line skills and system administration fundamentals.',
+    topics: ['Shell basics', 'Users and permissions'],
+  },
+  {
+    key: 'networking',
+    category: 'Infrastructure',
+    title: 'Networking',
+    icon: 'lan',
+    desc: 'How data moves between devices, servers, and services.',
+    topics: ['IP and DNS', 'Ports and protocols'],
+  },
+]
+
+const features = [
+  { icon: 'account_tree', title: 'Structured Lessons', text: 'Learn through organized topics that progress from fundamentals to practical concepts.' },
+  { icon: 'science', title: 'Hands-On Concepts', text: 'Understand how technologies work through commands, examples, architectures, and real-world scenarios.' },
+  { icon: 'dns', title: 'IT-Focused Content', text: 'Explore technologies commonly used in modern development, infrastructure, and IT environments.' },
+  { icon: 'memory', title: 'Raspberry Pi Ready', text: 'Designed with lightweight technologies and deployment on Raspberry Pi in mind.' },
+]
+
+const steps = [
+  { title: 'Choose a topic', text: 'Pick a learning area that matches what you want to understand next.' },
+  { title: 'Explore the lesson', text: 'Work through clear slides covering concepts, commands, and architecture.' },
+  { title: 'Practice the concepts', text: 'Apply ideas with technical examples and real-world scenarios.' },
+  { title: 'Build and deploy', text: 'Use what you learned to build, run, and host your own projects.' },
+]
+
+const techStack = ['Vue', 'Quasar', 'Django', 'MySQL', 'Raspberry Pi']
+
+/* Derived from the areas above, so the numbers stay accurate as topics are added. */
+const stats = computed(() => {
+  const available = areas.filter((a) => a.to).length
+  return [
+    { value: String(available), label: 'Learning topics available' },
+    { value: String(areas.length - available), label: 'More topics coming soon' },
+    { value: 'Hands-on', label: 'Learning style' },
+    { value: 'Self-paced', label: 'Access anytime' },
+  ]
+})
+
+/* ---------- API status (unchanged behavior) ---------- */
+
+async function checkApi() {
   try {
     const response = await fetch('http://127.0.0.1:8000/api/status/')
-
-    if (!response.ok) {
-      throw new Error('API unavailable')
-    }
-
+    if (!response.ok) throw new Error('API unavailable')
     const data = await response.json()
-
     apiStatus.value = data.status === 'online' ? 'Online' : 'Offline'
   } catch {
     apiStatus.value = 'Offline'
   }
 }
 
+/* ---------- Navigation helpers ---------- */
+
+function goTo(id) {
+  menuOpen.value = false
+  if (id === 'top') {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function onScroll() {
+  scrolled.value = window.scrollY > 8
+}
+
+/* ---------- Reveal on scroll ---------- */
+
+let observer = null
+
 onMounted(() => {
   checkApi()
+  onScroll()
+  window.addEventListener('scroll', onScroll, { passive: true })
+
+  const items = root.value?.$el?.querySelectorAll('.reveal') || []
+
+  if (!('IntersectionObserver' in window)) {
+    items.forEach((el) => el.classList.add('in'))
+    return
+  }
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in')
+          observer.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.12 },
+  )
+
+  items.forEach((el) => observer.observe(el))
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
+  observer?.disconnect()
 })
 </script>
 
 <style scoped>
-.dashboard-page {
-  background: #f5f7fb;
-  min-height: 100vh;
+.home {
+  --primary: #10b981; --secondary: #34d399; --bg: #f8fafc; --ink: #0b2b26; --muted: #5d726c;
+  --line: #e2e8e5; --deep: #064e3b;
+  background: var(--bg); color: var(--ink); min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
+.wrap { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+.section { padding: 96px 0; scroll-margin-top: 72px; }
+.section-alt { background: #fff; border-block: 1px solid var(--line); }
+#top { scroll-margin-top: 0; }
 
-.dashboard-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 40px;
-}
+/* reveal: opacity toggles, animation only plays the entrance */
+.reveal { opacity: 0; }
+.reveal.in { opacity: 1; animation: rise 0.55s ease backwards; animation-delay: var(--d, 0ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+
+/* NAV */
+.nav { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); transition: box-shadow 0.2s; }
+.nav.scrolled { box-shadow: 0 6px 24px rgba(11, 43, 38, 0.06); }
+.nav-inner { height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.brand { display: inline-flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; font-weight: 800; letter-spacing: -0.01em; }
+.brand-mark { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, var(--primary), var(--deep)); }
+.nav-links { display: flex; gap: 6px; }
+.nav-links a, .nav-sheet a { padding: 8px 14px; border-radius: 10px; color: var(--muted); font-size: 14px; font-weight: 600; text-decoration: none; transition: color 0.15s, background 0.15s; }
+.nav-links a:hover, .nav-sheet a:hover { color: var(--ink); background: #eef5f2; }
+.nav-toggle { display: none; }
+.nav-sheet { display: none; padding: 8px 20px 14px; border-top: 1px solid var(--line); flex-direction: column; background: #fff; }
 
 /* HERO */
-
-.hero-section {
-  display: grid;
-  grid-template-columns: 1fr 330px;
-  gap: 30px;
-  align-items: center;
-
-  padding: 45px;
-  border-radius: 24px;
-
-  background: linear-gradient(135deg, #0f172a 0%, #172554 55%, #064e3b 100%);
-
-  color: white;
-
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+.hero { position: relative; overflow: hidden; padding: 88px 0 72px; }
+.hero-bg { position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(600px 360px at 85% 10%, rgba(52, 211, 153, 0.22), transparent 70%),
+    radial-gradient(500px 300px at 0% 100%, rgba(16, 185, 129, 0.1), transparent 70%),
+    radial-gradient(rgba(11, 43, 38, 0.09) 1px, transparent 1px) 0 0 / 26px 26px;
+  mask-image: linear-gradient(180deg, #000 55%, transparent);
 }
-
-.eyebrow,
-.section-label {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  color: #10b981;
-}
-
-.hero-section h1 {
-  margin: 10px 0 15px;
-  font-size: 42px;
-  line-height: 1.15;
-  font-weight: 800;
-}
-
-.hero-section h1 span {
-  display: block;
-  color: #34d399;
-}
-
-.hero-section p {
-  max-width: 680px;
-  color: #cbd5e1;
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 28px;
-}
-
-/* SERVER CARD */
-
-.server-card {
-  padding: 28px;
-  border-radius: 20px;
-
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-
-  backdrop-filter: blur(10px);
-}
-
-.server-icon {
-  width: 65px;
-  height: 65px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 16px;
-
-  background: rgba(52, 211, 153, 0.15);
-  color: #34d399;
-}
-
-.server-title {
-  margin-top: 20px;
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.server-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  margin-top: 12px;
-
-  color: #34d399;
-  font-weight: 700;
-}
-
-.status-dot,
-.online-dot {
-  width: 9px;
-  height: 9px;
-
-  display: inline-block;
-
-  border-radius: 50%;
-  background: #10b981;
-}
-
-.server-description {
-  margin-top: 6px;
-  color: #94a3b8;
-  font-size: 13px;
-}
-
-/* SECTIONS */
-
-.section {
-  margin-top: 45px;
-}
-
-.section-heading {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-
-  margin-bottom: 20px;
-}
-
-.section-heading h2,
-.architecture-card h2 {
-  margin: 5px 0 0;
-
-  font-size: 27px;
-  font-weight: 800;
-  color: #0f172a;
-}
-
-.section-description {
-  color: #64748b;
-}
-
-/* MODULE CARDS */
-
-.module-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.module-card {
-  border-radius: 20px;
-
-  background: white;
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.module-card:hover {
-  transform: translateY(-5px);
-
-  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.1);
-}
-
-.module-card .q-card__section {
-  padding: 28px;
-}
-
-.module-icon {
-  width: 58px;
-  height: 58px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 15px;
-}
-
-.cybersecurity-icon {
-  background: #ecfdf5;
-  color: #059669;
-}
-
-.docker-icon {
-  background: #eff6ff;
-  color: #2563eb;
-}
-
-.raspberry-icon {
-  background: #f5f3ff;
-  color: #7c3aed;
-}
-
-.module-title {
-  margin-top: 22px;
-
-  font-size: 21px;
-  font-weight: 800;
-
-  color: #0f172a;
-}
-
-.module-description {
-  margin-top: 10px;
-
-  color: #64748b;
-  line-height: 1.6;
-}
-
-.module-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin-top: 25px;
-
-  color: #64748b;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-/* STATUS */
-
-.status-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-
-.status-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-
-  padding: 22px;
-
-  border-radius: 16px;
-
-  background: white;
-  border: 1px solid #e2e8f0;
-}
-
-.status-card-icon {
-  width: 50px;
-  height: 50px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 13px;
-
-  background: #f1f5f9;
-  color: #475569;
-}
-
-.status-name {
-  font-size: 14px;
-  color: #64748b;
-}
-
-.status-value {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-
-  margin-top: 5px;
-
-  font-size: 15px;
-  font-weight: 800;
-  color: #059669;
-}
-
-/* ARCHITECTURE */
-
-.architecture-card {
-  margin-top: 45px;
-  padding: 35px;
-
-  border-radius: 20px;
-
-  background: white;
-  border: 1px solid #e2e8f0;
-}
-
-.architecture-card p {
-  max-width: 800px;
-
-  color: #64748b;
-  line-height: 1.7;
-}
-
-.architecture-flow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 18px;
-
-  margin-top: 30px;
-}
-
-.architecture-node {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  padding: 14px 20px;
-
-  border-radius: 12px;
-
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-
-  color: #334155;
-  font-weight: 700;
-}
-
-.architecture-node .q-icon {
-  color: #10b981;
-}
-
-.flow-arrow {
-  color: #94a3b8;
-}
+.hero-grid { position: relative; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+.pill { display: inline-flex; align-items: center; gap: 9px; padding: 6px 14px; border-radius: 999px; background: #fff; border: 1px solid var(--line); color: var(--muted); font-size: 13px; font-weight: 600; }
+.pill-dot, .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.18); }
+.status-dot.off { background: #f59e0b; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18); }
+.hero h1 { margin: 22px 0 14px; font-size: clamp(44px, 6.4vw, 78px); line-height: 1.02; font-weight: 800; letter-spacing: -0.04em; }
+.hero h1 span { color: var(--primary); }
+.hero-sub { margin: 0 0 14px; font-size: clamp(18px, 2vw, 22px); font-weight: 600; color: var(--ink); }
+.hero-desc { max-width: 560px; margin: 0; color: var(--muted); font-size: 16.5px; line-height: 1.75; }
+.hero-actions { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+
+.btn-primary { background: var(--primary); color: #fff; border-radius: 12px; padding: 12px 22px; font-weight: 700; box-shadow: 0 8px 22px rgba(16, 185, 129, 0.3); transition: transform 0.15s, box-shadow 0.15s; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16, 185, 129, 0.38); }
+.btn-ghost { color: var(--ink); border-radius: 12px; padding: 12px 22px; font-weight: 700; border-color: #cfdcd7; }
+.btn-ghost:hover { background: #fff; }
+
+/* hero visual */
+.visual { position: relative; padding: 18px 0 38px; }
+.terminal { border-radius: 18px; overflow: hidden; background: #0b1f1a; border: 1px solid rgba(16, 185, 129, 0.25); box-shadow: 0 30px 60px rgba(11, 43, 38, 0.22); }
+.terminal-bar { display: flex; align-items: center; gap: 7px; padding: 13px 16px; background: #0f2a23; }
+.terminal-bar span { width: 10px; height: 10px; border-radius: 50%; background: #2c4a41; }
+.terminal-bar em { margin-left: 10px; font-style: normal; font-size: 12px; color: #7fa396; }
+.terminal-body { padding: 22px 22px 26px; font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace; font-size: 13.5px; line-height: 2; color: #9fb9af; }
+.terminal-body .cmd { color: #e6fff4; }
+.terminal-body b { color: var(--secondary); margin-right: 6px; }
+.terminal-body .ok { color: #6fd8ad; }
+.cursor { width: 8px; height: 16px; margin-top: 4px; background: var(--secondary); animation: blink 1.1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.chip { position: absolute; display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 14px; background: #fff; border: 1px solid var(--line); box-shadow: 0 14px 30px rgba(11, 43, 38, 0.12); font-size: 13px; font-weight: 700; }
+.chip-status { right: -14px; top: -4px; }
+.chip-nodes { left: -18px; bottom: 6px; gap: 0; padding: 10px 14px; }
+.node { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #ecfdf5; color: #059669; }
+.node + .node { margin-left: 22px; position: relative; }
+.node + .node::before { content: ''; position: absolute; left: -22px; top: 50%; width: 22px; border-top: 2px dashed #86e0bd; }
+
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); padding-block: 8px; }
+.stat { padding: 26px 24px; border-left: 1px solid var(--line); }
+.stat:first-child { border-left: 0; }
+.stat-value { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
+.stat-label { margin-top: 4px; font-size: 14px; color: var(--muted); }
+
+/* SECTION HEAD */
+.section-head { max-width: 640px; margin-bottom: 44px; }
+.label { color: var(--primary); font-size: 13px; font-weight: 800; letter-spacing: 0.04em; }
+.section-head h2, .cta h2 { margin: 8px 0 10px; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.1; font-weight: 800; letter-spacing: -0.03em; }
+.section-head p { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.65; }
+
+/* AREA CARDS */
+.area-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+.area-card { --accent: var(--primary); --accent-soft: #ecfdf5; --accent-ink: #059669; position: relative; display: flex; flex-direction: column; padding: 32px; border-radius: 20px; background: #fff; border: 1px solid var(--line); transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+.accent-docker { --accent: #2496ed; --accent-soft: #eaf4fe; --accent-ink: #1769b8; }
+.area-card::before { content: ''; position: absolute; left: 32px; right: 32px; top: 0; height: 3px; border-radius: 0 0 3px 3px; background: var(--accent); }
+.area-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 20px 44px rgba(11, 43, 38, 0.09); }
+.area-card.soon { background: #fbfcfc; }
+.area-card.soon::before { background: #cfdcd7; }
+.area-card.soon:hover { transform: none; border-color: var(--line); box-shadow: none; }
+.area-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.area-icon { width: 54px; height: 54px; border-radius: 14px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-ink); transition: transform 0.2s; }
+.area-card:hover .area-icon { transform: translateY(-2px) scale(1.05); }
+.soon .area-icon { background: #eef2f1; color: #7b8d88; }
+.area-category { font-size: 13px; font-weight: 700; color: var(--accent-ink); }
+.badge { padding: 4px 11px; border-radius: 999px; background: #eef2f1; color: var(--muted); font-size: 12px; font-weight: 700; }
+.area-card h3 { margin: 0 0 8px; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.area-card p { margin: 0; color: var(--muted); line-height: 1.65; }
+.topics { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; padding: 0; }
+.topics li { padding: 5px 12px; border-radius: 999px; background: #f3f7f5; border: 1px solid var(--line); font-size: 13px; font-weight: 600; color: #3d5650; }
+.area-cta { margin-top: 28px; align-self: flex-start; border-radius: 12px; padding: 10px 20px; font-weight: 700; background: var(--accent); color: #fff; }
+.area-cta :deep(.q-icon) { transition: transform 0.15s; }
+.area-cta:hover :deep(.q-icon) { transform: translateX(3px); }
+
+/* FEATURES */
+.feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.feature { padding: 28px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); transition: transform 0.2s, box-shadow 0.2s; }
+.feature:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(11, 43, 38, 0.07); }
+.feature-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; margin-bottom: 18px; background: #ecfdf5; color: #059669; }
+.feature h3 { margin: 0 0 8px; font-size: 18px; font-weight: 800; }
+.feature p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.65; }
+
+/* STEPS */
+.steps { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin: 0; padding: 0; position: relative; }
+.steps::before { content: ''; position: absolute; top: 24px; left: 6%; right: 6%; border-top: 2px dashed #bfe6d6; }
+.step { position: relative; padding-right: 8px; }
+.step-num { position: relative; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; margin-bottom: 20px; background: #fff; border: 2px solid var(--primary); color: #059669; font-weight: 800; font-size: 15px; box-shadow: 0 0 0 6px var(--bg); }
+.step h3 { margin: 0 0 6px; font-size: 18px; font-weight: 800; }
+.step p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.65; }
+
+/* CTA */
+.cta-wrap { padding-bottom: 96px; }
+.cta { position: relative; overflow: hidden; text-align: center; padding: 64px 32px; border-radius: 24px; color: #fff; background: linear-gradient(135deg, #0b2b26 0%, var(--deep) 100%); }
+.cta h2 { color: #fff; margin-top: 0; }
+.cta p { max-width: 560px; margin: 0 auto 28px; color: #b9d8cc; line-height: 1.7; }
+.cta > :not(.cta-ring) { position: relative; z-index: 1; }
+.cta-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(52, 211, 153, 0.25); pointer-events: none; }
+.cta-ring-a { width: 420px; height: 420px; right: -120px; top: -180px; }
+.cta-ring-b { width: 260px; height: 260px; left: -90px; bottom: -130px; background: rgba(52, 211, 153, 0.07); }
+.btn-light { background: #fff; color: var(--deep); border-radius: 12px; padding: 12px 24px; font-weight: 800; transition: transform 0.15s; }
+.btn-light:hover { transform: translateY(-2px); }
+
+/* FOOTER */
+.footer { background: #fff; border-top: 1px solid var(--line); padding: 56px 0 24px; }
+.footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 40px; }
+.footer-brand p { max-width: 300px; margin: 14px 0 0; color: var(--muted); line-height: 1.6; }
+.footer-title { margin-bottom: 14px; font-size: 13px; font-weight: 800; color: var(--ink); }
+.footer-grid a, .footer-grid span:not(.brand-mark):not(.brand-name) { display: block; margin-bottom: 9px; color: var(--muted); font-size: 14.5px; text-decoration: none; }
+.footer-grid a:hover { color: var(--primary); }
+.footer-base { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--line); color: #8a9c96; font-size: 13px; }
 
 /* RESPONSIVE */
-
-@media (max-width: 1000px) {
-  .hero-section {
-    grid-template-columns: 1fr;
-  }
-
-  .module-grid,
-  .status-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .architecture-flow {
-    flex-wrap: wrap;
-  }
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .visual { max-width: 560px; }
+  .feature-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps { grid-template-columns: repeat(2, 1fr); row-gap: 36px; }
+  .steps::before { display: none; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stat:nth-child(3) { border-left: 0; }
 }
-
-@media (max-width: 600px) {
-  .dashboard-container {
-    padding: 20px;
-  }
-
-  .hero-section {
-    padding: 30px 24px;
-  }
-
-  .hero-section h1 {
-    font-size: 32px;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-  }
-
-  .section-heading {
-    display: block;
-  }
+@media (max-width: 760px) {
+  .wrap { padding: 0 20px; }
+  .section { padding: 64px 0; }
+  .nav-links { display: none; }
+  .nav-toggle { display: inline-flex; }
+  .nav-sheet { display: flex; }
+  .hero { padding: 48px 0 40px; }
+  .hero-actions .q-btn { width: 100%; }
+  .chip-status { right: 0; }
+  .chip-nodes { display: none; }
+  .area-grid, .feature-grid { grid-template-columns: 1fr; }
+  .area-card { padding: 26px; }
+  .steps { grid-template-columns: 1fr; }
+  .step { display: grid; grid-template-columns: 48px 1fr; column-gap: 16px; }
+  .step-num { grid-row: span 2; margin: 0; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .cta { padding: 48px 22px; }
+  .cta .q-btn { width: 100%; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal.in { opacity: 1; animation: none; }
+  .cursor { animation: none; }
+  * { transition-duration: 0.01ms !important; }
 }
 </style>
