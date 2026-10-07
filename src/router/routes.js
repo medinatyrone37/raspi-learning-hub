@@ -28,6 +28,16 @@ const routes = [
         path: 'docker-learning',
         component: () => import('pages/docker-learning.vue'),
       },
+
+      {
+        path: 'redblue',
+        component: () => import('pages/redblue.vue'),
+      },
+
+      {
+        path: 'redblue-learning',
+        component: () => import('pages/redblue-learning.vue'),
+      },
     ],
   },
 
