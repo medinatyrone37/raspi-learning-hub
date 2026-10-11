@@ -51,7 +51,7 @@
 
           <div class="chip chip-status">
             <span class="status-dot" :class="{ off: apiStatus !== 'Online' }"></span>
-            Django API · {{ apiStatus }}
+            Django API Â· {{ apiStatus }}
           </div>
 
           <div class="chip chip-nodes">
@@ -200,6 +200,9 @@
           <router-link to="/">Home</router-link>
           <router-link to="/cybersecurity">Cybersecurity</router-link>
           <router-link to="/docker">Docker</router-link>
+          <router-link to="/linux">Linux</router-link>
+          <router-link to="/redblue">Red &amp; Blue Team</router-link>
+          <router-link to="/networking">Networking</router-link>
         </div>
 
         <div>
@@ -207,7 +210,11 @@
           <span v-for="tech in techStack" :key="tech">{{ tech }}</span>
         </div>
       </div>
-      <div class="wrap footer-base">Raspi Learning Hub</div>
+
+      <div class="wrap footer-base">
+        <span>© 2026 Raspi Learning Hub </span>
+        <span class="footer-credit">Developed by <strong>Tyrone Justine A. Medina</strong></span>
+      </div>
     </footer>
   </q-page>
 </template>
@@ -222,9 +229,9 @@ const apiStatus = ref('Checking...')
 
 const terminalLines = [
   { type: 'cmd', text: 'docker compose up -d' },
-  { type: 'ok', text: '✔ network  learning-hub_default' },
-  { type: 'ok', text: '✔ api      started' },
-  { type: 'ok', text: '✔ db       healthy' },
+  { type: 'ok', text: 'âœ” network  learning-hub_default' },
+  { type: 'ok', text: 'âœ” api      started' },
+  { type: 'ok', text: 'âœ” db       healthy' },
   { type: 'cmd', text: 'docker ps' },
 ]
 
@@ -283,6 +290,8 @@ const areas = [
     icon: 'terminal',
     desc: 'Command-line skills and system administration fundamentals.',
     topics: ['Shell basics', 'Users and permissions'],
+    to: '/linux',
+    cta: 'Explore Linux',
   },
   {
     key: 'networking',
@@ -291,6 +300,8 @@ const areas = [
     icon: 'lan',
     desc: 'How data moves between devices, servers, and services.',
     topics: ['IP and DNS', 'Ports and protocols'],
+    to: '/networking',
+    cta: 'Explore Networking',
   },
 ]
 

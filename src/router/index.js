@@ -1,4 +1,4 @@
-import { defineRouter } from '#q-app'
+﻿import { defineRouter } from '#q-app'
 import { isAuthenticated } from '../services/auth'
 
 import {
@@ -19,6 +19,8 @@ import DockerPage from '../pages/docker.vue'
 import DockerLearningPage from '../pages/docker-learning.vue'
 import RedBluePage from '../pages/redblue.vue'
 import RedBlueLearningPage from '../pages/redblue-learning.vue'
+import LinuxPage from '../pages/linux.vue'
+import NetworkingPage from '../pages/networking.vue'
 
 const routes = [
   // PUBLIC
@@ -45,7 +47,7 @@ const routes = [
         component: IndexPage,
       },
 
-      // PROTECTED — CYBERSECURITY
+      // PROTECTED â€” CYBERSECURITY
       {
         path: 'cybersecurity',
         component: CybersecurityPage,
@@ -54,7 +56,7 @@ const routes = [
         },
       },
 
-      // PROTECTED — CYBERSECURITY LEARNING
+      // PROTECTED â€” CYBERSECURITY LEARNING
       {
         path: 'cybersecurity/learn',
         component: CybersecurityLearnPage,
@@ -63,7 +65,7 @@ const routes = [
         },
       },
 
-      // PROTECTED — DOCKER
+      // PROTECTED â€” DOCKER
       {
         path: 'docker',
         component: DockerPage,
@@ -72,7 +74,7 @@ const routes = [
         },
       },
 
-      // PROTECTED — DOCKER LEARNING
+      // PROTECTED â€” DOCKER LEARNING
       {
         path: 'docker-learning',
         component: DockerLearningPage,
@@ -81,7 +83,7 @@ const routes = [
         },
       },
 
-      // PROTECTED — RED TEAM & BLUE TEAM
+      // PROTECTED â€” RED TEAM & BLUE TEAM
       {
         path: 'redblue',
         component: RedBluePage,
@@ -90,10 +92,26 @@ const routes = [
         },
       },
 
-      // PROTECTED — RED TEAM & BLUE TEAM LEARNING
+      // PROTECTED â€” RED TEAM & BLUE TEAM LEARNING
       {
         path: 'redblue-learning',
         component: RedBlueLearningPage,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+
+      // PROTECTED - LINUX OPERATING SYSTEM
+      {
+        path: 'linux',
+        component: LinuxPage,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'networking',
+        component: NetworkingPage,
         meta: {
           requiresAuth: true,
         },

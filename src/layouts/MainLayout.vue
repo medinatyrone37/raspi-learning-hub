@@ -76,6 +76,22 @@
 
             <span>Red &amp; Blue</span>
           </router-link>
+          <router-link
+            to="/linux"
+            class="top-nav-item"
+            :class="{ 'is-active': route.path.startsWith('/linux') }"
+          >
+            <q-icon name="terminal" size="21px" />
+            <span>Linux</span>
+          </router-link>
+          <router-link
+            to="/networking"
+            class="top-nav-item"
+            :class="{ 'is-active': route.path.startsWith('/networking') }"
+          >
+            <q-icon name="lan" size="21px" />
+            <span>Networking</span>
+          </router-link>
         </nav>
 
         <!-- USER ACTIONS -->

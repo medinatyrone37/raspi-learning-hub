@@ -1,27 +1,33 @@
 <template>
   <q-page class="redblue-page">
+    <!-- animated background -->
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-orb orb-red" aria-hidden="true"></div>
+    <div class="bg-orb orb-blue" aria-hidden="true"></div>
+
     <div class="redblue-shell">
+      <!-- HERO -->
       <section class="hero-section">
         <div class="hero-copy">
-          <div class="eyebrow">
+          <div class="eyebrow fade-up" style="--d: 0s">
             <span class="dot red"></span>
             CYBERSECURITY MODULE
             <span class="divider"></span>
             <span class="dot blue"></span>
           </div>
 
-          <h1>
-            Red Team
+          <h1 class="fade-up" style="--d: 0.1s">
+            <em class="t-red">Red Team</em>
             <span>vs</span>
-            Blue Team
+            <em class="t-blue">Blue Team</em>
           </h1>
 
-          <p>
+          <p class="fade-up" style="--d: 0.2s">
             Learn how offensive and defensive security teams work together to identify weaknesses,
             detect threats, and strengthen cybersecurity defenses.
           </p>
 
-          <div class="hero-actions">
+          <div class="hero-actions fade-up" style="--d: 0.3s">
             <q-btn
               unelevated
               no-caps
@@ -36,19 +42,23 @@
               {{ lessons.length }} Lessons
             </div>
           </div>
+
+          <div class="hero-chips fade-up" style="--d: 0.4s">
+            <span class="chip chip-red"><q-icon name="flash_on" /> Attack simulation</span>
+            <span class="chip chip-purple"><q-icon name="sync" /> Purple collaboration</span>
+            <span class="chip chip-blue"><q-icon name="shield" /> Threat defense</span>
+          </div>
         </div>
 
-        <div class="battle-visual">
+        <!-- BATTLEFIELD -->
+        <div class="battle-visual fade-up" style="--d: 0.25s" aria-hidden="true">
           <div class="rb-bg-grid"></div>
-          <div class="rb-bg-glow rb-glow-red"></div>
-          <div class="rb-bg-glow rb-glow-blue"></div>
           <div class="rb-scanline"></div>
 
-          <!-- TOP HUD -->
+          <!-- HUD -->
           <div class="rb-hud">
             <div class="rb-hud-left">
               <span class="rb-online-dot"></span>
-
               <div>
                 <strong>CYBER BATTLEFIELD</strong>
                 <small>RED TEAM / BLUE TEAM OPERATIONS</small>
@@ -66,47 +76,40 @@
             </div>
           </div>
 
-          <!-- MAIN BATTLEFIELD -->
-          <div class="rb-battlefield">
-            <!-- LEFT RED CONSOLE -->
+          <!-- ARENA -->
+          <div class="rb-arena">
+            <!-- RED CONSOLE -->
             <div class="rb-console rb-red-console">
               <div class="rb-console-header">
-                <span>
-                  <i class="rb-red-dot"></i>
-                  RED TEAM
-                </span>
-
+                <span><i class="rb-red-dot"></i> RED TEAM</span>
                 <small>ATTACK OPS</small>
               </div>
 
-              <div class="rb-console-icon">
-                <q-icon name="swords" />
-              </div>
-
-              <div class="rb-console-title">
-                OFFENSIVE
-                <span>OPERATIONS</span>
+              <div class="rb-console-main">
+                <div class="rb-console-icon"><q-icon name="swords" /></div>
+                <div class="rb-console-title">
+                  OFFENSIVE
+                  <span>OPERATIONS</span>
+                </div>
               </div>
 
               <div class="rb-console-status">
-                <span class="active"></span>
+                <span class="status-dot"></span>
                 SIMULATION ACTIVE
               </div>
 
               <div class="rb-terminal">
-                <div>
+                <div class="log" style="--i: 0">
                   <span class="terminal-time">13:04:21</span>
                   <b class="terminal-red">SCAN</b>
                   <span>target discovery</span>
                 </div>
-
-                <div>
+                <div class="log" style="--i: 1">
                   <span class="terminal-time">13:04:24</span>
                   <b class="terminal-red">ENUM</b>
                   <span>service mapping</span>
                 </div>
-
-                <div>
+                <div class="log" style="--i: 2">
                   <span class="terminal-time">13:04:27</span>
                   <b class="terminal-red">TEST</b>
                   <span>security control</span>
@@ -114,119 +117,16 @@
               </div>
 
               <div class="rb-console-metrics">
-                <div>
-                  <strong>04</strong>
-                  <span>HOSTS</span>
-                </div>
-
-                <div>
-                  <strong>12</strong>
-                  <span>EVENTS</span>
-                </div>
-
-                <div>
-                  <strong>03</strong>
-                  <span>PATHS</span>
-                </div>
+                <div><strong>04</strong><span>HOSTS</span></div>
+                <div><strong>12</strong><span>EVENTS</span></div>
+                <div><strong>03</strong><span>PATHS</span></div>
               </div>
             </div>
 
-            <!-- RED RADAR -->
-            <div class="rb-radar rb-radar-left">
-              <div class="radar-circle radar-c1"></div>
-              <div class="radar-circle radar-c2"></div>
-              <div class="radar-circle radar-c3"></div>
+            <!-- RED LINK -->
+            <div class="rb-link rb-link-red"><span class="packet"></span></div>
 
-              <div class="radar-cross horizontal"></div>
-              <div class="radar-cross vertical"></div>
-
-              <div class="radar-sweep"></div>
-
-              <span class="radar-target rt-1"></span>
-              <span class="radar-target rt-2"></span>
-              <span class="radar-target rt-3"></span>
-            </div>
-
-            <!-- RIGHT BLUE SOC -->
-            <div class="rb-console rb-blue-console">
-              <div class="rb-console-header">
-                <span>
-                  <i class="rb-blue-dot"></i>
-                  BLUE TEAM
-                </span>
-
-                <small>SOC MONITOR</small>
-              </div>
-
-              <div class="rb-console-icon">
-                <q-icon name="shield" />
-              </div>
-
-              <div class="rb-console-title">
-                DEFENSIVE
-                <span>OPERATIONS</span>
-              </div>
-
-              <div class="rb-console-status">
-                <span class="active blue-active"></span>
-                MONITORING ACTIVE
-              </div>
-
-              <div class="rb-terminal">
-                <div>
-                  <span class="terminal-time">13:04:22</span>
-                  <b class="terminal-blue">SIEM</b>
-                  <span>event received</span>
-                </div>
-
-                <div>
-                  <span class="terminal-time">13:04:25</span>
-                  <b class="terminal-blue">IDS</b>
-                  <span>anomaly detected</span>
-                </div>
-
-                <div>
-                  <span class="terminal-time">13:04:28</span>
-                  <b class="terminal-blue">SOC</b>
-                  <span>response initiated</span>
-                </div>
-              </div>
-
-              <div class="rb-console-metrics">
-                <div>
-                  <strong>08</strong>
-                  <span>ALERTS</span>
-                </div>
-
-                <div>
-                  <strong>24</strong>
-                  <span>LOGS/S</span>
-                </div>
-
-                <div>
-                  <strong>99%</strong>
-                  <span>UPTIME</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- BLUE RADAR -->
-            <div class="rb-radar rb-radar-right">
-              <div class="radar-circle radar-c1"></div>
-              <div class="radar-circle radar-c2"></div>
-              <div class="radar-circle radar-c3"></div>
-
-              <div class="radar-cross horizontal"></div>
-              <div class="radar-cross vertical"></div>
-
-              <div class="radar-sweep blue-sweep"></div>
-
-              <span class="radar-target rt-1 blue-target"></span>
-              <span class="radar-target rt-2 blue-target"></span>
-              <span class="radar-target rt-3 blue-target"></span>
-            </div>
-
-            <!-- CENTRAL INFRASTRUCTURE -->
+            <!-- CORE -->
             <div class="rb-core">
               <div class="core-label">
                 <span class="core-ping"></span>
@@ -237,242 +137,152 @@
                 <div class="shield-ring shield-ring-1"></div>
                 <div class="shield-ring shield-ring-2"></div>
                 <div class="shield-ring shield-ring-3"></div>
-
-                <div class="core-lock">
-                  <q-icon name="security" />
-                </div>
+                <div class="core-lock"><q-icon name="security" /></div>
               </div>
 
               <strong>CORE SYSTEM</strong>
               <small>DEFENSE PERIMETER ACTIVE</small>
 
               <div class="core-health">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span><span></span><span></span>
                 <b>SECURE</b>
               </div>
-            </div>
 
-            <!-- INFRASTRUCTURE NODES -->
-            <div class="rb-asset rb-server">
-              <q-icon name="dns" />
-              <div>
-                <strong>WEB SERVER</strong>
-                <small>10.24.12.20</small>
-              </div>
-              <span class="asset-online"></span>
-            </div>
-
-            <div class="rb-asset rb-db">
-              <q-icon name="storage" />
-              <div>
-                <strong>DATABASE</strong>
-                <small>MYSQL / PRIMARY</small>
-              </div>
-              <span class="asset-online"></span>
-            </div>
-
-            <div class="rb-asset rb-api">
-              <q-icon name="api" />
-              <div>
-                <strong>API GATEWAY</strong>
-                <small>PORT 8000</small>
-              </div>
-              <span class="asset-online"></span>
-            </div>
-
-            <div class="rb-asset rb-endpoint">
-              <q-icon name="devices" />
-              <div>
-                <strong>ENDPOINT</strong>
-                <small>CLIENT NODE</small>
-              </div>
-              <span class="asset-online"></span>
-            </div>
-
-            <!-- CONNECTION LINES -->
-            <svg
-              class="rb-network-svg"
-              viewBox="0 0 1000 570"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <path class="rb-line rb-line-red" d="M100 160 C210 130 250 175 350 255" />
-
-              <path class="rb-line rb-line-red" d="M100 400 C210 430 270 350 360 300" />
-
-              <path class="rb-line rb-line-blue" d="M900 160 C790 130 750 175 650 255" />
-
-              <path class="rb-line rb-line-blue" d="M900 400 C790 430 730 350 640 300" />
-
-              <path class="rb-line rb-line-purple" d="M380 270 C440 235 560 235 620 270" />
-
-              <path class="rb-line rb-line-purple" d="M390 300 C450 335 550 335 610 300" />
-
-              <path class="rb-asset-line" d="M500 285 L500 105" />
-
-              <path class="rb-asset-line" d="M500 285 L350 445" />
-
-              <path class="rb-asset-line" d="M500 285 L650 445" />
-
-              <circle class="rb-packet rb-packet-red" r="5">
-                <animateMotion
-                  dur="2.5s"
-                  repeatCount="indefinite"
-                  path="M100 160 C210 130 250 175 350 255"
-                />
-              </circle>
-
-              <circle class="rb-packet rb-packet-red" r="4">
-                <animateMotion
-                  dur="3.2s"
-                  repeatCount="indefinite"
-                  path="M100 400 C210 430 270 350 360 300"
-                />
-              </circle>
-
-              <circle class="rb-packet rb-packet-blue" r="5">
-                <animateMotion
-                  dur="2.8s"
-                  repeatCount="indefinite"
-                  path="M900 160 C790 130 750 175 650 255"
-                />
-              </circle>
-
-              <circle class="rb-packet rb-packet-blue" r="4">
-                <animateMotion
-                  dur="3.5s"
-                  repeatCount="indefinite"
-                  path="M900 400 C790 430 730 350 640 300"
-                />
-              </circle>
-            </svg>
-
-            <!-- ATTACK / DETECTION FLOW -->
-            <div class="rb-flow">
-              <div class="flow-item flow-red">
-                <q-icon name="flash_on" />
-                <span>ATTACK</span>
-              </div>
-
-              <div class="flow-arrow">→</div>
-
-              <div class="flow-item flow-purple">
-                <q-icon name="radar" />
-                <span>DETECT</span>
-              </div>
-
-              <div class="flow-arrow">→</div>
-
-              <div class="flow-item flow-blue">
-                <q-icon name="shield" />
-                <span>RESPOND</span>
+              <div class="rb-assets">
+                <div class="rb-asset"><q-icon name="dns" /> WEB</div>
+                <div class="rb-asset"><q-icon name="storage" /> DB</div>
+                <div class="rb-asset"><q-icon name="api" /> API</div>
+                <div class="rb-asset"><q-icon name="devices" /> HOST</div>
               </div>
             </div>
 
-            <!-- THREAT ALERT -->
-            <div class="rb-alert">
-              <div class="alert-icon">
-                <q-icon name="warning" />
+            <!-- BLUE LINK -->
+            <div class="rb-link rb-link-blue"><span class="packet"></span></div>
+
+            <!-- BLUE CONSOLE -->
+            <div class="rb-console rb-blue-console">
+              <div class="rb-console-header">
+                <span><i class="rb-blue-dot"></i> BLUE TEAM</span>
+                <small>SOC MONITOR</small>
               </div>
 
-              <div class="alert-copy">
-                <strong>THREAT ACTIVITY DETECTED</strong>
-                <span>Authorized Red Team simulation</span>
+              <div class="rb-console-main">
+                <div class="rb-console-icon"><q-icon name="shield" /></div>
+                <div class="rb-console-title">
+                  DEFENSIVE
+                  <span>OPERATIONS</span>
+                </div>
               </div>
 
-              <div class="alert-level">
-                <small>LEVEL</small>
-                <strong>MED</strong>
+              <div class="rb-console-status">
+                <span class="status-dot blue-active"></span>
+                MONITORING ACTIVE
               </div>
-            </div>
 
-            <!-- PURPLE TEAM -->
-            <div class="rb-purple">
-              <span class="purple-red"></span>
+              <div class="rb-terminal">
+                <div class="log" style="--i: 0">
+                  <span class="terminal-time">13:04:22</span>
+                  <b class="terminal-blue">SIEM</b>
+                  <span>event received</span>
+                </div>
+                <div class="log" style="--i: 1">
+                  <span class="terminal-time">13:04:25</span>
+                  <b class="terminal-blue">IDS</b>
+                  <span>anomaly detected</span>
+                </div>
+                <div class="log" style="--i: 2">
+                  <span class="terminal-time">13:04:28</span>
+                  <b class="terminal-blue">SOC</b>
+                  <span>response initiated</span>
+                </div>
+              </div>
 
-              <q-icon name="sync" />
-
-              <strong>PURPLE TEAM</strong>
-
-              <span class="purple-blue"></span>
+              <div class="rb-console-metrics">
+                <div><strong>08</strong><span>ALERTS</span></div>
+                <div><strong>24</strong><span>LOGS/S</span></div>
+                <div><strong>99%</strong><span>UPTIME</span></div>
+              </div>
             </div>
           </div>
 
-          <!-- BOTTOM TELEMETRY -->
+          <!-- FLOW + PURPLE -->
+          <div class="rb-flowbar">
+            <div class="flow-item flow-red"><q-icon name="flash_on" /> ATTACK</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-item flow-purple"><q-icon name="radar" /> DETECT</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-item flow-blue"><q-icon name="shield" /> RESPOND</div>
+          </div>
+
+          <div class="rb-alert">
+            <div class="alert-icon"><q-icon name="warning" /></div>
+            <div class="alert-copy">
+              <strong>THREAT ACTIVITY DETECTED</strong>
+              <span>Authorized Red Team simulation</span>
+            </div>
+            <div class="alert-level">
+              <small>LEVEL</small>
+              <strong>MED</strong>
+            </div>
+          </div>
+
+          <!-- TELEMETRY -->
           <div class="rb-telemetry">
             <div class="telemetry-card">
-              <div class="telemetry-card-icon telemetry-red">
-                <q-icon name="bolt" />
-              </div>
-
+              <div class="telemetry-card-icon telemetry-red"><q-icon name="bolt" /></div>
               <div>
                 <small>RED ACTIVITY</small>
                 <strong>03 ACTIVE PATHS</strong>
               </div>
-
-              <span class="telemetry-bar">
-                <i></i>
-              </span>
+              <span class="telemetry-bar red-bar"><i></i></span>
             </div>
 
             <div class="telemetry-card">
-              <div class="telemetry-card-icon telemetry-purple">
-                <q-icon name="radar" />
-              </div>
-
+              <div class="telemetry-card-icon telemetry-purple"><q-icon name="radar" /></div>
               <div>
                 <small>THREAT DETECTION</small>
                 <strong>08 EVENTS</strong>
               </div>
-
-              <span class="telemetry-bar">
-                <i></i>
-              </span>
+              <span class="telemetry-bar purple-bar"><i></i></span>
             </div>
 
             <div class="telemetry-card">
-              <div class="telemetry-card-icon telemetry-blue">
-                <q-icon name="shield" />
-              </div>
-
+              <div class="telemetry-card-icon telemetry-blue"><q-icon name="shield" /></div>
               <div>
                 <small>BLUE RESPONSE</small>
                 <strong>DEFENSE ACTIVE</strong>
               </div>
-
-              <span class="telemetry-bar">
-                <i></i>
-              </span>
+              <span class="telemetry-bar blue-bar"><i></i></span>
             </div>
           </div>
 
           <div class="rb-footer-status">
-            <span>
-              <i></i>
-              SYSTEM ONLINE
-            </span>
-
-            <span>
-              <q-icon name="lock" />
-              PROTECTED PERIMETER
-            </span>
-
-            <span>
-              <q-icon name="sync" />
-              CONTINUOUS DEFENSE
-            </span>
-
-            <span> 13:04:29 UTC </span>
+            <span><i></i> SYSTEM ONLINE</span>
+            <span><q-icon name="lock" /> PROTECTED PERIMETER</span>
+            <span><q-icon name="sync" /> CONTINUOUS DEFENSE</span>
+            <span>13:04:29 UTC</span>
           </div>
         </div>
       </section>
 
+      <!-- MARQUEE -->
+      <section class="marquee reveal">
+        <div class="marquee-track">
+          <div
+            v-for="(tool, i) in [...toolTicker, ...toolTicker]"
+            :key="i"
+            class="marquee-item"
+            :class="tool.team"
+          >
+            <q-icon :name="tool.icon" />
+            {{ tool.name }}
+          </div>
+        </div>
+      </section>
+
+      <!-- LEARNING PATH -->
       <section class="module-section">
-        <div class="section-heading">
+        <div class="section-heading reveal">
           <div>
             <div class="section-kicker">LEARNING PATH</div>
             <h2>What you'll learn</h2>
@@ -485,10 +295,13 @@
           <button
             v-for="(lesson, index) in lessons"
             :key="lesson.id"
-            class="lesson-card"
+            class="lesson-card reveal"
+            :style="{ '--d': (index % 2) * 0.08 + 's' }"
             type="button"
             @click="openLesson(lesson.id)"
           >
+            <div class="card-glow"></div>
+
             <div class="lesson-number">
               {{ String(index + 1).padStart(2, '0') }}
             </div>
@@ -508,8 +321,9 @@
         </div>
       </section>
 
+      <!-- ROLES -->
       <section class="roles-section">
-        <div class="role-card red-role">
+        <div class="role-card red-role reveal">
           <div class="role-top">
             <span class="role-badge">01</span>
             <q-icon name="swords" />
@@ -529,7 +343,7 @@
           </div>
         </div>
 
-        <div class="role-card blue-role">
+        <div class="role-card blue-role reveal" style="--d: 0.1s">
           <div class="role-top">
             <span class="role-badge">02</span>
             <q-icon name="security" />
@@ -549,11 +363,182 @@
           </div>
         </div>
       </section>
+
+      <!-- PURPLE TEAM LOOP -->
+      <section class="module-section">
+        <div class="section-heading reveal">
+          <div>
+            <div class="section-kicker purple">PURPLE TEAM</div>
+            <h2>Better together: the feedback loop</h2>
+            <p class="section-sub">
+              Purple teaming connects offense and defense so every simulated attack makes the
+              organization stronger.
+            </p>
+          </div>
+        </div>
+
+        <div class="loop reveal">
+          <div class="loop-line"><span class="loop-pulse"></span></div>
+          <div v-for="(step, i) in purpleLoop" :key="step.title" class="loop-step">
+            <div class="loop-node" :class="step.team">
+              <q-icon :name="step.icon" size="24px" />
+            </div>
+            <div class="loop-num">{{ String(i + 1).padStart(2, '0') }}</div>
+            <h4>{{ step.title }}</h4>
+            <p>{{ step.text }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMPARISON -->
+      <section class="module-section">
+        <div class="section-heading reveal">
+          <div>
+            <div class="section-kicker">SIDE BY SIDE</div>
+            <h2>Red Team vs Blue Team</h2>
+          </div>
+        </div>
+
+        <div class="compare reveal">
+          <div class="compare-head">
+            <div></div>
+            <div class="ch-red"><q-icon name="swords" /> Red Team</div>
+            <div class="ch-blue"><q-icon name="security" /> Blue Team</div>
+          </div>
+
+          <div v-for="row in comparison" :key="row.label" class="compare-row">
+            <div class="compare-label">{{ row.label }}</div>
+            <div class="compare-red">{{ row.red }}</div>
+            <div class="compare-blue">{{ row.blue }}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ATT&CK TACTICS -->
+      <section class="module-section">
+        <div class="section-heading reveal">
+          <div>
+            <div class="section-kicker">ATTACK &amp; DEFENSE</div>
+            <h2>Every attack stage has a defense</h2>
+            <p class="section-sub">
+              How offensive techniques map to the detection and prevention that stops them.
+            </p>
+          </div>
+        </div>
+
+        <div class="tactic-list">
+          <div
+            v-for="(t, i) in tactics"
+            :key="t.stage"
+            class="tactic reveal"
+            :style="{ '--d': (i % 3) * 0.07 + 's' }"
+          >
+            <div class="tactic-stage">
+              <span class="tactic-num">{{ String(i + 1).padStart(2, '0') }}</span>
+              {{ t.stage }}
+            </div>
+
+            <div class="tactic-side tactic-red">
+              <small>RED TEAM</small>
+              {{ t.red }}
+            </div>
+
+            <q-icon name="sync_alt" class="tactic-swap" />
+
+            <div class="tactic-side tactic-blue">
+              <small>BLUE TEAM</small>
+              {{ t.blue }}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOLS -->
+      <section class="module-section">
+        <div class="section-heading reveal">
+          <div>
+            <div class="section-kicker">TOOLKIT</div>
+            <h2>Tools of the trade</h2>
+          </div>
+        </div>
+
+        <div class="tool-grid">
+          <div class="tool-col red-col reveal">
+            <h3><q-icon name="swords" /> Offensive tools</h3>
+            <ul>
+              <li v-for="tool in redTools" :key="tool.name">
+                <q-icon :name="tool.icon" />
+                <div>
+                  <strong>{{ tool.name }}</strong>
+                  <span>{{ tool.text }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="tool-col blue-col reveal" style="--d: 0.1s">
+            <h3><q-icon name="security" /> Defensive tools</h3>
+            <ul>
+              <li v-for="tool in blueTools" :key="tool.name">
+                <q-icon :name="tool.icon" />
+                <div>
+                  <strong>{{ tool.name }}</strong>
+                  <span>{{ tool.text }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- CAREERS -->
+      <section class="module-section">
+        <div class="section-heading reveal">
+          <div>
+            <div class="section-kicker">CAREER PATHS</div>
+            <h2>Where this knowledge leads</h2>
+          </div>
+        </div>
+
+        <div class="career-grid">
+          <div
+            v-for="(c, i) in careers"
+            :key="c.title"
+            class="career-card reveal"
+            :class="c.team"
+            :style="{ '--d': (i % 4) * 0.07 + 's' }"
+          >
+            <div class="career-icon"><q-icon :name="c.icon" size="22px" /></div>
+            <h4>{{ c.title }}</h4>
+            <p>{{ c.text }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta reveal">
+        <div>
+          <h2>Ready to see both sides of security?</h2>
+          <p>
+            Start the module and learn how attackers think and how defenders respond, step by step.
+          </p>
+        </div>
+
+        <q-btn
+          unelevated
+          no-caps
+          class="start-btn"
+          label="Start Learning"
+          icon="play_arrow"
+          @click="startLearning"
+        />
+      </section>
     </div>
   </q-page>
 </template>
 
 <script setup>
+import { onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { redBlueLessons as lessons } from '../data/redblue.js'
 
@@ -592,28 +577,325 @@ function getIcon(category) {
 
   return 'hub'
 }
+
+/* ---------- Extra content (design only) ---------- */
+
+const toolTicker = [
+  { name: 'Nmap', icon: 'radar', team: 'red' },
+  { name: 'Wazuh SIEM', icon: 'visibility', team: 'blue' },
+  { name: 'Metasploit', icon: 'terminal', team: 'red' },
+  { name: 'Snort IDS', icon: 'policy', team: 'blue' },
+  { name: 'Burp Suite', icon: 'bug_report', team: 'red' },
+  { name: 'Wireshark', icon: 'network_check', team: 'blue' },
+  { name: 'MITRE ATT&CK', icon: 'grid_view', team: 'purple' },
+  { name: 'Fail2ban', icon: 'block', team: 'blue' },
+  { name: 'Phishing Simulation', icon: 'phishing', team: 'red' },
+  { name: 'Incident Response', icon: 'emergency', team: 'blue' },
+  { name: 'Threat Hunting', icon: 'manage_search', team: 'purple' },
+  { name: 'Log Analysis', icon: 'receipt_long', team: 'blue' },
+]
+
+const purpleLoop = [
+  {
+    icon: 'flash_on',
+    team: 'red',
+    title: 'Simulate',
+    text: 'Red team runs an authorized attack scenario.',
+  },
+  {
+    icon: 'radar',
+    team: 'purple',
+    title: 'Detect',
+    text: 'Blue team monitors and looks for the activity.',
+  },
+  {
+    icon: 'forum',
+    team: 'purple',
+    title: 'Share',
+    text: 'Both teams review what was seen and missed.',
+  },
+  {
+    icon: 'build',
+    team: 'blue',
+    title: 'Improve',
+    text: 'Detections and controls are tuned and fixed.',
+  },
+  {
+    icon: 'replay',
+    team: 'purple',
+    title: 'Repeat',
+    text: 'The exercise is run again to verify progress.',
+  },
+]
+
+const comparison = [
+  {
+    label: 'Mindset',
+    red: 'Think like an attacker',
+    blue: 'Think like a defender',
+  },
+  {
+    label: 'Main goal',
+    red: 'Find and prove weaknesses',
+    blue: 'Prevent, detect, and respond',
+  },
+  {
+    label: 'Typical work',
+    red: 'Penetration tests, adversary simulation',
+    blue: 'Monitoring, triage, incident response',
+  },
+  {
+    label: 'Success looks like',
+    red: 'Weaknesses found before real attackers do',
+    blue: 'Attacks detected and contained quickly',
+  },
+  {
+    label: 'Output',
+    red: 'Findings and remediation advice',
+    blue: 'Detections, playbooks, hardened systems',
+  },
+]
+
+const tactics = [
+  {
+    stage: 'Reconnaissance',
+    red: 'Map exposed hosts and services',
+    blue: 'Reduce exposure, monitor scan activity',
+  },
+  {
+    stage: 'Initial Access',
+    red: 'Test phishing and weak entry points',
+    blue: 'Email filtering, MFA, user awareness',
+  },
+  {
+    stage: 'Execution',
+    red: 'Run payloads in a controlled test',
+    blue: 'Endpoint protection and allow-listing',
+  },
+  {
+    stage: 'Privilege Escalation',
+    red: 'Check for excess permissions',
+    blue: 'Least privilege and patching',
+  },
+  {
+    stage: 'Lateral Movement',
+    red: 'Move between systems in scope',
+    blue: 'Network segmentation and anomaly alerts',
+  },
+  {
+    stage: 'Exfiltration',
+    red: 'Simulate data leaving the network',
+    blue: 'Traffic monitoring and DLP controls',
+  },
+]
+
+const redTools = [
+  { icon: 'radar', name: 'Nmap', text: 'Network and service discovery' },
+  { icon: 'terminal', name: 'Metasploit', text: 'Exploitation framework for testing' },
+  { icon: 'bug_report', name: 'Burp Suite', text: 'Web application security testing' },
+  { icon: 'phishing', name: 'Phishing simulations', text: 'Measure user awareness' },
+]
+
+const blueTools = [
+  { icon: 'visibility', name: 'SIEM (Wazuh)', text: 'Collect and correlate security logs' },
+  { icon: 'policy', name: 'IDS / IPS (Snort)', text: 'Detect and block suspicious traffic' },
+  { icon: 'network_check', name: 'Wireshark', text: 'Inspect and analyze network packets' },
+  { icon: 'block', name: 'Fail2ban / Firewall', text: 'Automatically block hostile sources' },
+]
+
+const careers = [
+  {
+    icon: 'swords',
+    team: 'red',
+    title: 'Penetration Tester',
+    text: 'Ethically test systems and applications for weaknesses.',
+  },
+  {
+    icon: 'psychology',
+    team: 'red',
+    title: 'Red Team Operator',
+    text: 'Run realistic adversary simulations against organizations.',
+  },
+  {
+    icon: 'monitor_heart',
+    team: 'blue',
+    title: 'SOC Analyst',
+    text: 'Monitor alerts and investigate suspicious activity.',
+  },
+  {
+    icon: 'emergency',
+    team: 'blue',
+    title: 'Incident Responder',
+    text: 'Contain and recover from active security incidents.',
+  },
+  {
+    icon: 'manage_search',
+    team: 'purple',
+    title: 'Threat Hunter',
+    text: 'Proactively search for hidden threats in the environment.',
+  },
+  {
+    icon: 'engineering',
+    team: 'blue',
+    title: 'Security Engineer',
+    text: 'Design and build secure systems and detections.',
+  },
+  {
+    icon: 'join_full',
+    team: 'purple',
+    title: 'Purple Team Lead',
+    text: 'Coordinate offense and defense to improve security.',
+  },
+  {
+    icon: 'verified',
+    team: 'purple',
+    title: 'Security Consultant',
+    text: 'Advise organizations on risk and improvement.',
+  },
+]
+
+/* ---------- Scroll reveal animation ---------- */
+
+let observer = null
+
+onMounted(() => {
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+          observer.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.12 },
+  )
+
+  document.querySelectorAll('.redblue-page .reveal').forEach((el) => observer.observe(el))
+})
+
+onBeforeUnmount(() => {
+  if (observer) observer.disconnect()
+})
 </script>
 
 <style scoped>
 .redblue-page {
+  --red: #ef4444;
+  --red-soft: #f87171;
+  --blue: #3b82f6;
+  --blue-soft: #60a5fa;
+  --purple: #a855f7;
+  --purple-soft: #c084fc;
+  --green: #10b981;
+  --ink: #f1f5f9;
+  --muted: #8d9db0;
+  --line: rgba(148, 163, 184, 0.14);
+  --panel: rgba(255, 255, 255, 0.03);
+  --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  position: relative;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 15% 10%, rgba(239, 68, 68, 0.08), transparent 30%),
-    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.1), transparent 30%), #071014;
-  color: #f8fafc;
+  overflow-x: hidden;
+  background: #060d12;
+  color: var(--ink);
+}
+
+/* ---------- BACKGROUND ---------- */
+
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 20%, transparent 75%);
+}
+
+.bg-orb {
+  position: absolute;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+}
+.orb-red {
+  top: -80px;
+  left: -140px;
+  background: rgba(239, 68, 68, 0.2);
+  animation: drift 15s ease-in-out infinite;
+}
+.orb-blue {
+  top: 120px;
+  right: -140px;
+  background: rgba(59, 130, 246, 0.22);
+  animation: drift 18s ease-in-out infinite reverse;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(40px, 50px);
+  }
 }
 
 .redblue-shell {
+  position: relative;
+  z-index: 1;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 70px 6%;
+  padding: 64px 6% 90px;
 }
 
+/* ---------- ANIMATION HELPERS ---------- */
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0s);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes pulseDot {
+  70% {
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+/* ---------- HERO ---------- */
+
 .hero-section {
-  min-height: 560px;
   display: grid;
-  grid-template-columns: 1fr 0.95fr;
-  gap: 70px;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 56px;
   align-items: center;
 }
 
@@ -632,17 +914,14 @@ function getIcon(category) {
   height: 7px;
   border-radius: 50%;
 }
-
 .dot.red {
-  background: #ef4444;
-  box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
+  background: var(--red);
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.8);
 }
-
 .dot.blue {
-  background: #3b82f6;
-  box-shadow: 0 0 14px rgba(59, 130, 246, 0.7);
+  background: var(--blue);
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.8);
 }
-
 .divider {
   width: 35px;
   height: 1px;
@@ -651,23 +930,40 @@ function getIcon(category) {
 
 .hero-copy h1 {
   margin: 22px 0;
-  font-size: clamp(48px, 6vw, 86px);
-  line-height: 0.95;
-  letter-spacing: -0.055em;
+  font-size: clamp(46px, 5.6vw, 84px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
   font-weight: 900;
 }
-
+.hero-copy h1 em {
+  display: block;
+  font-style: normal;
+}
+.t-red {
+  background: linear-gradient(90deg, #f87171, #ef4444, #fb923c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.t-blue {
+  background: linear-gradient(90deg, #60a5fa, #3b82f6, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .hero-copy h1 span {
   display: block;
+  margin: 10px 0;
   color: #64748b;
-  font-size: 0.42em;
-  letter-spacing: 0;
-  margin: 12px 0;
+  font-size: 0.34em;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 800;
 }
 
 .hero-copy p {
-  max-width: 650px;
-  color: #94a3b8;
+  max-width: 560px;
+  color: #9fb0c3;
   font-size: 18px;
   line-height: 1.75;
 }
@@ -676,16 +972,24 @@ function getIcon(category) {
   display: flex;
   align-items: center;
   gap: 24px;
-  margin-top: 35px;
+  margin-top: 32px;
 }
 
 .start-btn {
   min-height: 52px;
-  padding: 0 25px;
+  padding: 0 26px;
   border-radius: 12px;
-  background: #10b981;
+  background: var(--green);
   color: #03120d;
   font-weight: 900;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.start-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 38px rgba(16, 185, 129, 0.45);
 }
 
 .lesson-count {
@@ -696,1398 +1000,57 @@ function getIcon(category) {
   font-size: 14px;
 }
 
-.battle-visual {
-  position: relative;
-  min-height: 440px;
-  border: 1px solid #1e293b;
-  border-radius: 28px;
-  overflow: hidden;
-  background: #0a1318;
+.hero-chips {
   display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
-.grid-bg {
-  position: absolute;
-  inset: 0;
-  opacity: 0.5;
-  background-image:
-    linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-.team,
-.versus {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-}
-
-.team-icon {
-  width: 110px;
-  height: 110px;
-  margin: 0 auto 20px;
-  display: grid;
-  place-items: center;
-  border-radius: 24px;
-  font-size: 48px;
-}
-
-.red-team .team-icon {
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  background: rgba(239, 68, 68, 0.08);
-  box-shadow: 0 0 60px rgba(239, 68, 68, 0.12);
-}
-
-.blue-team .team-icon {
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.35);
-  background: rgba(59, 130, 246, 0.08);
-  box-shadow: 0 0 60px rgba(59, 130, 246, 0.12);
-}
-
-.team-label {
-  font-size: 15px;
-  font-weight: 900;
-  letter-spacing: 0.18em;
-}
-
-.team-status {
-  margin-top: 8px;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: #64748b;
-}
-
-.versus {
-  width: 60px;
-  height: 60px;
-  border: 1px solid #334155;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: #071014;
-  color: #e2e8f0;
-  font-size: 13px;
-  font-weight: 900;
-}
-
-.connection {
-  position: absolute;
-  left: 22%;
-  right: 22%;
-  height: 1px;
-  background: linear-gradient(90deg, #ef4444, #475569, #3b82f6);
-  opacity: 0.55;
-}
-
-.connection-top {
-  top: 37%;
-}
-
-.connection-bottom {
-  top: 63%;
-}
-
-/* =========================================================
-   RED / BLUE COMMAND CENTER VISUAL
-   ========================================================= */
-
-.battle-visual {
-  position: relative;
-  min-height: 440px;
-  border: 1px solid rgba(100, 116, 139, 0.22);
-  border-radius: 28px;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 50%, rgba(239, 68, 68, 0.13), transparent 28%),
-    radial-gradient(circle at 82% 50%, rgba(59, 130, 246, 0.14), transparent 28%),
-    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.08), transparent 25%), #071014;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 22px;
-  box-shadow:
-    inset 0 0 80px rgba(0, 0, 0, 0.28),
-    0 25px 80px rgba(0, 0, 0, 0.18);
-}
-
-.battle-visual::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, transparent 49.8%, rgba(148, 163, 184, 0.07) 50%, transparent 50.2%),
-    linear-gradient(0deg, transparent 49.8%, rgba(148, 163, 184, 0.05) 50%, transparent 50.2%);
-  background-size:
-    100% 100%,
-    100% 100%;
-}
-
-.visual-scanline {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -20%;
-  height: 30%;
-  pointer-events: none;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.035), transparent);
-  animation: rb-scan 5s linear infinite;
-}
-
-.visual-header {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #64748b;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.2em;
-}
-
-.visual-live {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: #94a3b8;
-}
-
-.visual-live i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
-  animation: rb-live 1.5s ease-in-out infinite;
-}
-
-.operation-map {
-  position: relative;
-  z-index: 3;
-  flex: 1;
-  min-height: 285px;
-  display: grid;
-  grid-template-columns: 1fr 150px 1fr;
-  align-items: center;
-  gap: 18px;
-}
-
-.operation-side {
-  position: relative;
-  z-index: 4;
-  text-align: center;
-}
-
-.operation-node {
-  width: 76px;
-  height: 76px;
-  margin: 0 auto 13px;
-  display: grid;
-  place-items: center;
-  border-radius: 20px;
-  font-size: 32px;
-  transition: 0.3s ease;
-}
-
-.operation-red .operation-node {
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.45);
-  background: rgba(239, 68, 68, 0.09);
-  box-shadow:
-    0 0 35px rgba(239, 68, 68, 0.14),
-    inset 0 0 20px rgba(239, 68, 68, 0.08);
-}
-
-.operation-blue .operation-node {
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.45);
-  background: rgba(59, 130, 246, 0.09);
-  box-shadow:
-    0 0 35px rgba(59, 130, 246, 0.14),
-    inset 0 0 20px rgba(59, 130, 246, 0.08);
-}
-
-.operation-team {
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.16em;
-}
-
-.operation-red .operation-team {
-  color: #f87171;
-}
-
-.operation-blue .operation-team {
-  color: #60a5fa;
-}
-
-.operation-role {
-  margin-top: 5px;
-  color: #64748b;
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.2em;
-}
-
-.operation-steps {
-  display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 18px;
+  gap: 8px;
+  margin-top: 28px;
 }
-
-.operation-steps span {
-  padding: 5px 7px;
-  border-radius: 5px;
-  font-size: 7px;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  background: rgba(15, 23, 42, 0.8);
-}
-
-.operation-red .operation-steps span {
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  color: #fca5a5;
-}
-
-.operation-blue .operation-steps span {
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  color: #93c5fd;
-}
-
-.operation-center {
-  position: relative;
-  z-index: 6;
-  width: 140px;
-  height: 140px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.security-core {
-  position: relative;
-  z-index: 5;
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(168, 85, 247, 0.55);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.22), rgba(15, 23, 42, 0.9) 70%);
-  color: #c084fc;
-  font-size: 31px;
-  box-shadow:
-    0 0 35px rgba(168, 85, 247, 0.24),
-    inset 0 0 20px rgba(168, 85, 247, 0.1);
-}
-
-.core-pulse {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  border: 1px solid rgba(168, 85, 247, 0.2);
-  border-radius: 50%;
-  animation: rb-core-pulse 2.5s ease-out infinite;
-}
-
-.operation-center strong {
-  margin-top: 10px;
-  color: #f8fafc;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.16em;
-}
-
-.operation-center small {
-  margin-top: 4px;
-  color: #64748b;
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-}
-
-.orbit {
-  position: absolute;
-  border: 1px dashed rgba(168, 85, 247, 0.18);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.orbit-one {
-  inset: 7px;
-  animation: rb-orbit 12s linear infinite;
-}
-
-.orbit-two {
-  inset: -12px;
-  border-color: rgba(148, 163, 184, 0.08);
-  animation: rb-orbit-reverse 18s linear infinite;
-}
-
-.attack-line {
-  position: absolute;
-  z-index: 2;
-  top: 50%;
-  height: 1px;
-  pointer-events: none;
-}
-
-.line-one {
-  left: 4%;
-  width: 30%;
-  background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.7));
-}
-
-.line-two {
-  left: 30%;
-  width: 20%;
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.7), rgba(168, 85, 247, 0.7));
-}
-
-.line-three {
-  right: 30%;
-  width: 20%;
-  background: linear-gradient(90deg, rgba(168, 85, 247, 0.7), rgba(59, 130, 246, 0.7));
-}
-
-.line-four {
-  right: 4%;
-  width: 30%;
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.7), transparent);
-}
-
-.line-one::after,
-.line-two::after,
-.line-three::after,
-.line-four::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  animation: rb-particle 3s linear infinite;
-}
-
-.line-one::after,
-.line-two::after {
-  background: #ef4444;
-  box-shadow: 0 0 10px #ef4444;
-}
-
-.line-three::after,
-.line-four::after {
-  background: #3b82f6;
-  box-shadow: 0 0 10px #3b82f6;
-}
-
-.line-one::after,
-.line-two::after {
-  left: 0;
-}
-
-.line-three::after,
-.line-four::after {
-  right: 0;
-}
-
-.event-bar {
-  position: relative;
-  z-index: 5;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid rgba(100, 116, 139, 0.16);
-  border-radius: 10px;
-  background: rgba(2, 6, 23, 0.55);
-  color: #64748b;
-  font-size: 7px;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-}
-
-.event-bar > div {
-  display: flex;
+.chip {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 12px;
+  font-weight: 700;
+  transition: transform 0.2s;
 }
-
-.event-bar > div:last-child {
-  justify-content: flex-end;
+.chip:hover {
+  transform: translateY(-2px);
 }
-
-.event-message {
-  color: #94a3b8;
-}
-
-.event-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-}
-
-.event-dot.red {
-  background: #ef4444;
-  box-shadow: 0 0 9px rgba(239, 68, 68, 0.8);
-}
-
-.event-dot.blue {
-  background: #3b82f6;
-  box-shadow: 0 0 9px rgba(59, 130, 246, 0.8);
-}
-
-.visual-status {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 12px;
-  color: #475569;
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-}
-
-.visual-status span {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.visual-status i {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
-}
-
-.visual-status .q-icon {
-  color: #94a3b8;
-  font-size: 11px;
-}
-
-@keyframes rb-scan {
-  0% {
-    transform: translateY(-100%);
-  }
-
-  100% {
-    transform: translateY(500%);
-  }
-}
-
-@keyframes rb-live {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.35;
-  }
-}
-
-@keyframes rb-core-pulse {
-  0% {
-    transform: scale(0.7);
-    opacity: 0.7;
-  }
-
-  100% {
-    transform: scale(1.45);
-    opacity: 0;
-  }
-}
-
-@keyframes rb-orbit {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes rb-orbit-reverse {
-  from {
-    transform: rotate(360deg);
-  }
-
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes rb-particle {
-  0% {
-    opacity: 0;
-    transform: translateX(0);
-  }
-
-  15% {
-    opacity: 1;
-  }
-
-  85% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateX(100px);
-  }
-}
-/* =========================================================
-   CYBER BATTLEFIELD NETWORK VISUAL
-   ========================================================= */
-
-.battle-visual {
-  position: relative;
-  min-height: 520px;
-  padding: 20px;
-  border: 1px solid rgba(100, 116, 139, 0.2);
-  border-radius: 28px;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 15% 45%, rgba(239, 68, 68, 0.13), transparent 27%),
-    radial-gradient(circle at 85% 45%, rgba(59, 130, 246, 0.14), transparent 27%),
-    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.11), transparent 25%), #050b10;
-  box-shadow:
-    inset 0 0 100px rgba(0, 0, 0, 0.45),
-    0 30px 90px rgba(0, 0, 0, 0.25);
-}
-
-.battle-grid {
-  position: absolute;
-  inset: 0;
-  opacity: 0.55;
-  background-image:
-    linear-gradient(rgba(148, 163, 184, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.045) 1px, transparent 1px);
-  background-size: 30px 30px;
-}
-
-.battle-vignette {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(239, 68, 68, 0.04),
-      transparent 35%,
-      transparent 65%,
-      rgba(59, 130, 246, 0.04)
-    ),
-    radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.3));
-}
-
-.battle-scan {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  top: -30%;
-  height: 35%;
-  pointer-events: none;
-  background: linear-gradient(to bottom, transparent, rgba(168, 85, 247, 0.06), transparent);
-  animation: battlefield-scan 6s linear infinite;
-}
-
-.battle-header {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #64748b;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.18em;
-}
-
-.battle-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.status-light {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
-  animation: status-blink 1.5s ease-in-out infinite;
-}
-
-.battle-live {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #94a3b8;
-}
-
-.battle-live i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
-}
-
-.battle-scene {
-  position: relative;
-  z-index: 4;
-  height: 390px;
-  margin-top: 5px;
-}
-
-.network-lines {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.map-line {
-  fill: none;
-  stroke-width: 1.2;
-  stroke-dasharray: 5 7;
-  opacity: 0.6;
-  animation: line-flow 2.5s linear infinite;
-}
-
-.map-red {
-  stroke: #ef4444;
-  filter: url(#softGlow);
-}
-
-.map-blue {
-  stroke: #3b82f6;
-  filter: url(#softGlow);
-}
-
-.map-purple {
-  stroke: #a855f7;
-  opacity: 0.5;
-}
-
-.asset-line {
-  fill: none;
-  stroke: rgba(148, 163, 184, 0.18);
-  stroke-width: 1;
-  stroke-dasharray: 3 8;
-}
-
-.packet {
-  filter: url(#softGlow);
-}
-
-.packet-red {
-  fill: #ef4444;
-}
-
-.packet-blue {
-  fill: #3b82f6;
-}
-
-.battle-team {
-  position: absolute;
-  z-index: 12;
-  top: 106px;
-  width: 150px;
-  text-align: center;
-}
-
-.battle-red {
-  left: 10px;
-}
-
-.battle-blue {
-  right: 10px;
-}
-
-.team-node {
-  width: 70px;
-  height: 70px;
-  margin: 0 auto 12px;
-  display: grid;
-  place-items: center;
-  border-radius: 19px;
-  font-size: 30px;
-  transition: 0.3s ease;
-}
-
-.battle-red .team-node {
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.5);
+.chip-red {
+  color: var(--red-soft);
   background: rgba(239, 68, 68, 0.08);
-  box-shadow:
-    0 0 35px rgba(239, 68, 68, 0.18),
-    inset 0 0 25px rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.25);
 }
-
-.battle-blue .team-node {
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.5);
-  background: rgba(59, 130, 246, 0.08);
-  box-shadow:
-    0 0 35px rgba(59, 130, 246, 0.18),
-    inset 0 0 25px rgba(59, 130, 246, 0.08);
-}
-
-.team-name {
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.16em;
-}
-
-.battle-red .team-name {
-  color: #f87171;
-}
-
-.battle-blue .team-name {
-  color: #60a5fa;
-}
-
-.team-type {
-  margin-top: 5px;
-  color: #475569;
-  font-size: 7px;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-}
-
-.team-mini-stats {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 14px;
-}
-
-.team-mini-stats span {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  padding: 4px 5px;
-  border-radius: 4px;
-  background: rgba(15, 23, 42, 0.8);
-  font-size: 6px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-}
-
-.battle-red .team-mini-stats span {
-  border: 1px solid rgba(239, 68, 68, 0.18);
-  color: #fca5a5;
-}
-
-.battle-blue .team-mini-stats span {
-  border: 1px solid rgba(59, 130, 246, 0.18);
-  color: #93c5fd;
-}
-
-.team-mini-stats .q-icon {
-  font-size: 10px;
-}
-
-.network-node {
-  position: absolute;
-  z-index: 10;
-  width: 60px;
-  height: 50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  border-radius: 10px;
-  background: rgba(8, 15, 22, 0.92);
-  font-size: 16px;
-}
-
-.network-node small {
-  font-size: 5px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-}
-
-.node-red-1 {
-  left: 30%;
-  top: 40px;
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.node-red-2 {
-  left: 27%;
-  bottom: 50px;
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.node-blue-1 {
-  right: 30%;
-  top: 40px;
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-.node-blue-2 {
-  right: 27%;
-  bottom: 50px;
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-.node-pulse {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: inherit;
-  animation: node-pulse 2.4s ease-out infinite;
-}
-
-.blue-pulse {
-  border-color: rgba(59, 130, 246, 0.3);
-}
-
-.target-system {
-  position: absolute;
-  z-index: 15;
-  left: 50%;
-  top: 48%;
-  width: 150px;
-  height: 150px;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.target-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px dashed rgba(168, 85, 247, 0.24);
-  pointer-events: none;
-}
-
-.ring-outer {
-  inset: -25px;
-  animation: target-rotate 16s linear infinite;
-}
-
-.ring-middle {
-  inset: -10px;
-  border-color: rgba(168, 85, 247, 0.35);
-  animation: target-rotate-reverse 11s linear infinite;
-}
-
-.ring-inner {
-  inset: 6px;
-  border-color: rgba(168, 85, 247, 0.18);
-}
-
-.target-pulse {
-  position: absolute;
-  width: 85px;
-  height: 85px;
-  border-radius: 50%;
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  animation: target-pulse 2.5s ease-out infinite;
-}
-
-.target-core {
-  position: relative;
-  z-index: 5;
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  border: 1px solid rgba(168, 85, 247, 0.65);
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.25), rgba(8, 15, 22, 0.95) 70%);
-  color: #c084fc;
-  font-size: 29px;
-  box-shadow:
-    0 0 40px rgba(168, 85, 247, 0.25),
-    inset 0 0 25px rgba(168, 85, 247, 0.12);
-}
-
-.target-label {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  margin-top: 8px;
-}
-
-.target-label strong {
-  color: #f8fafc;
-  font-size: 8px;
-  letter-spacing: 0.13em;
-}
-
-.target-label span {
-  margin-top: 3px;
-  color: #64748b;
-  font-size: 6px;
-  font-weight: 900;
-  letter-spacing: 0.15em;
-}
-
-.target-status {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 6px;
-  color: #22c55e;
-  font-size: 6px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-}
-
-.target-status i {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
-}
-
-.asset-node {
-  position: absolute;
-  z-index: 8;
-  width: 65px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  border: 1px solid rgba(100, 116, 139, 0.2);
-  border-radius: 8px;
-  background: rgba(8, 15, 22, 0.88);
-  color: #94a3b8;
-}
-
-.asset-node .q-icon {
-  font-size: 14px;
-}
-
-.asset-node span {
-  font-size: 5px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-}
-
-.asset-server {
-  left: calc(50% - 32px);
-  top: 10px;
-}
-
-.asset-database {
-  left: calc(50% - 135px);
-  bottom: 7px;
-}
-
-.asset-network {
-  right: calc(50% - 135px);
-  bottom: 7px;
-}
-
-.threat-alert {
-  position: absolute;
-  z-index: 18;
-  left: 50%;
-  bottom: 8px;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  min-width: 205px;
-  padding: 7px 10px;
-  border: 1px solid rgba(239, 68, 68, 0.24);
-  border-radius: 8px;
-  background: rgba(15, 10, 15, 0.88);
-}
-
-.threat-icon {
-  width: 25px;
-  height: 25px;
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-  background: rgba(239, 68, 68, 0.1);
-  color: #f87171;
-}
-
-.threat-icon .q-icon {
-  font-size: 14px;
-}
-
-.threat-alert div {
-  display: flex;
-  flex-direction: column;
-}
-
-.threat-alert strong {
-  color: #fca5a5;
-  font-size: 7px;
-  letter-spacing: 0.1em;
-}
-
-.threat-alert small {
-  margin-top: 2px;
-  color: #64748b;
-  font-size: 5px;
-  letter-spacing: 0.08em;
-}
-
-.threat-signal {
-  width: 5px;
-  height: 5px;
-  margin-left: auto;
-  border-radius: 50%;
-  background: #ef4444;
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.9);
-  animation: status-blink 1s ease-in-out infinite;
-}
-
-.collaboration {
-  position: absolute;
-  z-index: 20;
-  top: 7px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 9px;
-  border: 1px solid rgba(168, 85, 247, 0.22);
-  border-radius: 20px;
-  background: rgba(15, 10, 25, 0.72);
-  color: #c084fc;
-  font-size: 6px;
-  letter-spacing: 0.1em;
-}
-
-.collaboration .q-icon {
-  font-size: 11px;
-}
-
-.collab-red,
-.collab-blue {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-}
-
-.collab-red {
-  background: #ef4444;
-  box-shadow: 0 0 7px rgba(239, 68, 68, 0.8);
-}
-
-.collab-blue {
-  background: #3b82f6;
-  box-shadow: 0 0 7px rgba(59, 130, 246, 0.8);
-}
-
-.battle-telemetry {
-  position: relative;
-  z-index: 25;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr auto 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 9px 12px;
-  border: 1px solid rgba(100, 116, 139, 0.16);
-  border-radius: 10px;
-  background: rgba(2, 6, 23, 0.68);
-}
-
-.telemetry-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.telemetry-icon {
-  width: 25px;
-  height: 25px;
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-}
-
-.red-icon {
-  color: #f87171;
-  background: rgba(239, 68, 68, 0.08);
-}
-
-.blue-icon {
-  color: #60a5fa;
-  background: rgba(59, 130, 246, 0.08);
-}
-
-.purple-icon {
-  color: #c084fc;
+.chip-purple {
+  color: var(--purple-soft);
   background: rgba(168, 85, 247, 0.08);
+  border-color: rgba(168, 85, 247, 0.25);
+}
+.chip-blue {
+  color: var(--blue-soft);
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.25);
 }
 
-.telemetry-icon .q-icon {
-  font-size: 13px;
-}
-
-.telemetry-item div {
-  display: flex;
-  flex-direction: column;
-}
-
-.telemetry-item small {
-  color: #475569;
-  font-size: 5px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-}
-
-.telemetry-item strong {
-  margin-top: 2px;
-  color: #94a3b8;
-  font-size: 6px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-}
-
-.telemetry-divider {
-  width: 1px;
-  height: 25px;
-  background: rgba(100, 116, 139, 0.16);
-}
-
-.battle-footer {
-  position: relative;
-  z-index: 25;
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  color: #334155;
-  font-size: 6px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-}
-
-.battle-footer span {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.battle-footer i {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 7px rgba(34, 197, 94, 0.8);
-}
-
-@keyframes battlefield-scan {
-  0% {
-    transform: translateY(-100%);
-  }
-
-  100% {
-    transform: translateY(500%);
-  }
-}
-
-@keyframes status-blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.35;
-  }
-}
-
-@keyframes line-flow {
-  from {
-    stroke-dashoffset: 24;
-  }
-
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes node-pulse {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.7;
-  }
-
-  100% {
-    transform: scale(1.35);
-    opacity: 0;
-  }
-}
-
-@keyframes target-pulse {
-  0% {
-    transform: scale(0.7);
-    opacity: 0.8;
-  }
-
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-@keyframes target-rotate {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes target-rotate-reverse {
-  from {
-    transform: rotate(360deg);
-  }
-
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-@media (max-width: 600px) {
-  .battle-visual {
-    min-height: 500px;
-    padding: 15px;
-  }
-
-  .battle-scene {
-    height: 365px;
-  }
-
-  .battle-team {
-    width: 105px;
-    top: 115px;
-  }
-
-  .battle-red {
-    left: -2px;
-  }
-
-  .battle-blue {
-    right: -2px;
-  }
-
-  .team-node {
-    width: 55px;
-    height: 55px;
-    font-size: 23px;
-  }
-
-  .team-name {
-    font-size: 8px;
-  }
-
-  .team-type {
-    font-size: 5px;
-  }
-
-  .team-mini-stats span {
-    font-size: 5px;
-    padding: 3px;
-  }
-
-  .network-node {
-    transform: scale(0.8);
-  }
-
-  .target-system {
-    transform: translate(-50%, -50%) scale(0.82);
-  }
-
-  .asset-node {
-    transform: scale(0.8);
-  }
-
-  .threat-alert {
-    min-width: 175px;
-    transform: translateX(-50%) scale(0.82);
-  }
-
-  .battle-telemetry {
-    gap: 5px;
-    padding: 7px;
-  }
-
-  .telemetry-item {
-    gap: 4px;
-  }
-
-  .telemetry-item strong {
-    font-size: 5px;
-  }
-
-  .telemetry-divider {
-    height: 20px;
-  }
-
-  .battle-footer {
-    font-size: 5px;
-  }
-}
-/* =========================================================
-   RED TEAM / BLUE TEAM CYBER BATTLEFIELD
-   ========================================================= */
+/* ---------- BATTLE VISUAL ---------- */
 
 .battle-visual {
   position: relative;
-  min-height: 600px;
-  padding: 18px;
+  padding: 20px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 28px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 26px;
   background:
-    radial-gradient(circle at 15% 45%, rgba(239, 68, 68, 0.12), transparent 25%),
-    radial-gradient(circle at 85% 45%, rgba(59, 130, 246, 0.13), transparent 25%),
-    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.08), transparent 30%), #050a0f;
+    radial-gradient(circle at 12% 45%, rgba(239, 68, 68, 0.14), transparent 28%),
+    radial-gradient(circle at 88% 45%, rgba(59, 130, 246, 0.16), transparent 28%),
+    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1), transparent 30%), #050a0f;
   box-shadow:
-    inset 0 0 100px rgba(0, 0, 0, 0.5),
-    0 30px 90px rgba(0, 0, 0, 0.25);
+    inset 0 0 90px rgba(0, 0, 0, 0.5),
+    0 30px 90px rgba(0, 0, 0, 0.35);
 }
 
 .rb-bg-grid {
@@ -2095,30 +1058,9 @@ function getIcon(category) {
   inset: 0;
   opacity: 0.6;
   background-image:
-    linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(148, 163, 184, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.045) 1px, transparent 1px);
   background-size: 28px 28px;
-}
-
-.rb-bg-glow {
-  position: absolute;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.08;
-}
-
-.rb-glow-red {
-  left: -120px;
-  top: 150px;
-  background: #ef4444;
-}
-
-.rb-glow-blue {
-  right: -120px;
-  top: 150px;
-  background: #3b82f6;
 }
 
 .rb-scanline {
@@ -2126,1204 +1068,829 @@ function getIcon(category) {
   z-index: 2;
   left: 0;
   right: 0;
-  top: -20%;
+  top: -25%;
   height: 25%;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, rgba(168, 85, 247, 0.07), transparent);
+  background: linear-gradient(to bottom, transparent, rgba(168, 85, 247, 0.08), transparent);
   animation: rb-scan 7s linear infinite;
 }
+@keyframes rb-scan {
+  to {
+    transform: translateY(520%);
+  }
+}
 
+/* HUD */
 .rb-hud {
   position: relative;
-  z-index: 30;
+  z-index: 10;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 20px;
-  min-height: 42px;
-  padding: 0 5px;
-  border-bottom: 1px solid rgba(100, 116, 139, 0.13);
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
 }
-
 .rb-hud-left,
 .rb-hud-right,
 .rb-hud-center {
   display: flex;
   align-items: center;
 }
-
 .rb-hud-left {
-  gap: 9px;
+  gap: 10px;
 }
-
 .rb-hud-left div {
   display: flex;
   flex-direction: column;
 }
-
 .rb-hud-left strong {
   color: #cbd5e1;
-  font-size: 8px;
-  letter-spacing: 0.17em;
+  font-size: 12px;
+  letter-spacing: 0.16em;
 }
-
 .rb-hud-left small {
   margin-top: 3px;
-  color: #475569;
-  font-size: 5px;
+  color: #56677a;
+  font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.1em;
 }
-
 .rb-online-dot,
 .rb-live-dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #22c55e;
   box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
   animation: rb-blink 1.5s ease-in-out infinite;
 }
-
-.rb-hud-center {
-  gap: 7px;
-  padding: 5px 10px;
-  border: 1px solid rgba(100, 116, 139, 0.14);
-  border-radius: 6px;
-  background: rgba(15, 23, 42, 0.45);
-  color: #475569;
-  font-size: 6px;
-  letter-spacing: 0.12em;
+@keyframes rb-blink {
+  50% {
+    opacity: 0.3;
+  }
 }
-
+.rb-hud-center {
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.5);
+  color: #56677a;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  font-family: var(--mono);
+}
 .rb-hud-center strong {
   color: #94a3b8;
-  font-size: 6px;
 }
-
 .rb-hud-right {
   justify-content: flex-end;
-  gap: 7px;
+  gap: 8px;
   color: #22c55e;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.15em;
 }
 
-.rb-battlefield {
+/* ARENA */
+.rb-arena {
   position: relative;
-  z-index: 5;
-  height: 455px;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 44px 170px 44px 1fr;
+  align-items: center;
+  gap: 0;
+  margin: 22px 0 18px;
 }
 
 .rb-console {
-  position: absolute;
-  z-index: 20;
-  top: 78px;
-  width: 165px;
-  min-height: 190px;
-  padding: 11px;
-  border-radius: 12px;
+  padding: 14px;
+  border-radius: 14px;
   background: rgba(5, 12, 18, 0.92);
   backdrop-filter: blur(10px);
+  transition: transform 0.3s;
 }
-
+.rb-console:hover {
+  transform: translateY(-4px);
+}
 .rb-red-console {
-  left: 0;
-  border: 1px solid rgba(239, 68, 68, 0.24);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.08);
 }
-
 .rb-blue-console {
-  right: 0;
-  border: 1px solid rgba(59, 130, 246, 0.24);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.08);
 }
 
 .rb-console-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #94a3b8;
-  font-size: 7px;
+  color: #a5b4c6;
+  font-size: 10px;
   font-weight: 900;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.1em;
 }
-
 .rb-console-header span {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
-
 .rb-console-header small {
-  color: #334155;
-  font-size: 5px;
+  color: #475569;
+  font-size: 8px;
 }
-
 .rb-red-dot,
 .rb-blue-dot {
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
+  animation: rb-blink 2s ease-in-out infinite;
 }
-
 .rb-red-dot {
-  background: #ef4444;
-  box-shadow: 0 0 9px rgba(239, 68, 68, 0.8);
+  background: var(--red);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
 }
-
 .rb-blue-dot {
-  background: #3b82f6;
-  box-shadow: 0 0 9px rgba(59, 130, 246, 0.8);
+  background: var(--blue);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.9);
 }
 
+.rb-console-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
 .rb-console-icon {
-  width: 40px;
-  height: 40px;
-  margin-top: 13px;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
   display: grid;
   place-items: center;
-  border-radius: 9px;
-  font-size: 19px;
+  border-radius: 11px;
+  font-size: 22px;
 }
-
 .rb-red-console .rb-console-icon {
-  color: #f87171;
-  background: rgba(239, 68, 68, 0.08);
+  color: var(--red-soft);
+  background: rgba(239, 68, 68, 0.1);
 }
-
 .rb-blue-console .rb-console-icon {
-  color: #60a5fa;
-  background: rgba(59, 130, 246, 0.08);
+  color: var(--blue-soft);
+  background: rgba(59, 130, 246, 0.1);
 }
-
 .rb-console-title {
-  margin-top: 8px;
   color: #e2e8f0;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
 }
-
 .rb-console-title span {
   display: block;
-  margin-top: 2px;
-  color: #475569;
-  font-size: 6px;
+  color: #56677a;
+  font-size: 9px;
 }
 
 .rb-console-status {
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin-top: 9px;
-  color: #64748b;
-  font-size: 5px;
+  gap: 6px;
+  margin-top: 12px;
+  color: #6b7d92;
+  font-size: 9px;
   font-weight: 900;
   letter-spacing: 0.08em;
 }
-
-.rb-console-status span {
-  width: 4px;
-  height: 4px;
+.status-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: #ef4444;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+  background: var(--red);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.9);
+  animation: rb-blink 1.4s infinite;
 }
-
-.rb-console-status .blue-active {
-  background: #3b82f6;
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.8);
+.status-dot.blue-active {
+  background: var(--blue);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.9);
 }
 
 .rb-terminal {
-  margin-top: 10px;
-  padding: 7px;
-  border: 1px solid rgba(100, 116, 139, 0.1);
-  border-radius: 6px;
-  background: rgba(2, 6, 23, 0.7);
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid rgba(100, 116, 139, 0.14);
+  border-radius: 8px;
+  background: rgba(2, 6, 23, 0.75);
+  font-family: var(--mono);
 }
-
-.rb-terminal div {
+.rb-terminal .log {
   display: grid;
-  grid-template-columns: 42px 29px 1fr;
-  gap: 4px;
-  margin: 4px 0;
-  color: #475569;
-  font-family: monospace;
-  font-size: 5px;
-  line-height: 1.2;
+  grid-template-columns: auto auto 1fr;
+  gap: 6px;
+  margin: 5px 0;
+  color: #6b7d92;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 0;
+  animation: logCycle 8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 1.2s);
 }
-
+@keyframes logCycle {
+  0% {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  8%,
+  80% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  92%,
+  100% {
+    opacity: 0;
+  }
+}
 .terminal-time {
-  color: #334155;
+  color: #3f5166;
 }
-
 .terminal-red {
-  color: #f87171;
+  color: var(--red-soft);
 }
-
 .terminal-blue {
-  color: #60a5fa;
+  color: var(--blue-soft);
 }
 
 .rb-console-metrics {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  margin-top: 8px;
+  gap: 6px;
+  margin-top: 12px;
 }
-
 .rb-console-metrics div {
-  padding: 5px 2px;
-  border-radius: 5px;
-  background: rgba(15, 23, 42, 0.6);
+  padding: 7px 2px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.65);
   text-align: center;
 }
-
 .rb-console-metrics strong {
   display: block;
-  color: #cbd5e1;
-  font-size: 9px;
+  color: #e2e8f0;
+  font-size: 15px;
+  font-family: var(--mono);
 }
-
 .rb-console-metrics span {
-  color: #334155;
-  font-size: 4px;
+  color: #475569;
+  font-size: 8px;
   font-weight: 900;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
 }
 
-.rb-radar {
+/* LINKS */
+.rb-link {
+  position: relative;
+  height: 2px;
+}
+.rb-link-red {
+  background: repeating-linear-gradient(90deg, rgba(239, 68, 68, 0.55) 0 6px, transparent 6px 12px);
+}
+.rb-link-blue {
+  background: repeating-linear-gradient(90deg, rgba(59, 130, 246, 0.55) 0 6px, transparent 6px 12px);
+}
+.packet {
   position: absolute;
-  z-index: 8;
-  top: 66px;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  opacity: 0.7;
-}
-
-.rb-radar-left {
-  left: 150px;
-}
-
-.rb-radar-right {
-  right: 150px;
-}
-
-.radar-circle {
-  position: absolute;
-  border: 1px solid rgba(239, 68, 68, 0.15);
-  border-radius: 50%;
-}
-
-.radar-c1 {
-  inset: 15%;
-}
-
-.radar-c2 {
-  inset: 30%;
-}
-
-.radar-c3 {
-  inset: 45%;
-}
-
-.rb-radar-right .radar-circle {
-  border-color: rgba(59, 130, 246, 0.15);
-}
-
-.radar-cross {
-  position: absolute;
-  background: rgba(148, 163, 184, 0.1);
-}
-
-.radar-cross.horizontal {
+  top: -4px;
   left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-}
-
-.radar-cross.vertical {
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-}
-
-.radar-sweep {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 90px;
-  height: 1px;
-  transform-origin: left center;
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.8), transparent);
-  animation: rb-radar 3s linear infinite;
-}
-
-.blue-sweep {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.8), transparent);
-}
-
-.radar-target {
-  position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: #ef4444;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
-  animation: rb-target 2s ease-in-out infinite;
+}
+.rb-link-red .packet {
+  background: var(--red);
+  box-shadow: 0 0 14px var(--red);
+  animation: travel 2.2s ease-in-out infinite;
+}
+.rb-link-blue .packet {
+  background: var(--blue);
+  box-shadow: 0 0 14px var(--blue);
+  animation: travelBack 2.2s ease-in-out infinite;
+}
+@keyframes travel {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 10px);
+    opacity: 0;
+  }
+}
+@keyframes travelBack {
+  0% {
+    left: calc(100% - 10px);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: 0;
+    opacity: 0;
+  }
 }
 
-.rt-1 {
-  left: 32%;
-  top: 27%;
-}
-
-.rt-2 {
-  left: 68%;
-  top: 59%;
-  animation-delay: 0.5s;
-}
-
-.rt-3 {
-  left: 48%;
-  top: 73%;
-  animation-delay: 1s;
-}
-
-.blue-target {
-  background: #3b82f6;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.9);
-}
-
+/* CORE */
 .rb-core {
-  position: absolute;
-  z-index: 25;
-  left: 50%;
-  top: 48%;
-  width: 185px;
-  transform: translate(-50%, -50%);
   text-align: center;
 }
-
 .core-label {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 5px;
-  margin-bottom: 12px;
-  color: #a78bfa;
-  font-size: 6px;
+  margin-bottom: 10px;
+  color: var(--purple-soft);
+  font-size: 8px;
   font-weight: 900;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
 }
-
 .core-ping {
-  width: 4px;
-  height: 4px;
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: #a78bfa;
-  box-shadow: 0 0 8px rgba(167, 139, 250, 0.9);
+  background: var(--purple-soft);
+  box-shadow: 0 0 10px rgba(192, 132, 252, 0.9);
+  animation: rb-blink 1.6s infinite;
 }
-
 .core-shield {
   position: relative;
-  width: 115px;
-  height: 115px;
+  width: 118px;
+  height: 118px;
   margin: auto;
   display: grid;
   place-items: center;
 }
-
 .shield-ring {
   position: absolute;
   border-radius: 50%;
-  border: 1px dashed rgba(168, 85, 247, 0.25);
+  border: 1px dashed rgba(168, 85, 247, 0.3);
 }
-
 .shield-ring-1 {
   inset: 0;
   animation: rb-rotate 15s linear infinite;
 }
-
 .shield-ring-2 {
   inset: 13px;
-  border-color: rgba(168, 85, 247, 0.4);
-  animation: rb-rotate-reverse 11s linear infinite;
+  border-color: rgba(168, 85, 247, 0.45);
+  animation: rb-rotate-rev 11s linear infinite;
 }
-
 .shield-ring-3 {
   inset: 27px;
-  border-color: rgba(168, 85, 247, 0.2);
+  border-color: rgba(168, 85, 247, 0.22);
 }
-
+@keyframes rb-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rb-rotate-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
 .core-lock {
   position: relative;
   z-index: 4;
-  width: 65px;
-  height: 65px;
+  width: 66px;
+  height: 66px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(168, 85, 247, 0.65);
+  border: 1px solid rgba(168, 85, 247, 0.7);
   border-radius: 20px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.25), rgba(5, 10, 15, 0.95));
-  color: #c084fc;
-  font-size: 27px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.28), rgba(5, 10, 15, 0.95));
+  color: var(--purple-soft);
+  font-size: 28px;
   box-shadow:
-    0 0 45px rgba(168, 85, 247, 0.25),
-    inset 0 0 20px rgba(168, 85, 247, 0.1);
+    0 0 45px rgba(168, 85, 247, 0.3),
+    inset 0 0 20px rgba(168, 85, 247, 0.12);
+  animation: corePulse 3s ease-in-out infinite;
 }
-
+@keyframes corePulse {
+  50% {
+    box-shadow:
+      0 0 70px rgba(168, 85, 247, 0.55),
+      inset 0 0 20px rgba(168, 85, 247, 0.2);
+  }
+}
 .rb-core > strong {
   display: block;
-  margin-top: 4px;
+  margin-top: 8px;
   color: #f8fafc;
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.14em;
 }
-
 .rb-core > small {
   display: block;
   margin-top: 3px;
-  color: #475569;
-  font-size: 5px;
+  color: #56677a;
+  font-size: 8px;
   font-weight: 900;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
 }
-
 .core-health {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 3px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
-
 .core-health span {
-  width: 13px;
-  height: 3px;
+  width: 14px;
+  height: 4px;
   border-radius: 2px;
   background: #22c55e;
-  box-shadow: 0 0 5px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+  animation: healthBlink 3s ease-in-out infinite;
 }
-
+.core-health span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.core-health span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.core-health span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+.core-health span:nth-child(5) {
+  animation-delay: 0.8s;
+}
+@keyframes healthBlink {
+  50% {
+    opacity: 0.45;
+  }
+}
 .core-health b {
-  margin-left: 5px;
+  margin-left: 6px;
   color: #22c55e;
-  font-size: 5px;
+  font-size: 9px;
   letter-spacing: 0.08em;
 }
-
+.rb-assets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-top: 12px;
+}
 .rb-asset {
-  position: absolute;
-  z-index: 18;
   display: flex;
   align-items: center;
-  gap: 6px;
-  width: 110px;
-  padding: 7px;
-  border: 1px solid rgba(100, 116, 139, 0.18);
+  justify-content: center;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid var(--line);
   border-radius: 7px;
   background: rgba(5, 12, 18, 0.9);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+  color: #8d9db0;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
 }
-
 .rb-asset .q-icon {
-  color: #94a3b8;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.rb-asset div {
-  min-width: 0;
+/* FLOW + ALERT */
+.rb-flowbar {
+  position: relative;
+  z-index: 10;
   display: flex;
-  flex-direction: column;
-}
-
-.rb-asset strong {
-  color: #94a3b8;
-  font-size: 5px;
-  letter-spacing: 0.08em;
-}
-
-.rb-asset small {
-  margin-top: 2px;
-  color: #334155;
-  font-size: 4px;
-  letter-spacing: 0.04em;
-}
-
-.asset-online {
-  width: 4px;
-  height: 4px;
-  margin-left: auto;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 7px rgba(34, 197, 94, 0.8);
-}
-
-.rb-server {
-  left: 50%;
-  top: 4px;
-  transform: translateX(-50%);
-}
-
-.rb-db {
-  left: calc(50% - 165px);
-  bottom: 24px;
-}
-
-.rb-api {
-  right: calc(50% - 165px);
-  bottom: 24px;
-}
-
-.rb-endpoint {
-  left: 50%;
-  bottom: 24px;
-  transform: translateX(-50%);
-}
-
-.rb-network-svg {
-  position: absolute;
-  inset: 0;
-  z-index: 7;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: visible;
-}
-
-.rb-line {
-  fill: none;
-  stroke-width: 1.3;
-  stroke-dasharray: 5 8;
-  opacity: 0.65;
-  animation: rb-flow 2.5s linear infinite;
-}
-
-.rb-line-red {
-  stroke: #ef4444;
-}
-
-.rb-line-blue {
-  stroke: #3b82f6;
-}
-
-.rb-line-purple {
-  stroke: #a855f7;
-  opacity: 0.45;
-}
-
-.rb-asset-line {
-  fill: none;
-  stroke: rgba(148, 163, 184, 0.14);
-  stroke-width: 1;
-  stroke-dasharray: 3 7;
-}
-
-.rb-packet {
-  filter: drop-shadow(0 0 5px currentColor);
-}
-
-.rb-packet-red {
-  fill: #ef4444;
-}
-
-.rb-packet-blue {
-  fill: #3b82f6;
-}
-
-.rb-flow {
-  position: absolute;
-  z-index: 30;
-  left: 50%;
-  bottom: 75px;
-  transform: translateX(-50%);
-  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 6px 9px;
-  border: 1px solid rgba(100, 116, 139, 0.15);
-  border-radius: 8px;
-  background: rgba(2, 6, 23, 0.82);
-  backdrop-filter: blur(8px);
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.8);
 }
-
 .flow-item {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 5px;
+  gap: 5px;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.1em;
+  animation: flowGlow 3s ease-in-out infinite;
 }
-
+.flow-item:nth-of-type(2) {
+  animation-delay: 1s;
+}
+.flow-item:nth-of-type(3) {
+  animation-delay: 2s;
+}
+@keyframes flowGlow {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  30% {
+    opacity: 1;
+  }
+}
 .flow-item .q-icon {
-  font-size: 10px;
+  font-size: 15px;
 }
-
 .flow-red {
-  color: #f87171;
+  color: var(--red-soft);
 }
-
 .flow-purple {
-  color: #c084fc;
+  color: var(--purple-soft);
 }
-
 .flow-blue {
-  color: #60a5fa;
+  color: var(--blue-soft);
 }
-
 .flow-arrow {
   color: #334155;
-  font-size: 10px;
-}
-
-.rb-alert {
-  position: absolute;
-  z-index: 31;
-  left: 50%;
-  bottom: 7px;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 245px;
-  padding: 7px 9px;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 8px;
-  background: rgba(15, 8, 13, 0.9);
-}
-
-.alert-icon {
-  width: 25px;
-  height: 25px;
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-  background: rgba(239, 68, 68, 0.1);
-  color: #f87171;
-}
-
-.alert-icon .q-icon {
   font-size: 14px;
 }
 
+.rb-alert {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 10px;
+  background: rgba(20, 8, 12, 0.85);
+  animation: alertGlow 2.5s ease-in-out infinite;
+}
+@keyframes alertGlow {
+  50% {
+    box-shadow: 0 0 24px rgba(239, 68, 68, 0.22);
+  }
+}
+.alert-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--red-soft);
+}
 .alert-copy {
   display: flex;
   flex-direction: column;
 }
-
 .alert-copy strong {
   color: #fca5a5;
-  font-size: 6px;
+  font-size: 10px;
   letter-spacing: 0.09em;
 }
-
 .alert-copy span {
   margin-top: 2px;
-  color: #475569;
-  font-size: 5px;
+  color: #56677a;
+  font-size: 10px;
 }
-
 .alert-level {
   margin-left: auto;
   text-align: right;
 }
-
 .alert-level small {
   display: block;
-  color: #334155;
-  font-size: 4px;
-}
-
-.alert-level strong {
-  color: #f87171;
-  font-size: 7px;
-}
-
-.rb-purple {
-  position: absolute;
-  z-index: 35;
-  top: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 9px;
-  border: 1px solid rgba(168, 85, 247, 0.2);
-  border-radius: 20px;
-  background: rgba(15, 8, 25, 0.8);
-  color: #c084fc;
-  font-size: 5px;
-  font-weight: 900;
+  color: #475569;
+  font-size: 8px;
   letter-spacing: 0.1em;
 }
-
-.rb-purple .q-icon {
-  font-size: 10px;
+.alert-level strong {
+  color: var(--red-soft);
+  font-size: 13px;
+  font-family: var(--mono);
 }
 
-.purple-red,
-.purple-blue {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-}
-
-.purple-red {
-  background: #ef4444;
-  box-shadow: 0 0 7px rgba(239, 68, 68, 0.8);
-}
-
-.purple-blue {
-  background: #3b82f6;
-  box-shadow: 0 0 7px rgba(59, 130, 246, 0.8);
-}
-
+/* TELEMETRY */
 .rb-telemetry {
   position: relative;
-  z-index: 40;
+  z-index: 10;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 7px;
+  gap: 8px;
+  margin-top: 10px;
 }
-
 .telemetry-card {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   min-width: 0;
-  padding: 7px 8px;
-  border: 1px solid rgba(100, 116, 139, 0.13);
-  border-radius: 8px;
-  background: rgba(2, 6, 23, 0.65);
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.7);
 }
-
 .telemetry-card-icon {
-  width: 24px;
-  height: 24px;
-  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
   display: grid;
   place-items: center;
-  border-radius: 6px;
+  border-radius: 8px;
 }
-
 .telemetry-red {
-  color: #f87171;
-  background: rgba(239, 68, 68, 0.08);
+  color: var(--red-soft);
+  background: rgba(239, 68, 68, 0.1);
 }
-
 .telemetry-purple {
-  color: #c084fc;
-  background: rgba(168, 85, 247, 0.08);
+  color: var(--purple-soft);
+  background: rgba(168, 85, 247, 0.1);
 }
-
 .telemetry-blue {
-  color: #60a5fa;
-  background: rgba(59, 130, 246, 0.08);
+  color: var(--blue-soft);
+  background: rgba(59, 130, 246, 0.1);
 }
-
-.telemetry-card-icon .q-icon {
-  font-size: 12px;
-}
-
-.telemetry-card div {
+.telemetry-card div:nth-child(2) {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
-
 .telemetry-card small {
-  color: #475569;
-  font-size: 4px;
+  color: #56677a;
+  font-size: 8px;
   font-weight: 900;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
 }
-
 .telemetry-card strong {
   margin-top: 2px;
-  color: #94a3b8;
-  font-size: 6px;
-  letter-spacing: 0.05em;
+  color: #a5b4c6;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
-
 .telemetry-bar {
-  width: 35px;
-  height: 3px;
+  width: 100%;
+  max-width: 34px;
+  height: 4px;
   margin-left: auto;
   overflow: hidden;
   border-radius: 4px;
-  background: rgba(100, 116, 139, 0.12);
+  background: rgba(100, 116, 139, 0.15);
 }
-
 .telemetry-bar i {
   display: block;
-  width: 75%;
   height: 100%;
   border-radius: inherit;
-  background: #64748b;
-  animation: rb-meter 2s ease-in-out infinite alternate;
+  animation: rb-meter 2.2s ease-in-out infinite alternate;
+}
+.red-bar i {
+  background: var(--red);
+}
+.purple-bar i {
+  background: var(--purple);
+}
+.blue-bar i {
+  background: var(--blue);
+}
+@keyframes rb-meter {
+  from {
+    width: 30%;
+  }
+  to {
+    width: 95%;
+  }
 }
 
 .rb-footer-status {
   position: relative;
-  z-index: 40;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 7px;
-  color: #334155;
-  font-size: 5px;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: 12px;
+  color: #475569;
+  font-size: 9px;
   font-weight: 900;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
 }
-
 .rb-footer-status span {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
-
 .rb-footer-status i {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #22c55e;
-  box-shadow: 0 0 7px rgba(34, 197, 94, 0.8);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
 }
 
-@keyframes rb-scan {
-  0% {
-    transform: translateY(-120%);
-  }
+/* ---------- MARQUEE ---------- */
 
-  100% {
-    transform: translateY(600%);
-  }
+.marquee {
+  margin-top: 72px;
+  overflow: hidden;
+  border-block: 1px solid var(--line);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
-
-@keyframes rb-blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.3;
-  }
+.marquee-track {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  padding: 16px 0;
+  animation: scroll 38s linear infinite;
 }
-
-@keyframes rb-flow {
-  from {
-    stroke-dashoffset: 26;
-  }
-
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes scroll {
   to {
-    stroke-dashoffset: 0;
+    transform: translateX(-50%);
   }
 }
-
-@keyframes rb-radar {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+.marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: #a5b4c6;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.marquee-item.red .q-icon {
+  color: var(--red-soft);
+}
+.marquee-item.blue .q-icon {
+  color: var(--blue-soft);
+}
+.marquee-item.purple .q-icon {
+  color: var(--purple-soft);
 }
 
-@keyframes rb-target {
-  0%,
-  100% {
-    transform: scale(0.8);
-    opacity: 0.55;
-  }
+/* ---------- SECTIONS ---------- */
 
-  50% {
-    transform: scale(1.5);
-    opacity: 1;
-  }
-}
-
-@keyframes rb-rotate {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes rb-rotate-reverse {
-  from {
-    transform: rotate(360deg);
-  }
-
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes rb-meter {
-  from {
-    width: 35%;
-  }
-
-  to {
-    width: 90%;
-  }
-}
-
-@media (max-width: 1100px) {
-  .battle-visual {
-    min-height: 620px;
-  }
-
-  .rb-console {
-    width: 145px;
-  }
-
-  .rb-radar-left {
-    left: 125px;
-  }
-
-  .rb-radar-right {
-    right: 125px;
-  }
-
-  .rb-asset {
-    width: 95px;
-  }
-}
-
-@media (max-width: 900px) {
-  .battle-visual {
-    min-height: 700px;
-  }
-
-  .rb-battlefield {
-    height: 530px;
-  }
-
-  .rb-console {
-    top: 85px;
-    width: 130px;
-  }
-
-  .rb-radar {
-    width: 135px;
-    height: 135px;
-    top: 105px;
-  }
-
-  .rb-radar-left {
-    left: 110px;
-  }
-
-  .rb-radar-right {
-    right: 110px;
-  }
-
-  .rb-console-metrics {
-    display: none;
-  }
-
-  .rb-terminal div {
-    grid-template-columns: 1fr;
-    gap: 2px;
-  }
-
-  .terminal-time {
-    display: none;
-  }
-
-  .rb-asset {
-    transform: scale(0.85);
-  }
-
-  .rb-server {
-    top: 25px;
-  }
-
-  .rb-db {
-    left: calc(50% - 130px);
-  }
-
-  .rb-api {
-    right: calc(50% - 130px);
-  }
-
-  .rb-endpoint {
-    bottom: 24px;
-  }
-
-  .rb-flow {
-    bottom: 92px;
-  }
-
-  .rb-alert {
-    bottom: 25px;
-  }
-}
-
-@media (max-width: 600px) {
-  .battle-visual {
-    min-height: 760px;
-    padding: 12px;
-    border-radius: 20px;
-  }
-
-  .rb-hud {
-    grid-template-columns: 1fr auto;
-  }
-
-  .rb-hud-center {
-    display: none;
-  }
-
-  .rb-battlefield {
-    height: 585px;
-  }
-
-  .rb-console {
-    top: 72px;
-    width: 112px;
-    min-height: 150px;
-    padding: 8px;
-  }
-
-  .rb-console-icon {
-    width: 32px;
-    height: 32px;
-    margin-top: 9px;
-    font-size: 15px;
-  }
-
-  .rb-console-title {
-    font-size: 7px;
-  }
-
-  .rb-terminal {
-    display: none;
-  }
-
-  .rb-radar {
-    width: 105px;
-    height: 105px;
-    top: 120px;
-  }
-
-  .rb-radar-left {
-    left: 80px;
-  }
-
-  .rb-radar-right {
-    right: 80px;
-  }
-
-  .rb-core {
-    top: 49%;
-    transform: translate(-50%, -50%) scale(0.85);
-  }
-
-  .rb-asset {
-    width: 82px;
-    transform: scale(0.72);
-  }
-
-  .rb-server {
-    top: 14px;
-  }
-
-  .rb-db {
-    left: calc(50% - 105px);
-    bottom: 32px;
-  }
-
-  .rb-api {
-    right: calc(50% - 105px);
-    bottom: 32px;
-  }
-
-  .rb-endpoint {
-    bottom: 32px;
-  }
-
-  .rb-flow {
-    bottom: 110px;
-    transform: translateX(-50%) scale(0.85);
-    white-space: nowrap;
-  }
-
-  .rb-alert {
-    bottom: 35px;
-    width: 205px;
-    transform: translateX(-50%) scale(0.82);
-  }
-
-  .rb-telemetry {
-    grid-template-columns: 1fr;
-  }
-
-  .telemetry-card {
-    padding: 6px;
-  }
-
-  .rb-footer-status {
-    gap: 7px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .rb-footer-status span:last-child {
-    display: none;
-  }
-}
 .module-section {
-  margin-top: 90px;
+  margin-top: 96px;
 }
 
 .section-heading {
   display: flex;
   justify-content: space-between;
   align-items: end;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
-
 .section-kicker {
-  color: #10b981;
+  color: var(--green);
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.2em;
 }
-
+.section-kicker.purple {
+  color: var(--purple-soft);
+}
 .section-heading h2 {
   margin: 7px 0 0;
-  font-size: 32px;
+  font-size: clamp(26px, 3vw, 34px);
+  letter-spacing: -0.02em;
 }
-
+.section-sub {
+  max-width: 620px;
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.65;
+}
 .section-heading > span {
   color: #64748b;
   font-size: 13px;
 }
 
+/* ---------- LESSON GRID ---------- */
+
 .lesson-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 14px;
 }
 
 .lesson-card {
   position: relative;
+  overflow: hidden;
   display: grid;
   grid-template-columns: 40px 52px 1fr 30px;
   gap: 18px;
@@ -3332,26 +1899,50 @@ function getIcon(category) {
   padding: 22px;
   border: 1px solid #1e293b;
   border-radius: 16px;
-  background: rgba(15, 23, 42, 0.62);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
   color: inherit;
   text-align: left;
   cursor: pointer;
-  transition: 0.25s ease;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    opacity 0.7s ease;
 }
-
-.lesson-card:hover {
-  transform: translateY(-3px);
-  border-color: #10b981;
-  background: rgba(16, 185, 129, 0.06);
+.lesson-card.is-visible:hover {
+  transform: translateY(-5px);
+  border-color: var(--green);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
 }
-
+.card-glow {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.28);
+  filter: blur(55px);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.lesson-card:hover .card-glow {
+  opacity: 1;
+}
 .lesson-number {
+  position: relative;
   color: #475569;
-  font-size: 12px;
+  font-family: var(--mono);
+  font-size: 13px;
   font-weight: 900;
+  transition: color 0.3s;
 }
-
+.lesson-card:hover .lesson-number {
+  color: #34d399;
+}
 .lesson-icon {
+  position: relative;
   width: 48px;
   height: 48px;
   display: grid;
@@ -3360,84 +1951,112 @@ function getIcon(category) {
   background: #111c23;
   color: #34d399;
   font-size: 22px;
+  transition: transform 0.3s;
 }
-
+.lesson-card:hover .lesson-icon {
+  transform: rotate(-6deg) scale(1.1);
+}
+.lesson-info {
+  position: relative;
+}
 .lesson-info span {
   color: #64748b;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.12em;
 }
-
 .lesson-info h3 {
   margin: 5px 0;
   font-size: 16px;
 }
-
 .lesson-info p {
   margin: 0;
-  color: #64748b;
-  font-size: 12px;
+  color: #7a8ba0;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.arrow {
+  position: relative;
+  color: #475569;
+  transition:
+    transform 0.25s,
+    color 0.25s;
+}
+.lesson-card:hover .arrow {
+  color: #34d399;
+  transform: translateX(5px);
 }
 
-.arrow {
-  color: #475569;
-}
+/* ---------- ROLES ---------- */
 
 .roles-section {
-  margin-top: 70px;
+  margin-top: 72px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
 }
-
 .role-card {
   padding: 35px;
   border-radius: 22px;
   border: 1px solid #1e293b;
   background: #0b151a;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s,
+    opacity 0.7s ease;
 }
-
+.role-card.is-visible:hover {
+  transform: translateY(-6px);
+}
+.red-role {
+  box-shadow: inset 3px 0 var(--red);
+}
+.red-role.is-visible:hover {
+  box-shadow:
+    inset 3px 0 var(--red),
+    0 20px 50px rgba(239, 68, 68, 0.12);
+}
+.blue-role {
+  box-shadow: inset 3px 0 var(--blue);
+}
+.blue-role.is-visible:hover {
+  box-shadow:
+    inset 3px 0 var(--blue),
+    0 20px 50px rgba(59, 130, 246, 0.14);
+}
 .role-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 28px;
 }
-
+.red-role .role-top .q-icon {
+  color: var(--red-soft);
+}
+.blue-role .role-top .q-icon {
+  color: var(--blue-soft);
+}
 .role-badge {
   color: #64748b;
   font-size: 11px;
   font-weight: 900;
 }
-
-.red-role {
-  box-shadow: inset 3px 0 #ef4444;
-}
-
-.blue-role {
-  box-shadow: inset 3px 0 #3b82f6;
-}
-
 .role-card h2 {
-  margin: 30px 0 10px;
+  margin: 28px 0 10px;
   font-size: 30px;
 }
-
 .role-card p {
   color: #94a3b8;
   line-height: 1.7;
 }
-
 .role-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 25px;
 }
-
 .role-tags span {
-  padding: 6px 9px;
+  padding: 6px 10px;
   border: 1px solid #263442;
   border-radius: 6px;
   color: #64748b;
@@ -3446,20 +2065,477 @@ function getIcon(category) {
   letter-spacing: 0.1em;
 }
 
-@media (max-width: 900px) {
+/* ---------- PURPLE LOOP ---------- */
+
+.loop {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  padding: 44px 24px 34px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--panel);
+}
+.loop-line {
+  position: absolute;
+  top: 68px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(168, 85, 247, 0.4) 0 8px, transparent 8px 16px);
+}
+.loop-pulse {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--purple-soft);
+  box-shadow: 0 0 14px var(--purple);
+  animation: travel 4s ease-in-out infinite;
+}
+.loop-step {
+  position: relative;
+  text-align: center;
+  padding: 0 6px;
+}
+.loop-node {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #0a141a;
+  border: 2px solid;
+  transition: transform 0.3s;
+}
+.loop-step:hover .loop-node {
+  transform: scale(1.12);
+}
+.loop-node.red {
+  color: var(--red-soft);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+.loop-node.blue {
+  color: var(--blue-soft);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+.loop-node.purple {
+  color: var(--purple-soft);
+  border-color: rgba(168, 85, 247, 0.5);
+}
+.loop-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--purple-soft);
+}
+.loop-step h4 {
+  margin: 4px 0 6px;
+  font-size: 17px;
+  font-weight: 800;
+}
+.loop-step p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* ---------- COMPARISON ---------- */
+
+.compare {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--panel);
+}
+.compare-head,
+.compare-row {
+  display: grid;
+  grid-template-columns: 0.7fr 1fr 1fr;
+}
+.compare-head {
+  background: rgba(255, 255, 255, 0.03);
+  font-weight: 900;
+  font-size: 15px;
+}
+.compare-head > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 22px;
+}
+.ch-red {
+  color: var(--red-soft);
+  background: rgba(239, 68, 68, 0.07);
+}
+.ch-blue {
+  color: var(--blue-soft);
+  background: rgba(59, 130, 246, 0.07);
+}
+.compare-row {
+  border-top: 1px solid var(--line);
+  transition: background 0.2s;
+}
+.compare-row:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+.compare-row > div {
+  padding: 18px 22px;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.compare-label {
+  color: #64748b;
+  font-size: 11px !important;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.compare-red {
+  color: #f1c4c4;
+}
+.compare-blue {
+  color: #c4d8f5;
+}
+
+/* ---------- TACTICS ---------- */
+
+.tactic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tactic {
+  display: grid;
+  grid-template-columns: 200px 1fr 36px 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  transition:
+    transform 0.3s,
+    border-color 0.3s,
+    opacity 0.7s ease;
+}
+.tactic.is-visible:hover {
+  transform: translateX(6px);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+.tactic-stage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 15px;
+}
+.tactic-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--purple-soft);
+}
+.tactic-side {
+  padding: 12px 14px;
+  border-radius: 11px;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.tactic-side small {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+.tactic-red {
+  background: rgba(239, 68, 68, 0.07);
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  color: #f1c4c4;
+}
+.tactic-red small {
+  color: var(--red-soft);
+}
+.tactic-blue {
+  background: rgba(59, 130, 246, 0.07);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  color: #c4d8f5;
+}
+.tactic-blue small {
+  color: var(--blue-soft);
+}
+.tactic-swap {
+  color: var(--purple-soft);
+  font-size: 22px;
+  justify-self: center;
+}
+
+/* ---------- TOOLS ---------- */
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.tool-col {
+  padding: 28px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: #0b151a;
+  transition: opacity 0.7s ease;
+}
+.red-col {
+  box-shadow: inset 0 3px var(--red);
+}
+.blue-col {
+  box-shadow: inset 0 3px var(--blue);
+}
+.tool-col h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  font-size: 20px;
+}
+.red-col h3 .q-icon {
+  color: var(--red-soft);
+}
+.blue-col h3 .q-icon {
+  color: var(--blue-soft);
+}
+.tool-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tool-col li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 10px;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+.tool-col li:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.tool-col li > .q-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  font-size: 20px;
+}
+.red-col li > .q-icon {
+  color: var(--red-soft);
+  background: rgba(239, 68, 68, 0.1);
+}
+.blue-col li > .q-icon {
+  color: var(--blue-soft);
+  background: rgba(59, 130, 246, 0.1);
+}
+.tool-col li div {
+  display: flex;
+  flex-direction: column;
+}
+.tool-col li strong {
+  font-size: 15px;
+}
+.tool-col li span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ---------- CAREERS ---------- */
+
+.career-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.career-card {
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  transition:
+    transform 0.3s,
+    border-color 0.3s,
+    opacity 0.7s ease;
+}
+.career-card.is-visible:hover {
+  transform: translateY(-6px);
+}
+.career-card.red.is-visible:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+.career-card.blue.is-visible:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+}
+.career-card.purple.is-visible:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+}
+.career-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+}
+.career-card.red .career-icon {
+  color: var(--red-soft);
+  background: rgba(239, 68, 68, 0.1);
+}
+.career-card.blue .career-icon {
+  color: var(--blue-soft);
+  background: rgba(59, 130, 246, 0.1);
+}
+.career-card.purple .career-icon {
+  color: var(--purple-soft);
+  background: rgba(168, 85, 247, 0.1);
+}
+.career-card h4 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 800;
+}
+.career-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* ---------- CTA ---------- */
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  margin-top: 96px;
+  padding: 44px 48px;
+  border-radius: 24px;
+  border: 1px solid rgba(168, 85, 247, 0.28);
+  background:
+    linear-gradient(120deg, rgba(239, 68, 68, 0.12), rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.14));
+}
+.cta h2 {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 3vw, 32px);
+  letter-spacing: -0.02em;
+}
+.cta p {
+  max-width: 560px;
+  margin: 0;
+  color: #a5b4c6;
+  line-height: 1.7;
+}
+.cta .start-btn {
+  flex-shrink: 0;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 1200px) {
   .hero-section {
     grid-template-columns: 1fr;
   }
+  .career-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .loop {
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 32px;
+  }
+  .loop-line {
+    display: none;
+  }
+}
 
+@media (max-width: 900px) {
   .lesson-grid,
-  .roles-section {
+  .roles-section,
+  .tool-grid {
     grid-template-columns: 1fr;
+  }
+
+  .tactic {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .tactic-swap {
+    transform: rotate(90deg);
+  }
+
+  /* stack battlefield */
+  .rb-arena {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .rb-link {
+    width: 2px;
+    height: 44px;
+    margin: 0 auto;
+  }
+  .rb-link-red {
+    background: repeating-linear-gradient(180deg, rgba(239, 68, 68, 0.55) 0 6px, transparent 6px 12px);
+  }
+  .rb-link-blue {
+    background: repeating-linear-gradient(180deg, rgba(59, 130, 246, 0.55) 0 6px, transparent 6px 12px);
+  }
+  .rb-link-red .packet {
+    top: 0;
+    left: -4px;
+    animation-name: travelY;
+  }
+  .rb-link-blue .packet {
+    top: 0;
+    left: -4px;
+    animation-name: travelYBack;
+  }
+  @keyframes travelY {
+    0% {
+      top: 0;
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    100% {
+      top: calc(100% - 10px);
+      opacity: 0;
+    }
+  }
+  @keyframes travelYBack {
+    0% {
+      top: calc(100% - 10px);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    100% {
+      top: 0;
+      opacity: 0;
+    }
   }
 }
 
 @media (max-width: 600px) {
   .redblue-shell {
-    padding: 45px 20px;
+    padding: 40px 18px 70px;
   }
 
   .hero-actions {
@@ -3468,21 +2544,70 @@ function getIcon(category) {
   }
 
   .battle-visual {
-    min-height: 330px;
+    padding: 14px;
+    border-radius: 20px;
   }
 
-  .team-icon {
-    width: 80px;
-    height: 80px;
-    font-size: 35px;
+  .rb-hud {
+    grid-template-columns: 1fr auto;
+  }
+  .rb-hud-center {
+    display: none;
+  }
+
+  .rb-telemetry {
+    grid-template-columns: 1fr;
+  }
+
+  .rb-footer-status span:last-child {
+    display: none;
+  }
+
+  .loop,
+  .career-grid {
+    grid-template-columns: 1fr;
   }
 
   .lesson-card {
     grid-template-columns: 35px 45px 1fr;
+    gap: 14px;
   }
-
   .lesson-card .arrow {
     display: none;
+  }
+
+  .compare-head,
+  .compare-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .compare-head > div:first-child {
+    display: none;
+  }
+  .compare-label {
+    grid-column: 1 / -1;
+    padding-bottom: 0 !important;
+  }
+
+  .cta {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 32px 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal,
+  .fade-up,
+  .rb-terminal .log {
+    opacity: 1;
+    transform: none;
   }
 }
 </style>
