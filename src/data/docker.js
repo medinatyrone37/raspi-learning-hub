@@ -665,10 +665,11 @@ b7e41c2d9a10   nginx       "/docker-entrypoint.…"   10 minutes ago   Up 10 min
     ],
   },
 
+  
   {
     id: 5,
     title: 'Installing Docker',
-    subtitle: 'Setting up Docker on a Linux system',
+    subtitle: 'Installing and verifying Docker Engine on Ubuntu Server',
     category: 'Docker Fundamentals',
     icon: 'download',
     template: 'installation',
@@ -677,148 +678,259 @@ b7e41c2d9a10   nginx       "/docker-entrypoint.…"   10 minutes ago   Up 10 min
       {
         type: 'hero',
         title: 'Installing Docker',
-        subtitle: 'Prepare a Linux system for running containers and Docker-based applications',
+        subtitle:
+          'Learn how to prepare Ubuntu Server, install Docker Engine, manage its service, and verify a working container installation.',
       },
       {
         type: 'concept',
-        title: 'Before Installation',
+        title: 'Installation Requirements',
         content:
-          'Before installing Docker, make sure the operating system is updated and that you have administrator access.',
+          'Docker Engine runs containerized applications on a Linux host. Before installation, verify that the system uses a supported Ubuntu release, has internet access, and provides an account with sudo privileges.',
         points: [
-          'Use a supported Linux distribution',
-          'Update package information',
-          'Have sudo or administrator access',
-          'Ensure sufficient storage',
-          'Check network connectivity',
+          'Use a supported Ubuntu Server release.',
+          'Connect the server to the internet.',
+          'Use an account with sudo privileges.',
+          'Ensure enough disk space for packages and images.',
+          'Review existing Docker or conflicting packages before installation.',
         ],
         visual: {
           type: 'docker-flow',
-          title: 'PRE-INSTALL CHECKLIST',
+          title: 'PRE-INSTALLATION CHECKLIST',
           icon: 'checklist',
           center: 'READY?',
           items: [
-            { title: 'Supported Linux', icon: 'computer' },
-            { title: 'Updated Packages', icon: 'update' },
-            { title: 'sudo Access', icon: 'admin_panel_settings' },
-            { title: 'Free Storage', icon: 'sd_storage' },
-            { title: 'Internet', icon: 'wifi' },
+            { title: 'Ubuntu', text: 'Supported release', icon: 'computer' },
+            { title: 'Internet', text: 'Repository access', icon: 'wifi' },
+            { title: 'Sudo', text: 'Admin permissions', icon: 'verified_user' },
+            { title: 'Storage', text: 'Enough disk space', icon: 'sd_storage' },
           ],
         },
       },
       {
-        type: 'process',
-        title: 'Installation Workflow',
-        steps: [
-          {
-            number: '01',
-            title: 'Update',
-            text: 'Update the operating system package information.',
-          },
-          {
-            number: '02',
-            title: 'Install',
-            text: 'Install Docker Engine and supporting packages.',
-          },
-          {
-            number: '03',
-            title: 'Enable',
-            text: 'Enable Docker to start with the operating system.',
-          },
-          {
-            number: '04',
-            title: 'Verify',
-            text: 'Run a test container to confirm Docker works.',
-          },
+        type: 'concept',
+        title: 'Understand the Installation Process',
+        content:
+          'Docker installation is performed in stages. The administrator prepares the package manager, configures the official repository, installs the engine and supporting tools, and then verifies the service.',
+        points: [
+          'Prepare the operating system.',
+          'Configure Docker package verification and repository access.',
+          'Install Docker Engine and supporting components.',
+          'Start the Docker service.',
+          'Verify the installation with a test container.',
         ],
         visual: {
           type: 'docker-flow',
-          title: 'INSTALL WORKFLOW',
-          icon: 'download',
-          center: 'INSTALL DOCKER',
+          title: 'INSTALLATION OVERVIEW',
+          icon: 'account_tree',
+          center: 'DOCKER',
           items: [
-            { title: 'Update', icon: 'update' },
-            { title: 'Install Engine', icon: 'download' },
-            { title: 'Enable at Boot', icon: 'power_settings_new' },
-            { title: 'Verify', icon: 'verified' },
+            { title: 'Prepare', text: 'Update packages', icon: 'update' },
+            { title: 'Configure', text: 'Official repository', icon: 'storage' },
+            { title: 'Install', text: 'Engine and CLI', icon: 'download' },
+            { title: 'Verify', text: 'Run a test', icon: 'verified' },
           ],
         },
       },
       {
         type: 'command',
-        title: 'Check Docker Version',
-        command: 'docker --version',
+        title: 'Step 1 — Update Ubuntu',
+        command: `sudo apt update
+sudo apt install ca-certificates curl`,
         explanation:
-          'Prints the installed Docker version. If you see a version number, the Docker CLI is installed correctly.',
-        example: 'Docker version 27.3.1, build ce12230',
+          'The apt update command refreshes package information. The ca-certificates and curl packages provide certificate trust and a tool for downloading files from remote repositories.',
+        example:
+          'The terminal displays package information and installation progress. The exact output depends on the Ubuntu release and current package versions.',
         visual: {
           type: 'docker-flow',
-          title: 'VERSION CHECK',
+          title: 'PREPARE THE SYSTEM',
+          icon: 'system_update',
+          center: 'APT',
+          items: [
+            { title: 'Refresh', text: 'Package lists', icon: 'update' },
+            { title: 'Certificates', text: 'Secure connections', icon: 'verified_user' },
+            { title: 'Curl', text: 'Download tool', icon: 'download' },
+          ],
+        },
+      },
+      {
+        type: 'command',
+        title: 'Step 2 — Add Docker’s Signing Key',
+        command: `sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc`,
+        explanation:
+          'Create the directory used to store repository keys, download Docker’s official signing key, and make the key readable by the package manager. This helps apt verify packages from the configured repository.',
+        example:
+          'These commands normally produce little or no output when successful. If curl reports a network or certificate error, investigate the connection before continuing.',
+        visual: {
+          type: 'docker-flow',
+          title: 'PACKAGE VERIFICATION',
           icon: 'verified',
-          center: 'INSTALLED',
+          center: 'GPG KEY',
           items: [
-            { title: 'CLI Found', text: 'docker command works', icon: 'terminal' },
-            { title: 'Version', text: '27.3.1', icon: 'tag' },
-            { title: 'Build', text: 'ce12230', icon: 'build' },
+            { title: 'Directory', text: 'Create keyring', icon: 'folder' },
+            { title: 'Download', text: 'Official key', icon: 'download' },
+            { title: 'Permissions', text: 'Readable key', icon: 'lock' },
           ],
         },
       },
       {
         type: 'command',
-        title: 'Run the Hello World Container',
-        command: 'docker run hello-world',
+        title: 'Step 3 — Configure the Repository',
+        command: `sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "\${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update`,
         explanation:
-          'Docker looks for the image locally, downloads it if missing, creates a container, and runs it. The "Hello from Docker!" message confirms the whole installation works.',
-        example: `Unable to find image 'hello-world:latest' locally
-latest: Pulling from library/hello-world
-c9c5fd25a1bd: Pull complete
-Digest: sha256:d211f485f2dd1dee407a80973c8f129f00d54604d2c90732e8e320e5038a0348
-Status: Downloaded newer image for hello-world:latest
-
-Hello from Docker!
-This message shows that your installation appears to be working correctly.
-
-To generate this message, Docker took the following steps:
- 1. The Docker client contacted the Docker daemon.
- 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
- 3. The Docker daemon created a new container from that image which runs the
-    executable that produces the output you are currently reading.
- 4. The Docker daemon streamed that output to the Docker client, which sent it
-    to your terminal.`,
+          'This command creates an apt source file for Docker’s official Ubuntu repository. It detects the Ubuntu codename and CPU architecture automatically, uses the stable package channel, and associates the repository with the downloaded signing key. The final apt update loads package information from the newly configured source.',
+        example:
+          'The terminal should fetch package indexes from the configured repositories. Repository errors must be resolved before installing Docker.',
         visual: {
           type: 'docker-flow',
-          title: 'WHAT THE OUTPUT MEANS',
-          icon: 'celebration',
-          center: 'hello-world',
+          title: 'OFFICIAL PACKAGE SOURCE',
+          icon: 'storage',
+          center: 'APT',
           items: [
-            { title: 'Not Found Locally', text: 'Image missing', icon: 'search_off' },
-            { title: 'Pulled from Hub', text: 'Image downloaded', icon: 'cloud_download' },
-            { title: 'Container Created', text: 'Runs once', icon: 'view_in_ar' },
-            { title: 'Message Printed', text: 'Install works', icon: 'check_circle' },
+            { title: 'Repository', text: 'Docker packages', icon: 'cloud' },
+            { title: 'Codename', text: 'Ubuntu release', icon: 'label' },
+            { title: 'Architecture', text: 'System platform', icon: 'memory' },
+            { title: 'Signing Key', text: 'Package trust', icon: 'verified' },
+          ],
+        },
+      },
+      {
+        type: 'command',
+        title: 'Step 4 — Install Docker Engine',
+        command: `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`,
+        explanation:
+          'Install Docker Engine, the Docker command-line interface, containerd, the Buildx plugin, and the Compose plugin. Review the package list and confirm the installation if apt prompts for approval.',
+        example:
+          'Package names identify the components being installed. Exact versions depend on the configured repository and available updates.',
+        visual: {
+          type: 'docker-flow',
+          title: 'DOCKER COMPONENTS',
+          icon: 'download',
+          center: 'ENGINE',
+          items: [
+            { title: 'Docker CE', text: 'Container engine', icon: 'settings' },
+            { title: 'Docker CLI', text: 'Terminal interface', icon: 'terminal' },
+            { title: 'containerd', text: 'Container runtime', icon: 'memory' },
+            { title: 'Compose', text: 'Multi-service apps', icon: 'layers' },
+          ],
+        },
+      },
+      {
+        type: 'command',
+        title: 'Step 5 — Start and Enable Docker',
+        command: `sudo systemctl enable --now docker
+sudo systemctl status docker`,
+        explanation:
+          'The enable option configures Docker to start automatically during boot. The now option starts the service immediately. The status command displays the current service state.',
+        example:
+          'Look for active (running) in the service status. Press q to exit the status screen.',
+        visual: {
+          type: 'docker-flow',
+          title: 'MANAGE THE SERVICE',
+          icon: 'settings',
+          center: 'docker.service',
+          items: [
+            { title: 'Enable', text: 'Start at boot', icon: 'power_settings_new' },
+            { title: 'Start', text: 'Run now', icon: 'play_arrow' },
+            { title: 'Status', text: 'Check service', icon: 'info' },
+          ],
+        },
+      },
+      {
+        type: 'command',
+        title: 'Step 6 — Check the Docker Version',
+        command: `docker --version
+sudo docker info`,
+        explanation:
+          'The first command prints the Docker CLI version. The second displays information about the Docker Engine, including server details, storage, and runtime configuration. The CLI version alone does not prove the service is working.',
+        example:
+          'The version output includes a version number and build identifier. The info command should display server information when the daemon is available.',
+        visual: {
+          type: 'docker-flow',
+          title: 'VERIFY THE INSTALLATION',
+          icon: 'verified',
+          center: 'DOCKER',
+          items: [
+            { title: 'CLI', text: 'Version available', icon: 'terminal' },
+            { title: 'Daemon', text: 'Engine responds', icon: 'settings' },
+            { title: 'Info', text: 'Server details', icon: 'description' },
+          ],
+        },
+      },
+      {
+        type: 'command',
+        title: 'Step 7 — Run Hello World',
+        command: `sudo docker run hello-world`,
+        explanation:
+          'Docker searches for the hello-world image locally. If it is unavailable, Docker downloads it from Docker Hub, creates a container, and runs the program. The program prints a confirmation message and exits.',
+        example: `Hello from Docker!
+This message shows that your installation appears to be working correctly.`,
+        visual: {
+          type: 'docker-flow',
+          title: 'TEST CONTAINER LIFECYCLE',
+          icon: 'celebration',
+          center: 'HELLO WORLD',
+          items: [
+            { title: 'Pull', text: 'Download image', icon: 'cloud_download' },
+            { title: 'Create', text: 'Make container', icon: 'inventory_2' },
+            { title: 'Run', text: 'Execute program', icon: 'play_arrow' },
+            { title: 'Confirm', text: 'Print message', icon: 'check_circle' },
           ],
         },
       },
       {
         type: 'technical',
-        title: 'Docker Service',
-        content: 'On Linux systems using systemd, Docker can be managed as a system service.',
+        title: 'Common Installation Problems',
+        content:
+          'Installation problems can come from repository configuration, network access, package conflicts, service startup failures, or permission restrictions. Read the error message before attempting a fix.',
         points: [
-          'Start Docker',
-          'Stop Docker',
-          'Restart Docker',
-          'Check Docker status',
-          'Enable Docker at boot',
+          'Package not found: check the Ubuntu release and repository configuration.',
+          'Repository or key error: inspect the repository file and signing-key path.',
+          'Service not running: inspect the Docker service status and logs.',
+          'Permission denied: check sudo privileges and Docker socket permissions.',
+          'Network failure: check connectivity and DNS resolution.',
         ],
         visual: {
           type: 'docker-flow',
-          title: 'DOCKER SERVICE (systemd)',
-          icon: 'settings',
-          center: 'docker.service',
+          title: 'TROUBLESHOOTING FLOW',
+          icon: 'build',
+          center: 'DIAGNOSE',
           items: [
-            { title: 'start', icon: 'play_arrow' },
-            { title: 'stop', icon: 'stop' },
-            { title: 'restart', icon: 'restart_alt' },
-            { title: 'status', icon: 'info' },
-            { title: 'enable', icon: 'power_settings_new' },
+            { title: 'Packages', text: 'Check apt errors', icon: 'inventory_2' },
+            { title: 'Repository', text: 'Check source/key', icon: 'storage' },
+            { title: 'Service', text: 'Inspect status', icon: 'settings' },
+            { title: 'Permissions', text: 'Check access', icon: 'lock' },
+          ],
+        },
+      },
+      {
+        type: 'command',
+        title: 'Troubleshooting — Inspect Docker Logs',
+        command: `sudo systemctl status docker
+sudo journalctl -u docker --no-pager -n 50`,
+        explanation:
+          'Use these diagnostic commands if Docker fails to start or a container operation fails. The first shows the service state. The second displays the latest 50 log lines from the Docker service.',
+        example:
+          'Review the timestamps and error messages to identify what failed. These commands inspect the system; they do not reinstall Docker.',
+        visual: {
+          type: 'docker-flow',
+          title: 'DIAGNOSTIC TOOLS',
+          icon: 'search',
+          center: 'LOGS',
+          items: [
+            { title: 'Status', text: 'Service state', icon: 'info' },
+            { title: 'Journal', text: 'Recent events', icon: 'description' },
+            { title: 'Analyze', text: 'Find errors', icon: 'troubleshoot' },
           ],
         },
       },
@@ -826,26 +938,28 @@ To generate this message, Docker took the following steps:
         type: 'summary',
         title: 'Installation Complete',
         points: [
-          'Docker should be installed on the host system.',
-          'The Docker version can be checked from the terminal.',
-          'The hello-world image provides a simple installation test.',
-          'Docker can now be used to build and run containers.',
+          'Prepare Ubuntu and configure Docker’s official package repository.',
+          'Install Docker Engine and its supporting components.',
+          'Start Docker and enable it at boot.',
+          'Verify the CLI and engine, then run hello-world.',
+          'Use service status and logs to investigate installation problems.',
         ],
         visual: {
           type: 'docker-flow',
-          title: 'DOCKER READY',
+          title: 'DOCKER INSTALLATION CHECKLIST',
           icon: 'verified',
-          center: 'INSTALLED',
+          center: 'READY',
           items: [
-            { title: 'Engine', icon: 'settings' },
-            { title: 'CLI', icon: 'terminal' },
-            { title: 'hello-world', icon: 'celebration' },
-            { title: 'Ready', icon: 'check_circle' },
+            { title: 'Installed', icon: 'download' },
+            { title: 'Running', icon: 'play_arrow' },
+            { title: 'Verified', icon: 'check_circle' },
+            { title: 'Troubleshoot', icon: 'build' },
           ],
         },
       },
     ],
   },
+
 
   {
     id: 6,
