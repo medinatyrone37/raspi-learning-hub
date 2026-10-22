@@ -1,11 +1,11 @@
-<template>
+﻿<template>
   <q-page class="register-page">
     <div class="register-shell">
       <!-- LEFT: brand + terminal -->
       <section class="brand-panel" aria-hidden="true">
         <div class="brand">
           <div class="brand-icon"><q-icon name="school" size="24px" /></div>
-          <div class="brand-name">Raspi Learning Hub</div>
+          <div class="brand-name">Linux Cybersecurity Learning Hub</div>
         </div>
 
         <div class="brand-content">
@@ -53,7 +53,7 @@
         <div class="form-container">
           <div class="mobile-brand">
             <div class="brand-icon"><q-icon name="school" size="22px" /></div>
-            <div class="brand-name">Raspi Learning Hub</div>
+            <div class="brand-name">Linux Cybersecurity Learning Hub</div>
           </div>
 
           <header class="form-header">
@@ -230,7 +230,7 @@ async function handleRegister() {
     await router.push('/')
   } catch (error) {
     errorMessage.value =
-      error.message || 'We couldn’t create your account. Check your details and try again.'
+      error.message || 'We couldnâ€™t create your account. Check your details and try again.'
   } finally {
     loading.value = false
   }

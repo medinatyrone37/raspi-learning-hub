@@ -72,15 +72,9 @@
             </div>
           </div>
 
-          <div class="float-chip chip-1">
-            <q-icon name="inventory_2" /> Containers
-          </div>
-          <div class="float-chip chip-2">
-            <q-icon name="layers" /> Images
-          </div>
-          <div class="float-chip chip-3">
-            <q-icon name="lan" /> Networking
-          </div>
+          <div class="float-chip chip-1"><q-icon name="inventory_2" /> Containers</div>
+          <div class="float-chip chip-2"><q-icon name="layers" /> Images</div>
+          <div class="float-chip chip-3"><q-icon name="lan" /> Networking</div>
         </div>
       </section>
 
@@ -377,10 +371,16 @@ const features = [
 ]
 
 const steps = [
-  { title: 'Write a Dockerfile', text: 'Describe the base image, dependencies, and start command.' },
+  {
+    title: 'Write a Dockerfile',
+    text: 'Describe the base image, dependencies, and start command.',
+  },
   { title: 'Build the image', text: 'Run docker build to create a reusable, layered image.' },
   { title: 'Run a container', text: 'Start an isolated instance of the image with docker run.' },
-  { title: 'Push to a registry', text: 'Share your image through Docker Hub or a private registry.' },
+  {
+    title: 'Push to a registry',
+    text: 'Share your image through Docker Hub or a private registry.',
+  },
   { title: 'Deploy anywhere', text: 'Pull and run the same image on any server or cloud.' },
 ]
 
@@ -1140,11 +1140,7 @@ onBeforeUnmount(() => {
   flex: 1;
   min-width: 60px;
   height: 2px;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(52, 211, 153, 0.4) 0 8px,
-    transparent 8px 16px
-  );
+  background: repeating-linear-gradient(90deg, rgba(52, 211, 153, 0.4) 0 8px, transparent 8px 16px);
 }
 
 .packet {

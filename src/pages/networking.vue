@@ -10,7 +10,7 @@
         <div class="hero-copy">
           <div class="breadcrumb">
             <span class="crumb-dot"></span>
-            <span>Raspi Learning Hub</span>
+            <span>Linux Cybersecurity Learning Hub</span>
             <span class="crumb-sep">/</span>
             <span>Networking</span>
           </div>
@@ -135,7 +135,12 @@
       </section>
 
       <!-- LESSON DETAILS -->
-      <section v-for="lesson in lessons" :key="lesson.id" :id="lesson.id" class="lesson-detail reveal">
+      <section
+        v-for="lesson in lessons"
+        :key="lesson.id"
+        :id="lesson.id"
+        class="lesson-detail reveal"
+      >
         <div class="detail-heading">
           <span class="detail-number">{{ lesson.number }}</span>
           <div>
@@ -263,7 +268,7 @@
               ><q-icon name="lightbulb" size="18px" /> Use the PDF controls to navigate pages and
               search.</span
             >
-            <span>Raspi Learning Hub</span>
+            <span>Linux Cybersecurity Learning Hub</span>
           </div>
         </q-card>
       </section>
@@ -281,7 +286,13 @@
               </div>
             </div>
             <div class="network-pdf-actions">
-              <q-btn flat round icon="open_in_new" aria-label="Open PDF in new tab" @click="openPdf" />
+              <q-btn
+                flat
+                round
+                icon="open_in_new"
+                aria-label="Open PDF in new tab"
+                @click="openPdf"
+              />
               <q-btn flat round icon="download" aria-label="Download PDF" @click="downloadPdf" />
               <q-btn flat round icon="close" aria-label="Close fullscreen" v-close-popup />
             </div>

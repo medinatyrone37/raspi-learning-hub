@@ -11689,4 +11689,77 @@ const SlideHeading = defineComponent({
     height: 96px;
   }
 }
+
+/* Docker readability improvements — Docker theme only */
+.theme-docker .slide p,
+.theme-docker .slide li {
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.theme-docker .slide h1 {
+  font-size: clamp(30px, 3vw, 42px);
+  line-height: 1.2;
+}
+
+.theme-docker .slide h2 {
+  font-size: 29px;
+  line-height: 1.3;
+}
+
+.theme-docker .slide h3 {
+  font-size: 21px;
+  line-height: 1.4;
+}
+
+.theme-docker .concept-text {
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.theme-docker .docker-flow-center strong,
+.theme-docker .docker-flow-node strong {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.theme-docker .docker-flow-node small {
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.theme-docker .slide small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Improved Docker diagram readability */
+.theme-docker .docker-flow-visual .visual-caption {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+}
+
+.theme-docker .docker-flow-center strong {
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.theme-docker .docker-flow-node strong {
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.theme-docker .docker-flow-node small {
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.theme-docker .docker-flow-node {
+  padding: 12px 10px;
+}
+
 </style>

@@ -51,7 +51,7 @@
 
           <div class="chip chip-status">
             <span class="status-dot" :class="{ off: apiStatus !== 'Online' }"></span>
-            Django API Â· {{ apiStatus }}
+            Django API Ã‚Â· {{ apiStatus }}
           </div>
 
           <div class="chip chip-nodes">
@@ -190,7 +190,7 @@
         <div class="footer-brand">
           <div class="brand">
             <span class="brand-mark"><q-icon name="memory" size="20px" /></span>
-            <span class="brand-name">Raspi Learning Hub</span>
+            <span class="brand-name">Linux Cybersecurity Learning Hub</span>
           </div>
           <p>Practical IT learning, one topic at a time.</p>
         </div>
@@ -212,7 +212,7 @@
       </div>
 
       <div class="wrap footer-base">
-        <span>© 2026 Raspi Learning Hub </span>
+        <span>Â© 2026 Linux Cybersecurity Learning Hub </span>
         <span class="footer-credit">Developed by <strong>Tyrone Justine A. Medina</strong></span>
       </div>
     </footer>
@@ -229,9 +229,9 @@ const apiStatus = ref('Checking...')
 
 const terminalLines = [
   { type: 'cmd', text: 'docker compose up -d' },
-  { type: 'ok', text: 'âœ” network  learning-hub_default' },
-  { type: 'ok', text: 'âœ” api      started' },
-  { type: 'ok', text: 'âœ” db       healthy' },
+  { type: 'ok', text: '[OK] network  learning-hub_default' },
+  { type: 'ok', text: '[OK] api      started' },
+  { type: 'ok', text: '[OK] db       healthy' },
   { type: 'cmd', text: 'docker ps' },
 ]
 
@@ -323,7 +323,7 @@ const features = [
   },
   {
     icon: 'memory',
-    title: 'Raspberry Pi Ready',
+    title: 'Linux Server Ready',
     text: 'Designed with lightweight technologies and deployment on Raspberry Pi in mind.',
   },
 ]

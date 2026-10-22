@@ -12,7 +12,7 @@
 
         <div class="hero-copy">
           <nav class="crumbs fade-up" style="--d: 0s" aria-label="Breadcrumb">
-            <router-link to="/">Raspi Learning Hub</router-link>
+            <router-link to="/">Linux Cybersecurity Learning Hub</router-link>
             <span>/</span>
             <b>Cybersecurity</b>
           </nav>
@@ -97,7 +97,11 @@
       <!-- MARQUEE: tools -->
       <section class="marquee reveal">
         <div class="marquee-track">
-          <div v-for="(tool, i) in [...securityTools, ...securityTools]" :key="i" class="marquee-item">
+          <div
+            v-for="(tool, i) in [...securityTools, ...securityTools]"
+            :key="i"
+            class="marquee-item"
+          >
             <q-icon :name="tool.icon" />
             {{ tool.name }}
           </div>
@@ -413,7 +417,7 @@
       <!-- FOOTER -->
       <footer class="footer">
         <div class="footer-brand">
-          <div class="footer-name"><q-icon name="memory" size="20px" /> Raspi Learning Hub</div>
+          <div class="footer-name"><q-icon name="memory" size="20px" /> Linux Cybersecurity Learning Hub</div>
           <p>Practical IT learning, one topic at a time.</p>
         </div>
 
@@ -763,13 +767,25 @@ const attackStages = [
 ]
 
 const owasp = [
-  { code: 'A01', title: 'Broken Access Control', text: 'Users act outside their intended permissions.' },
+  {
+    code: 'A01',
+    title: 'Broken Access Control',
+    text: 'Users act outside their intended permissions.',
+  },
   { code: 'A02', title: 'Cryptographic Failures', text: 'Sensitive data is poorly protected.' },
   { code: 'A03', title: 'Injection', text: 'Untrusted input is run as commands or queries.' },
   { code: 'A04', title: 'Insecure Design', text: 'Missing security thinking in the design phase.' },
-  { code: 'A05', title: 'Security Misconfiguration', text: 'Unsafe defaults and exposed settings.' },
+  {
+    code: 'A05',
+    title: 'Security Misconfiguration',
+    text: 'Unsafe defaults and exposed settings.',
+  },
   { code: 'A06', title: 'Vulnerable Components', text: 'Using outdated or unpatched libraries.' },
-  { code: 'A07', title: 'Authentication Failures', text: 'Weak login, session, or identity handling.' },
+  {
+    code: 'A07',
+    title: 'Authentication Failures',
+    text: 'Weak login, session, or identity handling.',
+  },
   { code: 'A08', title: 'Integrity Failures', text: 'Untrusted updates, plugins, or pipelines.' },
   { code: 'A09', title: 'Logging & Monitoring', text: 'Attacks go unnoticed without proper logs.' },
   { code: 'A10', title: 'SSRF', text: 'The server is tricked into making unsafe requests.' },

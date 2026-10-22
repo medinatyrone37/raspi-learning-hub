@@ -1356,7 +1356,11 @@ onBeforeUnmount(() => {
   background: repeating-linear-gradient(90deg, rgba(239, 68, 68, 0.55) 0 6px, transparent 6px 12px);
 }
 .rb-link-blue {
-  background: repeating-linear-gradient(90deg, rgba(59, 130, 246, 0.55) 0 6px, transparent 6px 12px);
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0.55) 0 6px,
+    transparent 6px 12px
+  );
 }
 .packet {
   position: absolute;
@@ -2426,8 +2430,12 @@ onBeforeUnmount(() => {
   padding: 44px 48px;
   border-radius: 24px;
   border: 1px solid rgba(168, 85, 247, 0.28);
-  background:
-    linear-gradient(120deg, rgba(239, 68, 68, 0.12), rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.14));
+  background: linear-gradient(
+    120deg,
+    rgba(239, 68, 68, 0.12),
+    rgba(168, 85, 247, 0.1),
+    rgba(59, 130, 246, 0.14)
+  );
 }
 .cta h2 {
   margin: 0 0 8px;
@@ -2488,10 +2496,18 @@ onBeforeUnmount(() => {
     margin: 0 auto;
   }
   .rb-link-red {
-    background: repeating-linear-gradient(180deg, rgba(239, 68, 68, 0.55) 0 6px, transparent 6px 12px);
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(239, 68, 68, 0.55) 0 6px,
+      transparent 6px 12px
+    );
   }
   .rb-link-blue {
-    background: repeating-linear-gradient(180deg, rgba(59, 130, 246, 0.55) 0 6px, transparent 6px 12px);
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(59, 130, 246, 0.55) 0 6px,
+      transparent 6px 12px
+    );
   }
   .rb-link-red .packet {
     top: 0;

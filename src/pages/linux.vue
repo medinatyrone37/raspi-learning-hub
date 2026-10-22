@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <q-page ref="pageRoot" class="linux-page" :class="{ 'anim-ready': animReady }">
     <div class="linux-shell">
       <!-- Intro / hero -->
@@ -6,7 +6,7 @@
         <div class="hero-copy">
           <div class="breadcrumb">
             <span class="crumb-dot"></span>
-            <span>Raspi Learning Hub</span>
+            <span>Linux Cybersecurity Learning Hub</span>
             <span class="crumb-sep">/</span>
             <span>Linux fundamentals</span>
           </div>
@@ -172,7 +172,7 @@
               <q-icon name="lightbulb" size="18px" />
               <span>Tip: Use the PDF's built-in controls for page navigation and search.</span>
             </div>
-            <span class="footer-label">Raspi Learning Hub</span>
+            <span class="footer-label">Linux Cybersecurity Learning Hub</span>
           </div>
         </q-card>
       </section>

@@ -1,11 +1,11 @@
-<template>
+﻿<template>
   <q-page class="login-page">
     <div class="login-shell">
       <!-- LEFT: brand + terminal -->
       <section class="brand-panel" aria-hidden="true">
         <div class="brand">
           <div class="brand-icon"><q-icon name="school" size="24px" /></div>
-          <div class="brand-name">Raspi Learning Hub</div>
+          <div class="brand-name">Linux Cybersecurity Learning Hub</div>
         </div>
 
         <div class="brand-content">
@@ -19,7 +19,7 @@
             </div>
             <div class="terminal-body">
               <div class="line"><b>$</b> ssh pi@learning-hub.local</div>
-              <div class="line dim">pi@learning-hub's password: ••••••••</div>
+              <div class="line dim">pi@learning-hub's password: â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢</div>
               <div class="line ok">Welcome back to the Learning Hub.</div>
               <div class="line"><b>$</b> <span class="cursor"></span></div>
             </div>
@@ -37,7 +37,7 @@
         <div class="form-container">
           <div class="mobile-brand">
             <div class="brand-icon"><q-icon name="school" size="22px" /></div>
-            <div class="brand-name">Raspi Learning Hub</div>
+            <div class="brand-name">Linux Cybersecurity Learning Hub</div>
           </div>
 
           <header class="form-header">

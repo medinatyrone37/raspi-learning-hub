@@ -1,16 +1,16 @@
-<template>
+﻿<template>
   <q-layout view="hHh lpR fFf" class="app-layout">
     <!-- TOP NAVIGATION -->
     <q-header class="app-header">
       <q-toolbar class="header-bar">
         <!-- BRAND -->
-        <router-link class="header-brand" to="/" aria-label="Raspi Learning Hub home">
+        <router-link class="header-brand" to="/" aria-label="Linux Cybersecurity Learning Hub home">
           <span class="brand-mark">
             <q-icon name="memory" size="24px" />
           </span>
 
           <span class="brand-text">
-            <span class="brand-name">Raspi Learning Hub</span>
+            <span class="brand-name">Linux Cybersecurity Learning Hub</span>
             <span class="brand-sub">IT Learning Platform</span>
           </span>
         </router-link>
