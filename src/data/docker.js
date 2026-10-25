@@ -665,7 +665,6 @@ b7e41c2d9a10   nginx       "/docker-entrypoint.…"   10 minutes ago   Up 10 min
     ],
   },
 
-  
   {
     id: 5,
     title: 'Installing Docker',
@@ -959,7 +958,6 @@ sudo journalctl -u docker --no-pager -n 50`,
       },
     ],
   },
-
 
   {
     id: 6,

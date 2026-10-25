@@ -417,7 +417,9 @@
       <!-- FOOTER -->
       <footer class="footer">
         <div class="footer-brand">
-          <div class="footer-name"><q-icon name="memory" size="20px" /> Linux Cybersecurity Learning Hub</div>
+          <div class="footer-name">
+            <q-icon name="memory" size="20px" /> Linux Cybersecurity Learning Hub
+          </div>
           <p>Practical IT learning, one topic at a time.</p>
         </div>
 

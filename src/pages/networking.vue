@@ -1,244 +1,317 @@
 <template>
-  <q-page class="networking-page">
-    <main class="network-shell">
-      <!-- HERO -->
-      <section class="network-hero">
-        <div class="hero-grid-bg" aria-hidden="true"></div>
-        <div class="hero-glow glow-one" aria-hidden="true"></div>
-        <div class="hero-glow glow-two" aria-hidden="true"></div>
+  <q-page class="nx">
+    <div class="nx-progress" :style="{ transform: `scaleX(${progress})` }"></div>
 
-        <div class="hero-copy">
-          <div class="breadcrumb">
-            <span class="crumb-dot"></span>
-            <span>Linux Cybersecurity Learning Hub</span>
-            <span class="crumb-sep">/</span>
-            <span>Networking</span>
-          </div>
-
-          <div class="eyebrow">
-            <q-icon name="lan" />
-            NETWORKING FUNDAMENTALS
-          </div>
-
-          <h1>Understand how <span>networks work.</span></h1>
-          <p class="hero-subtitle">
-            Learn how computers communicate, how IP addresses work, how traffic is secured, and how
-            servers deliver services across a network.
+    <main class="nx-shell">
+      <!-- HERO: live terminal -->
+      <section class="nx-hero">
+        <div class="nx-hero-copy">
+          <p class="nx-crumb">
+            <span class="nx-led"></span> Linux Cybersecurity Learning Hub / Networking
           </p>
+          <h1>Follow the packet, and the network makes sense.</h1>
+          <p class="nx-lead">
+            From a keystroke on your laptop to a web page on a server across the world, every
+            message is cut into packets, addressed, routed, and reassembled. Learn each step, then
+            run the same commands real administrators use.
+          </p>
+          <div class="nx-hero-actions">
+            <button class="nx-btn" @click="scrollTo('nx-journey')">Watch a packet travel</button>
+            <button class="nx-btn nx-btn-ghost" @click="scrollTo('nx-lessons')">
+              Open the {{ lessons.length }} lessons
+            </button>
+          </div>
+        </div>
 
-          <ul class="hero-tags">
-            <li><q-icon name="menu_book" /> {{ lessons.length }} learning modules</li>
-            <li><q-icon name="schedule" /> Self-paced</li>
-            <li><q-icon name="terminal" /> Practical commands</li>
+        <div class="nx-term" aria-label="Interactive simulated terminal">
+          <div class="nx-term-bar">
+            <i></i><i></i><i></i>
+            <span>student@lab: ~ (simulated)</span>
+          </div>
+          <div ref="termBody" class="nx-term-body">
+            <div v-for="(l, i) in termLines" :key="i" :class="l.k">
+              <template v-if="l.k === 'cmd'"><b>student@lab:~$</b> {{ l.t }}</template>
+              <template v-else>{{ l.t }}</template>
+            </div>
+            <form class="nx-term-form" @submit.prevent="runHero(termInput)">
+              <b>student@lab:~$</b>
+              <input
+                v-model="termInput"
+                :disabled="busy"
+                spellcheck="false"
+                autocomplete="off"
+                aria-label="Type a command"
+                placeholder="type help"
+              />
+              <span v-if="busy" class="nx-spin"></span>
+            </form>
+          </div>
+          <div class="nx-term-chips">
+            <button v-for="c in quick" :key="c" :disabled="busy" @click="runHero(c)">
+              {{ c }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PORT TICKER -->
+      <div class="nx-ticker" aria-hidden="true">
+        <div class="nx-ticker-track">
+          <span v-for="(p, i) in [...ports, ...ports]" :key="i"
+            ><b>{{ p[0] }}</b> {{ p[1] }}</span
+          >
+        </div>
+      </div>
+
+      <!-- PACKET JOURNEY -->
+      <section id="nx-journey" class="nx-sec">
+        <header class="nx-head">
+          <h2>The journey of one web request</h2>
+          <p>Press play, or click any device. The packet changes its headers at every hop.</p>
+        </header>
+        <div class="nx-journey">
+          <div class="nx-track">
+            <div class="nx-wire">
+              <div
+                class="nx-wire-fill"
+                :style="{ width: (step / (hops.length - 1)) * 100 + '%' }"
+              ></div>
+            </div>
+            <div class="nx-packet" :style="{ left: (step / (hops.length - 1)) * 100 + '%' }">
+              <q-icon name="mail" size="18px" />
+            </div>
+            <button
+              v-for="(h, i) in hops"
+              :key="h.label"
+              class="nx-hop"
+              :class="{ on: i === step, past: i < step }"
+              @click="goStep(i)"
+            >
+              <q-icon :name="h.icon" size="26px" />
+              <span>{{ h.label }}</span>
+            </button>
+          </div>
+          <div class="nx-hop-info" :key="step">
+            <div>
+              <h3>{{ hops[step].title }}</h3>
+              <p>{{ hops[step].text }}</p>
+            </div>
+            <code>{{ hops[step].hdr }}</code>
+          </div>
+          <div class="nx-ctrl">
+            <button @click="goStep(step - 1)" aria-label="Previous hop">
+              <q-icon name="skip_previous" />
+            </button>
+            <button @click="playing = !playing" :aria-label="playing ? 'Pause' : 'Play'">
+              <q-icon :name="playing ? 'pause' : 'play_arrow'" />
+            </button>
+            <button @click="goStep(step + 1)" aria-label="Next hop">
+              <q-icon name="skip_next" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- OSI EXPLORER -->
+      <section class="nx-sec">
+        <header class="nx-head">
+          <h2>The seven layers, top to bottom</h2>
+          <p>
+            Each layer wraps the data from the layer above with its own header. This is called
+            encapsulation.
+          </p>
+        </header>
+        <div class="nx-osi">
+          <ul class="nx-osi-list">
+            <li v-for="l in osi" :key="l.n">
+              <button :class="{ on: osiSel === l.n }" @click="osiSel = l.n">
+                <em>L{{ l.n }}</em> {{ l.name }}
+              </button>
+            </li>
           </ul>
-
-          <button class="hero-jump" @click="startLearning">
-            <span>Start learning</span>
-            <q-icon name="arrow_downward" size="18px" />
-          </button>
-        </div>
-
-        <div class="network-art" aria-label="Illustration of connected network devices">
-          <div class="network-orbit orbit-one"></div>
-          <div class="network-orbit orbit-two"></div>
-          <div class="network-node node-router">
-            <q-icon name="router" size="32px" />
-            <span>ROUTER</span>
-          </div>
-          <div class="network-node node-server">
-            <q-icon name="dns" size="28px" />
-            <span>SERVER</span>
-          </div>
-          <div class="network-node node-client">
-            <q-icon name="laptop" size="28px" />
-            <span>CLIENT</span>
-          </div>
-          <div class="network-node node-cloud">
-            <q-icon name="cloud" size="28px" />
-            <span>INTERNET</span>
-          </div>
-          <div class="network-core">
-            <q-icon name="lan" size="36px" />
-          </div>
-          <div class="float-chip chip-ip">192.168.1.10</div>
-          <div class="float-chip chip-port">TCP : 443</div>
-          <div class="float-chip chip-ping"><span class="chip-dot"></span> ping 12 ms</div>
-          <span class="art-caption">CONNECTED. COMMUNICATING. ONLINE.</span>
-        </div>
-      </section>
-
-      <!-- QUICK FACTS -->
-      <section class="stats-strip" aria-label="Networking quick facts">
-        <div v-for="stat in stats" :key="stat.label" class="stat-item">
-          <q-icon :name="stat.icon" size="22px" />
-          <div>
-            <strong>{{ stat.value }}</strong>
-            <span>{{ stat.label }}</span>
+          <div class="nx-osi-view" :key="osiSel">
+            <div class="nx-stack">
+              <span
+                v-for="k in osi.filter((x) => x.n <= osiSel).reverse()"
+                :key="k.n"
+                :style="{ '--d': osiSel - k.n }"
+                >{{ k.hdr }}</span
+              >
+              <strong>Your data</strong>
+            </div>
+            <h3>Layer {{ cur.n }}: {{ cur.name }}</h3>
+            <p>{{ cur.text }}</p>
+            <dl>
+              <div>
+                <dt>Data unit</dt>
+                <dd>{{ cur.pdu }}</dd>
+              </div>
+              <div>
+                <dt>Examples</dt>
+                <dd>{{ cur.ex }}</dd>
+              </div>
+              <div>
+                <dt>Security angle</dt>
+                <dd>{{ cur.sec }}</dd>
+              </div>
+            </dl>
           </div>
         </div>
-      </section>
-
-      <!-- OVERVIEW -->
-      <section class="overview-grid" aria-label="Networking learning goals">
-        <article class="overview-item">
-          <div class="overview-icon"><q-icon name="device_hub" size="23px" /></div>
-          <div>
-            <h2>Understand networks</h2>
-            <p>Learn how devices connect and exchange information.</p>
-          </div>
-        </article>
-        <article class="overview-item">
-          <div class="overview-icon"><q-icon name="settings_ethernet" size="23px" /></div>
-          <div>
-            <h2>Learn core concepts</h2>
-            <p>Explore IP addressing, protocols, and network devices.</p>
-          </div>
-        </article>
-        <article class="overview-item">
-          <div class="overview-icon"><q-icon name="terminal" size="23px" /></div>
-          <div>
-            <h2>Practice troubleshooting</h2>
-            <p>Discover commands used to inspect network connectivity.</p>
-          </div>
-        </article>
       </section>
 
       <!-- LESSON INDEX -->
-      <section id="network-study-material" class="study-section">
-        <div class="section-heading">
+      <section id="nx-lessons" class="nx-sec">
+        <header class="nx-head nx-head-row">
           <div>
-            <div class="eyebrow">YOUR LEARNING PATH</div>
             <h2>Networking lessons</h2>
-            <p>Choose a module to explore its concepts and examples.</p>
+            <p>Work through the modules in order, or jump to what you need.</p>
           </div>
-          <div class="module-count">{{ String(lessons.length).padStart(2, '0') }} MODULES</div>
-        </div>
-
-        <div class="lesson-grid">
-          <a
-            v-for="(lesson, index) in lessons"
-            :key="lesson.id"
-            :href="`#${lesson.id}`"
-            class="lesson-card"
-            :style="{ animationDelay: `${index * 70}ms` }"
-          >
-            <div class="lesson-card-top">
-              <span class="lesson-number">{{ lesson.number }}</span>
-              <q-icon name="arrow_outward" size="20px" />
-            </div>
-            <q-icon :name="lesson.icon" class="lesson-icon" size="30px" />
-            <h3>{{ lesson.title }}</h3>
-            <p>{{ lesson.description }}</p>
-            <span class="lesson-link">Explore lesson <q-icon name="east" /></span>
-          </a>
-        </div>
+          <div class="nx-done">{{ done.size }} of {{ lessons.length }} completed</div>
+        </header>
+        <ol class="nx-index">
+          <li v-for="l in lessons" :key="l.id">
+            <a :href="`#${l.id}`">
+              <span class="nx-idx-led" :class="{ lit: done.has(l.id) }"></span>
+              <span class="nx-idx-no">{{ l.number }}</span>
+              <q-icon :name="l.icon" size="22px" />
+              <span class="nx-idx-t"
+                ><strong>{{ l.title }}</strong
+                ><small>{{ l.description }}</small></span
+              >
+              <q-icon name="east" class="nx-idx-go" />
+            </a>
+          </li>
+        </ol>
       </section>
 
       <!-- LESSON DETAILS -->
-      <section
-        v-for="lesson in lessons"
-        :key="lesson.id"
-        :id="lesson.id"
-        class="lesson-detail reveal"
-      >
-        <div class="detail-heading">
-          <span class="detail-number">{{ lesson.number }}</span>
-          <div>
-            <span class="eyebrow">NETWORKING FUNDAMENTALS</span>
-            <h2>{{ lesson.title }}</h2>
-            <p>{{ lesson.description }}</p>
+      <section v-for="l in lessons" :id="l.id" :key="l.id" class="nx-lesson">
+        <div class="nx-lesson-side">
+          <span class="nx-lesson-no">{{ l.number }}</span>
+          <h2>{{ l.title }}</h2>
+          <p>{{ l.description }}</p>
+          <div class="nx-sec-note">
+            <q-icon name="shield" size="18px" />
+            <span><b>Security angle.</b> {{ l.sec }}</span>
           </div>
         </div>
-
-        <div class="detail-content">
-          <p class="lesson-intro">{{ lesson.intro }}</p>
-          <div class="concept-grid">
-            <article v-for="concept in lesson.concepts" :key="concept.title" class="concept-card">
-              <q-icon :name="concept.icon" size="24px" />
-              <h3>{{ concept.title }}</h3>
-              <p>{{ concept.text }}</p>
+        <div class="nx-lesson-main">
+          <p class="nx-intro">{{ l.intro }}</p>
+          <div class="nx-concepts">
+            <article v-for="c in l.concepts" :key="c[1]">
+              <q-icon :name="c[0]" size="22px" />
+              <h3>{{ c[1] }}</h3>
+              <p>{{ c[2] }}</p>
             </article>
           </div>
+          <p class="nx-take"><b>Remember:</b> {{ l.take }}</p>
 
-          <div v-if="lesson.example" class="example-panel">
-            <div class="example-label">
-              <q-icon name="terminal" />
-              PRACTICAL EXAMPLE
+          <div v-if="l.cmds" class="nx-cmds">
+            <h3><q-icon name="terminal" size="18px" /> Try it. Press Run to see sample output.</h3>
+            <div v-for="(cm, i) in l.cmds" :key="i" class="nx-cmd">
+              <div class="nx-cmd-bar">
+                <code><b>$</b> {{ cm.c }}</code>
+                <button :disabled="running[l.id + i]" @click="runLesson(l.id + i, cm.c)">
+                  <q-icon :name="running[l.id + i] ? 'hourglass_top' : 'play_arrow'" size="16px" />
+                  {{ running[l.id + i] ? 'Running' : 'Run' }}
+                </button>
+              </div>
+              <pre v-if="outs[l.id + i] && outs[l.id + i].length">{{
+                outs[l.id + i].join('\n')
+              }}</pre>
+              <p>{{ cm.n }}</p>
             </div>
-            <p>{{ lesson.exampleText }}</p>
-            <pre v-if="lesson.command"><code>{{ lesson.command }}</code></pre>
-            <p v-if="lesson.note" class="example-note">{{ lesson.note }}</p>
           </div>
 
-          <a class="back-to-lessons" href="#network-study-material">
-            <q-icon name="arrow_upward" /> Back to all lessons
-          </a>
+          <div class="nx-lesson-foot">
+            <button class="nx-check" :class="{ on: done.has(l.id) }" @click="toggleDone(l.id)">
+              <q-icon
+                :name="done.has(l.id) ? 'check_circle' : 'radio_button_unchecked'"
+                size="18px"
+              />
+              {{ done.has(l.id) ? 'Completed' : 'Mark as completed' }}
+            </button>
+            <a href="#nx-lessons">Back to lessons</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- SUBNET CALCULATOR -->
+      <section class="nx-sec">
+        <header class="nx-head">
+          <h2>Subnet calculator</h2>
+          <p>Change the address or the prefix length and watch the network boundaries move.</p>
+        </header>
+        <div class="nx-calc">
+          <div class="nx-calc-in">
+            <label>IPv4 address<input v-model="ip" spellcheck="false" inputmode="decimal" /></label>
+            <label
+              >Prefix length: /{{ cidr }}
+              <input v-model.number="cidr" type="range" min="8" max="32" />
+            </label>
+            <div class="nx-bits" v-if="sub" aria-hidden="true">
+              <span
+                v-for="b in 32"
+                :key="b"
+                :class="{ net: b <= cidr, gap: b % 8 === 1 && b > 1 }"
+                >{{ sub.bits[b - 1] }}</span
+              >
+            </div>
+            <small>Teal bits belong to the network. Amber bits identify hosts.</small>
+          </div>
+          <dl class="nx-calc-out" v-if="sub">
+            <div v-for="r in sub.rows" :key="r[0]">
+              <dt>{{ r[0] }}</dt>
+              <dd>{{ r[1] }}</dd>
+            </div>
+          </dl>
+          <p v-else class="nx-err">Enter a valid IPv4 address, for example 192.168.1.10.</p>
         </div>
       </section>
 
       <!-- PDF PRESENTATION -->
-      <section id="network-presentation" class="network-pdf-section reveal">
-        <div class="network-pdf-heading">
+      <section id="network-presentation" class="nx-sec">
+        <header class="nx-head nx-head-row">
           <div>
-            <div class="network-pdf-eyebrow">COURSE PRESENTATION</div>
-            <h2>Networking Presentation</h2>
-            <p>Read the presentation below to review networking concepts and fundamentals.</p>
+            <h2>Networking presentation</h2>
+            <p>Review the full course slides below.</p>
           </div>
-          <div class="network-pdf-status">
-            <span></span>
-            PDF material
-          </div>
-        </div>
-
-        <q-card flat bordered class="network-pdf-card">
-          <div class="network-pdf-toolbar">
-            <div class="network-pdf-file">
-              <div class="network-pdf-file-icon">
-                <q-icon name="picture_as_pdf" size="22px" />
-              </div>
-              <div class="network-pdf-file-copy">
-                <strong>Networking Presentation</strong>
-                <span>PDF learning resource</span>
-              </div>
+          <div class="nx-done"><span class="nx-led"></span> PDF material</div>
+        </header>
+        <q-card flat bordered class="nx-pdf">
+          <div class="nx-pdf-bar">
+            <div class="nx-pdf-file">
+              <q-icon name="picture_as_pdf" size="22px" />
+              <div><strong>Networking Presentation</strong><span>PDF learning resource</span></div>
             </div>
-
-            <div class="network-pdf-actions">
-              <div class="network-pdf-zoom-group">
-                <q-btn
-                  flat
-                  no-caps
-                  icon="remove"
-                  label="Zoom out"
-                  class="network-pdf-toolbar-btn"
-                  :disable="zoom <= 50"
-                  @click="changeZoom(-10)"
-                />
-                <span class="network-pdf-zoom-value">{{ zoom }}%</span>
-                <q-btn
-                  flat
-                  no-caps
-                  icon="add"
-                  label="Zoom in"
-                  class="network-pdf-toolbar-btn"
-                  :disable="zoom >= 150"
-                  @click="changeZoom(10)"
-                />
-              </div>
-
+            <div class="nx-pdf-act">
               <q-btn
                 flat
                 no-caps
-                icon="open_in_new"
-                label="Open PDF"
-                class="network-pdf-toolbar-btn"
-                @click="openPdf"
+                dense
+                icon="remove"
+                label="Zoom out"
+                :disable="zoom <= 50"
+                @click="changeZoom(-10)"
               />
+              <span class="nx-zoom">{{ zoom }}%</span>
+              <q-btn
+                flat
+                no-caps
+                dense
+                icon="add"
+                label="Zoom in"
+                :disable="zoom >= 150"
+                @click="changeZoom(10)"
+              />
+              <q-btn flat no-caps dense icon="open_in_new" label="Open PDF" @click="openPdf" />
               <q-btn
                 unelevated
                 no-caps
+                dense
                 icon="download"
                 label="Download"
-                class="network-pdf-download-btn"
+                class="nx-dl"
                 @click="downloadPdf"
               />
               <q-btn
@@ -246,90 +319,281 @@
                 round
                 dense
                 icon="fullscreen"
-                aria-label="Open PDF viewer in fullscreen"
-                class="network-pdf-fullscreen-btn"
+                aria-label="Fullscreen"
                 @click="isFullscreen = true"
               />
             </div>
           </div>
-
-          <div class="network-pdf-viewer">
+          <div class="nx-pdf-view">
             <iframe
-              :key="`network-pdf-${zoom}`"
-              class="network-pdf-frame"
+              :key="`pdf-${zoom}`"
               :src="viewerUrl"
               title="Networking Presentation PDF"
               loading="lazy"
             ></iframe>
           </div>
-
-          <div class="network-pdf-footer">
-            <span
-              ><q-icon name="lightbulb" size="18px" /> Use the PDF controls to navigate pages and
-              search.</span
-            >
-            <span>Linux Cybersecurity Learning Hub</span>
-          </div>
         </q-card>
       </section>
 
       <q-dialog v-model="isFullscreen" maximized transition-show="fade" transition-hide="fade">
-        <q-card class="network-pdf-fullscreen-card">
-          <div class="network-pdf-fullscreen-toolbar">
-            <div class="network-pdf-file">
-              <div class="network-pdf-file-icon">
-                <q-icon name="picture_as_pdf" size="22px" />
-              </div>
-              <div class="network-pdf-file-copy">
-                <strong>Networking Presentation</strong>
-                <span>Focused reading mode</span>
-              </div>
+        <q-card class="nx-full">
+          <div class="nx-pdf-bar">
+            <div class="nx-pdf-file">
+              <q-icon name="picture_as_pdf" size="22px" />
+              <div><strong>Networking Presentation</strong><span>Focused reading mode</span></div>
             </div>
-            <div class="network-pdf-actions">
-              <q-btn
-                flat
-                round
-                icon="open_in_new"
-                aria-label="Open PDF in new tab"
-                @click="openPdf"
-              />
+            <div class="nx-pdf-act">
+              <q-btn flat round icon="open_in_new" aria-label="Open PDF" @click="openPdf" />
               <q-btn flat round icon="download" aria-label="Download PDF" @click="downloadPdf" />
-              <q-btn flat round icon="close" aria-label="Close fullscreen" v-close-popup />
+              <q-btn flat round icon="close" aria-label="Close" v-close-popup />
             </div>
           </div>
           <iframe
-            class="network-pdf-fullscreen-frame"
+            class="nx-full-frame"
             :src="viewerUrl"
-            title="Networking Presentation fullscreen viewer"
+            title="Networking Presentation fullscreen"
           ></iframe>
         </q-card>
       </q-dialog>
 
       <!-- NEXT STEP -->
-      <section class="next-step reveal">
-        <q-icon name="school" size="30px" />
+      <section class="nx-next">
         <div>
           <h2>Keep building your IT foundation.</h2>
           <p>
-            Understand the network first, then apply these concepts when configuring servers and
-            services.
+            Understand the network first. Then apply these concepts when you configure servers,
+            firewalls, and services.
           </p>
         </div>
-        <button @click="startLearning">Review lessons <q-icon name="east" /></button>
+        <button class="nx-btn" @click="scrollTo('nx-lessons')">Review lessons</button>
       </section>
     </main>
   </q-page>
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
-const stats = [
-  { icon: 'layers', value: '7 layers', label: 'in the OSI model' },
-  { icon: 'pin', value: '65,535', label: 'TCP/UDP ports per host' },
-  { icon: 'public', value: '128-bit', label: 'IPv6 address length' },
-  { icon: 'speed', value: '1 Gbps+', label: 'common Ethernet speeds' },
+/* ---------- Static data ---------- */
+const ports = [
+  [20, 'FTP data'],
+  [22, 'SSH'],
+  [25, 'SMTP'],
+  [53, 'DNS'],
+  [67, 'DHCP'],
+  [80, 'HTTP'],
+  [110, 'POP3'],
+  [123, 'NTP'],
+  [143, 'IMAP'],
+  [161, 'SNMP'],
+  [443, 'HTTPS'],
+  [3306, 'MySQL'],
 ]
+
+const hops = [
+  {
+    icon: 'laptop',
+    label: 'Client',
+    title: '1. Your computer builds the request',
+    text: 'The browser asks DNS for the server address, then creates an HTTP request. TCP splits it into segments and adds source and destination ports.',
+    hdr: 'src 192.168.1.10:51514 > dst 203.0.113.10:443  [TCP SYN]',
+  },
+  {
+    icon: 'lan',
+    label: 'Switch',
+    title: '2. The switch forwards the frame',
+    text: 'The switch reads the destination MAC address and sends the Ethernet frame out of one port only. Inside a LAN, the IP address is not needed for this step.',
+    hdr: 'dst MAC 08:00:27:aa:10:01 (gateway) | src MAC 08:00:27:4e:66:a1',
+  },
+  {
+    icon: 'router',
+    label: 'Router',
+    title: '3. The router picks the next hop',
+    text: 'The router strips the old frame, reads the destination IP, checks its routing table, lowers the TTL by one, and wraps the packet in a new frame.',
+    hdr: 'dst IP 203.0.113.10 | TTL 64 > 63 | NAT 192.168.1.10 > 198.51.100.7',
+  },
+  {
+    icon: 'cloud',
+    label: 'Internet',
+    title: '4. Many routers carry it across',
+    text: 'Dozens of routers owned by different providers forward the packet using BGP routes. Each hop only needs to know the next hop, not the whole path.',
+    hdr: 'hop 4 > hop 5 > ... > hop 11 | TTL 52',
+  },
+  {
+    icon: 'dns',
+    label: 'Server',
+    title: '5. The server answers',
+    text: 'The web server receives the segments, reassembles the request, and returns an HTTP response. The reply travels back along a similar path.',
+    hdr: 'HTTP/1.1 200 OK | Content-Type: text/html | TLS 1.3',
+  },
+]
+
+const osi = [
+  {
+    n: 7,
+    name: 'Application',
+    hdr: 'HTTP',
+    pdu: 'Data',
+    ex: 'HTTP, DNS, SSH, SMTP',
+    text: 'The services users and programs talk to directly. This layer defines the language between client and server.',
+    sec: 'Most attacks you hear about, such as SQL injection and phishing, happen here.',
+  },
+  {
+    n: 6,
+    name: 'Presentation',
+    hdr: 'TLS',
+    pdu: 'Data',
+    ex: 'TLS, JPEG, JSON, UTF-8',
+    text: 'Formats, compresses, and encrypts data so both sides understand it.',
+    sec: 'TLS protects data in transit. Weak ciphers and expired certificates break that protection.',
+  },
+  {
+    n: 5,
+    name: 'Session',
+    hdr: 'Session',
+    pdu: 'Data',
+    ex: 'Sessions, RPC, NetBIOS',
+    text: 'Opens, maintains, and closes conversations between two applications.',
+    sec: 'Stolen session tokens let an attacker hijack a logged-in user.',
+  },
+  {
+    n: 4,
+    name: 'Transport',
+    hdr: 'TCP',
+    pdu: 'Segment / Datagram',
+    ex: 'TCP, UDP, port numbers',
+    text: 'Delivers data between processes using ports. TCP adds reliability; UDP favors speed.',
+    sec: 'Port scans and SYN floods target this layer.',
+  },
+  {
+    n: 3,
+    name: 'Network',
+    hdr: 'IP',
+    pdu: 'Packet',
+    ex: 'IPv4, IPv6, ICMP, routers',
+    text: 'Adds logical addresses and chooses a path across networks.',
+    sec: 'IP spoofing and routing attacks abuse trust in addresses.',
+  },
+  {
+    n: 2,
+    name: 'Data link',
+    hdr: 'Eth',
+    pdu: 'Frame',
+    ex: 'Ethernet, Wi-Fi, MAC, switches',
+    text: 'Moves frames between devices on the same local network using MAC addresses.',
+    sec: 'ARP spoofing and MAC flooding work inside the LAN.',
+  },
+  {
+    n: 1,
+    name: 'Physical',
+    hdr: 'Bits',
+    pdu: 'Bits',
+    ex: 'Copper, fiber, radio',
+    text: 'Turns bits into electrical, light, or radio signals on the medium.',
+    sec: 'Cable taps and rogue access points are physical-layer risks.',
+  },
+]
+
+const OUT = {
+  'ip link show': [
+    '1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 state UNKNOWN',
+    '2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 state UP',
+    '    link/ether 08:00:27:4e:66:a1 brd ff:ff:ff:ff:ff:ff',
+  ],
+  'ethtool eth0': [
+    'Settings for eth0:',
+    '        Speed: 1000Mb/s',
+    '        Duplex: Full',
+    '        Auto-negotiation: on',
+    '        Link detected: yes',
+  ],
+  'ip addr': [
+    '2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500',
+    '    inet 192.168.1.10/24 brd 192.168.1.255 scope global eth0',
+    '    inet6 fe80::a00:27ff:fe4e:66a1/64 scope link',
+  ],
+  'ip route': [
+    'default via 192.168.1.1 dev eth0 proto dhcp metric 100',
+    '192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.10',
+  ],
+  'arp -n': [
+    'Address         HWtype  HWaddress           Iface',
+    '192.168.1.1     ether   08:00:27:aa:10:01   eth0',
+    '192.168.1.20    ether   08:00:27:5c:91:7e   eth0',
+  ],
+  'traceroute example.com': [
+    'traceroute to example.com (203.0.113.10), 30 hops max',
+    ' 1  gateway (192.168.1.1)  1.2 ms',
+    ' 2  isp-edge (10.20.0.1)  8.4 ms',
+    ' 3  core-rtr (172.16.4.9)  10.9 ms',
+    ' 4  ix-peer (198.51.100.2)  12.7 ms',
+    ' 5  example.com (203.0.113.10)  13.1 ms',
+  ],
+  'ss -tulpn': [
+    'Netid State  Local Address:Port  Process',
+    'udp   UNCONN 127.0.0.53:53       systemd-resolved',
+    'tcp   LISTEN 0.0.0.0:22          sshd',
+    'tcp   LISTEN 0.0.0.0:80          nginx',
+  ],
+  'ssh student@192.168.1.20': [
+    "student@192.168.1.20's password: ********",
+    'Welcome to Ubuntu 24.04 LTS',
+    'student@server:~$',
+  ],
+  'scp notes.txt student@192.168.1.20:~/': ['notes.txt      100%  2048   1.9MB/s   00:00'],
+  'curl -I http://127.0.0.1': [
+    'HTTP/1.1 200 OK',
+    'Server: nginx',
+    'Content-Type: text/html',
+    'Content-Length: 615',
+    'Connection: keep-alive',
+  ],
+  'systemctl status nginx': [
+    '● nginx.service - A high performance web server',
+    '     Loaded: loaded (/lib/systemd/system/nginx.service; enabled)',
+    '     Active: active (running) since Sun 2026-10-25 08:14:02',
+  ],
+  'nmcli device wifi list': [
+    'IN-USE  SSID        CHAN  RATE       SIGNAL  SECURITY',
+    '*       LabNet      36    270 Mbit/s  88     WPA3',
+    '        GuestWiFi   6     130 Mbit/s  61     WPA2',
+  ],
+  'ufw status verbose': [
+    'Status: active',
+    'Default: deny (incoming), allow (outgoing)',
+    '22/tcp    ALLOW IN   Anywhere',
+    '443/tcp   ALLOW IN   Anywhere',
+  ],
+  'dig example.com +short': ['203.0.113.10'],
+  'nslookup example.com': [
+    'Server:   127.0.0.53',
+    'Address:  127.0.0.53#53',
+    '',
+    'Name:    example.com',
+    'Address: 203.0.113.10',
+  ],
+}
+const isIp = (s) => /^\d{1,3}(\.\d{1,3}){3}$/.test(s)
+function lookup(raw) {
+  const c = raw.trim().replace(/^sudo\s+/, '')
+  if (OUT[c]) return OUT[c]
+  const [bin, ...a] = c.split(/\s+/)
+  const host = a[a.length - 1]
+  if (bin === 'ping' && host && !host.startsWith('-')) {
+    const addr = isIp(host) ? host : '203.0.113.10'
+    const r = [1, 2, 3, 4].map(
+      (i) =>
+        `64 bytes from ${addr}: icmp_seq=${i} ttl=57 time=${(11 + Math.random() * 3).toFixed(1)} ms`,
+    )
+    return [
+      `PING ${host} (${addr}) 56(84) bytes of data.`,
+      ...r,
+      `--- ${host} ping statistics ---`,
+      '4 packets transmitted, 4 received, 0% packet loss',
+    ]
+  }
+  return null
+}
 
 const lessons = [
   {
@@ -337,1390 +601,1508 @@ const lessons = [
     number: '01',
     icon: 'lan',
     title: 'Introduction to Networking',
-    description: 'Understand what a network is and why devices need to communicate.',
+    description: 'What a network is and why devices need to communicate.',
     intro:
-      'A computer network is a group of connected devices that exchange data and share resources such as files, applications, printers, and internet access.',
+      'A computer network is a group of connected devices that exchange data and share resources such as files, applications, printers, and internet access. Almost every service you use, from email to video calls, depends on one.',
     concepts: [
-      {
-        icon: 'devices',
-        title: 'Network devices',
-        text: 'Computers, phones, servers, printers, and other devices can participate in a network.',
-      },
-      {
-        icon: 'share',
-        title: 'Data communication',
-        text: 'Devices exchange information using agreed rules called protocols.',
-      },
-      {
-        icon: 'hub',
-        title: 'Shared resources',
-        text: 'Networks make it possible to share services, storage, and internet connectivity.',
-      },
+      [
+        'devices',
+        'Hosts and nodes',
+        'Computers, phones, servers, printers, and IoT devices can all take part in a network.',
+      ],
+      [
+        'share',
+        'Protocols',
+        'Devices follow agreed rules, called protocols, so that different vendors can understand each other.',
+      ],
+      [
+        'hub',
+        'Shared resources',
+        'Networks let many users share storage, services, and one internet connection.',
+      ],
     ],
+    take: 'A network is only useful because of shared rules. Without protocols, devices could connect but never understand each other.',
+    sec: 'Every connected device is a possible entry point, so you cannot protect what you have not listed.',
+    cmds: [{ c: 'ip link show', n: 'Lists every network interface and shows whether it is up.' }],
   },
   {
     id: 'network-models',
     number: '02',
     icon: 'account_tree',
     title: 'Network Types and Models',
-    description: 'Explore LAN, WAN, client-server architecture, and networking models.',
+    description: 'LAN, WAN, client-server design, and layered models.',
     intro:
-      'Networks can be classified by their size and purpose. Networking models help explain how information moves between applications and devices.',
+      'Networks are classified by size and purpose. Layered models such as OSI and TCP/IP break the huge job of communication into smaller steps that can be designed, tested, and fixed one at a time.',
     concepts: [
-      {
-        icon: 'home',
-        title: 'LAN',
-        text: 'A Local Area Network connects devices in a limited area, such as a home, lab, or office.',
-      },
-      {
-        icon: 'public',
-        title: 'WAN',
-        text: 'A Wide Area Network connects networks across larger geographical areas. The internet is a major example.',
-      },
-      {
-        icon: 'layers',
-        title: 'OSI and TCP/IP',
-        text: 'Layered models organize networking functions to help explain communication and troubleshoot problems.',
-      },
+      [
+        'home',
+        'LAN',
+        'A Local Area Network covers a limited area such as a home, lab, or office. It is fast and privately managed.',
+      ],
+      [
+        'public',
+        'WAN',
+        'A Wide Area Network links networks across cities or countries. The internet is the largest WAN.',
+      ],
+      [
+        'layers',
+        'OSI and TCP/IP',
+        'OSI has seven layers for teaching. TCP/IP has four layers and is what the internet uses.',
+      ],
     ],
+    take: 'When something breaks, ask "which layer?" first. It turns a vague problem into a short checklist.',
+    sec: 'Defenses are layered too: firewalls at layers 3 and 4, web filters and WAFs at layer 7.',
   },
   {
     id: 'network-topology',
     number: '03',
     icon: 'hub',
     title: 'Topologies and Cabling',
-    description: 'See how networks are arranged and which media carry the signals.',
+    description: 'How networks are arranged and which media carry the signals.',
     intro:
-      'A topology describes how devices are arranged and connected. The physical medium, such as copper cable, fiber, or radio, determines speed, distance, and reliability.',
+      'A topology describes how devices are arranged and connected. The physical medium, whether copper, fiber, or radio, decides speed, distance, and reliability.',
     concepts: [
+      [
+        'scatter_plot',
+        'Star and mesh',
+        'Star topologies connect everything to one switch and dominate LANs. Mesh adds redundant links so a failure does not isolate a device.',
+      ],
+      [
+        'cable',
+        'Copper cabling',
+        'Twisted-pair cables such as Cat5e and Cat6 use RJ-45 connectors and work up to about 100 m.',
+      ],
+      [
+        'flash_on',
+        'Fiber optic',
+        'Fiber carries light over many kilometers with very high bandwidth, so ISPs and data centers rely on it.',
+      ],
+    ],
+    take: 'A star network is easy to manage, but the central switch is a single point of failure.',
+    sec: 'Unused wall ports and unlabeled cables are an easy way for an intruder to plug in.',
+    cmds: [
+      { c: 'ip link show', n: 'Check the interface state.' },
       {
-        icon: 'scatter_plot',
-        title: 'Star and mesh',
-        text: 'Star topologies connect devices to a central switch and are the most common in LANs. Mesh topologies add redundant links for resilience.',
-      },
-      {
-        icon: 'cable',
-        title: 'Copper cabling',
-        text: 'Twisted-pair Ethernet cables such as Cat5e and Cat6 use RJ-45 connectors and work well for typical LAN distances.',
-      },
-      {
-        icon: 'flash_on',
-        title: 'Fiber optic',
-        text: 'Fiber carries light over long distances with high bandwidth and is common in backbones and ISP links.',
+        c: 'sudo ethtool eth0',
+        n: 'Shows negotiated speed and duplex. You may need to install ethtool, and your interface may be called enp3s0.',
       },
     ],
-    example: true,
-    exampleText: 'Check the status and speed of a wired network interface on Linux.',
-    command: 'ip link show\nsudo ethtool eth0',
-    note: 'Your interface name may differ, such as enp3s0. ethtool may need to be installed first.',
   },
   {
     id: 'network-ip',
     number: '04',
     icon: 'pin',
     title: 'IP Addressing, DNS, and DHCP',
-    description: 'Learn how devices are addressed and how names become IP addresses.',
+    description: 'How devices are addressed and how names become addresses.',
     intro:
-      'Devices use IP addresses to communicate across IP networks. Subnets define network boundaries, gateways forward traffic, DNS resolves names, and DHCP can assign network settings automatically.',
+      'Devices use IP addresses to communicate across networks. A subnet defines the network boundary, a gateway forwards traffic outward, DNS turns names into addresses, and DHCP hands out settings automatically.',
     concepts: [
+      [
+        'tag',
+        'IP address',
+        'IPv4 uses 32 bits (192.168.1.10). IPv6 uses 128 bits and solves address exhaustion.',
+      ],
+      [
+        'route',
+        'Subnet and gateway',
+        'A mask such as /24 splits an address into network and host parts. The default gateway is the exit to other networks.',
+      ],
+      [
+        'dns',
+        'DNS and DHCP',
+        'DNS resolves names to records. DHCP leases an address, gateway, and DNS server to each client.',
+      ],
+    ],
+    take: 'Private ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) are not routed on the internet. NAT lets them share one public address.',
+    sec: 'DNS spoofing redirects victims to fake sites, and rogue DHCP servers can hand out malicious gateways.',
+    cmds: [
+      { c: 'ip addr', n: 'Shows the address and prefix of each interface.' },
+      { c: 'ip route', n: 'Shows the default gateway and local network.' },
       {
-        icon: 'tag',
-        title: 'IP address',
-        text: 'An IPv4 address, such as 192.168.1.10, identifies an interface on an IP network.',
-      },
-      {
-        icon: 'route',
-        title: 'Subnet and gateway',
-        text: 'A subnet mask defines the network portion of an IPv4 address. A default gateway provides a route to other networks.',
-      },
-      {
-        icon: 'dns',
-        title: 'DNS and DHCP',
-        text: 'DNS resolves domain names to records, while DHCP leases IP configuration to clients.',
+        c: 'nslookup example.com',
+        n: 'Asks your DNS server to resolve a name. Results vary by network.',
       },
     ],
-    example: true,
-    exampleText: 'Inspect your local addresses, routes, and DNS resolution.',
-    command: 'ip addr\nip route\nnslookup example.com',
-    note: 'These commands inspect local addresses, routes, and DNS resolution on Linux. Your network and DNS results will vary.',
   },
   {
     id: 'network-devices',
     number: '05',
     icon: 'router',
     title: 'Devices and Protocols',
-    description: 'Discover routers, switches, access points, TCP, UDP, and common ports.',
+    description: 'Routers, switches, access points, TCP, UDP, and common ports.',
     intro:
-      'Networking hardware forwards traffic in different ways, while protocols define how data is exchanged between systems and services.',
+      'Different devices forward traffic at different layers, while protocols define how systems exchange data. Ports tell the receiving computer which service should get each packet.',
     concepts: [
-      {
-        icon: 'lan',
-        title: 'Switch',
-        text: 'A network switch forwards Ethernet frames within a local network, commonly using MAC addresses.',
-      },
-      {
-        icon: 'router',
-        title: 'Router',
-        text: 'A router forwards IP packets between different networks.',
-      },
-      {
-        icon: 'swap_horiz',
-        title: 'TCP and UDP',
-        text: 'TCP provides reliable, ordered delivery. UDP sends datagrams without the same built-in delivery guarantees.',
-      },
+      ['lan', 'Switch', 'Forwards Ethernet frames inside a LAN using a table of MAC addresses.'],
+      ['router', 'Router', 'Forwards IP packets between networks using a routing table.'],
+      [
+        'swap_horiz',
+        'TCP and UDP',
+        'TCP gives reliable, ordered delivery through a three-way handshake. UDP skips that for speed, as in DNS queries and video calls.',
+      ],
     ],
-    example: true,
-    exampleText: 'Common default ports for well-known services.',
-    command:
-      'HTTP  : TCP port 80\nHTTPS : TCP port 443\nDNS   : commonly port 53\nSSH   : TCP port 22',
-    note: 'These are common default ports. Actual services can be configured to use different ports, and DNS may use both UDP and TCP.',
+    take: 'HTTP 80, HTTPS 443, SSH 22, DNS 53. These are defaults and administrators can change them.',
+    sec: 'Attackers scan ports to learn which services run. Every open port is attack surface.',
+    cmds: [
+      { c: 'arp -n', n: 'Shows the MAC addresses your host has learned on the LAN.' },
+      { c: 'traceroute example.com', n: 'Lists the routers between you and a destination.' },
+    ],
   },
   {
     id: 'network-wireless-security',
     number: '06',
     icon: 'wifi',
     title: 'Wireless and Network Security',
-    description: 'Learn how Wi-Fi works and how networks are protected.',
+    description: 'How Wi-Fi works and how networks are protected.',
     intro:
-      'Wireless networks use radio signals instead of cables, which makes them convenient but easier to intercept. Encryption, firewalls, and VPNs help protect traffic and control access.',
+      'Wireless networks use radio instead of cables, which is convenient but easier to intercept. Encryption, firewalls, and VPNs control who can listen and who can connect.',
     concepts: [
+      [
+        'wifi',
+        'Wi-Fi basics',
+        '2.4 GHz reaches farther through walls. 5 GHz and 6 GHz are faster over shorter distances.',
+      ],
+      [
+        'enhanced_encryption',
+        'Encryption',
+        'WPA3 is the current standard and WPA2 is still common. Avoid open networks and WEP.',
+      ],
+      [
+        'local_fire_department',
+        'Firewall and VPN',
+        'A firewall allows or blocks traffic by rule. A VPN wraps traffic in an encrypted tunnel across an untrusted network.',
+      ],
+    ],
+    take: 'Default deny is the safest firewall policy. Allow only what is needed.',
+    sec: 'Evil-twin access points copy a real network name to capture credentials. Only scan networks you are permitted to test.',
+    cmds: [
       {
-        icon: 'wifi',
-        title: 'Wi-Fi basics',
-        text: 'Wi-Fi operates mainly on 2.4 GHz and 5 GHz bands. Lower bands reach farther, while higher bands are usually faster.',
+        c: 'nmcli device wifi list',
+        n: 'Needs NetworkManager. Shows nearby networks and their security type.',
       },
       {
-        icon: 'enhanced_encryption',
-        title: 'Encryption',
-        text: 'WPA2 and WPA3 encrypt wireless traffic. Avoid open networks and outdated options such as WEP.',
-      },
-      {
-        icon: 'local_fire_department',
-        title: 'Firewall and VPN',
-        text: 'A firewall allows or blocks traffic by rule, while a VPN creates an encrypted tunnel across an untrusted network.',
+        c: 'sudo ufw status verbose',
+        n: 'Shows the firewall policy. ufw may need to be installed.',
       },
     ],
-    example: true,
-    exampleText: 'List nearby Wi-Fi networks and review your firewall status.',
-    command: 'nmcli device wifi list\nsudo ufw status verbose',
-    note: 'nmcli requires NetworkManager and ufw requires installation on some systems. Only scan networks you are permitted to use.',
   },
   {
     id: 'network-troubleshooting',
     number: '07',
     icon: 'troubleshoot',
     title: 'Network Troubleshooting',
-    description: 'Use basic commands to investigate connectivity and name-resolution issues.',
+    description: 'Check connectivity and name resolution from the inside out.',
     intro:
-      'Troubleshooting works best when you check one layer at a time: local configuration, gateway reachability, remote connectivity, and DNS resolution.',
+      'Troubleshooting works best one layer at a time: local configuration, gateway reachability, remote connectivity, then DNS resolution. Stop at the first step that fails.',
     concepts: [
-      {
-        icon: 'settings',
-        title: 'Check configuration',
-        text: 'Inspect the assigned IP address, network interface status, and routing table.',
-      },
-      {
-        icon: 'wifi_tethering',
-        title: 'Test connectivity',
-        text: 'Use ping where permitted to check whether a destination responds.',
-      },
-      {
-        icon: 'manage_search',
-        title: 'Check DNS',
-        text: 'Compare access by IP address and hostname to help identify name-resolution problems.',
-      },
+      [
+        'settings',
+        'Check configuration',
+        'Confirm the interface is up, has an address, and has a default route.',
+      ],
+      [
+        'wifi_tethering',
+        'Test connectivity',
+        'Ping the gateway first, then an outside IP. Where it stops tells you where to look.',
+      ],
+      [
+        'manage_search',
+        'Check DNS',
+        'If an IP address works but a name does not, the problem is name resolution.',
+      ],
     ],
-    example: true,
-    exampleText: 'Work from the local interface outward to find where the connection fails.',
-    command: 'ip addr\nip route\nping -c 4 192.168.1.1\nnslookup example.com',
-    note: 'Replace 192.168.1.1 with your actual gateway. Some systems block ping, so no response does not always mean the host is offline.',
+    take: 'Gateway fails: local problem. IP works but name fails: DNS problem. Both work: look at the application.',
+    sec: 'Some firewalls drop ping on purpose, so no reply does not always mean the host is down.',
+    cmds: [
+      { c: 'ip addr', n: 'Step 1: do you have an address?' },
+      {
+        c: 'ping -c 4 192.168.1.1',
+        n: 'Step 2: can you reach the gateway? Use your own gateway address.',
+      },
+      { c: 'ping -c 4 203.0.113.10', n: 'Step 3: can you reach an outside IP?' },
+      { c: 'nslookup example.com', n: 'Step 4: does DNS work?' },
+    ],
   },
   {
     id: 'network-remote',
     number: '08',
     icon: 'vpn_key',
     title: 'Network Services and Remote Access',
-    description: 'Find listening services and connect to other machines securely.',
+    description: 'Find listening services and connect to machines securely.',
     intro:
-      'Servers expose services on specific ports. Knowing which ports are listening, and how to connect to them securely, is a core administration skill.',
+      'Servers expose services on specific ports. Knowing what is listening, and how to reach it securely, is a core administration skill.',
     concepts: [
+      [
+        'sensors',
+        'Listening ports',
+        'A service waits on a port for connections. Reviewing them reveals unexpected services.',
+      ],
+      [
+        'terminal',
+        'SSH',
+        'Secure Shell gives an encrypted remote command line. Key-based login is safer than passwords.',
+      ],
+      [
+        'upload_file',
+        'Secure file transfer',
+        'SCP and SFTP copy files through SSH, so data stays encrypted in transit.',
+      ],
+    ],
+    take: 'Disable password login and root login over SSH once keys are working.',
+    sec: 'Exposed SSH ports are hit by brute-force bots within minutes. Use keys and fail2ban.',
+    cmds: [
+      { c: 'ss -tulpn', n: 'Lists listening TCP and UDP sockets with their processes.' },
       {
-        icon: 'sensors',
-        title: 'Listening ports',
-        text: 'A service listens on a port for incoming connections. Reviewing open ports helps you spot unexpected services.',
+        c: 'ssh student@192.168.1.20',
+        n: 'Replace the user and IP. The remote host needs an SSH server.',
       },
       {
-        icon: 'terminal',
-        title: 'SSH',
-        text: 'Secure Shell provides an encrypted remote command line. Key-based login is safer than passwords.',
-      },
-      {
-        icon: 'upload_file',
-        title: 'Secure file transfer',
-        text: 'SCP and SFTP copy files over SSH so data is encrypted in transit.',
+        c: 'scp notes.txt student@192.168.1.20:~/',
+        n: 'Copies a file to the remote home directory.',
       },
     ],
-    example: true,
-    exampleText: 'List listening services, connect to a remote host, and copy a file.',
-    command: 'ss -tulpn\nssh student@192.168.1.20\nscp notes.txt student@192.168.1.20:~/',
-    note: 'Replace student and the IP address with real values. The remote machine must have an SSH server running.',
   },
   {
     id: 'network-servers',
     number: '09',
     icon: 'dns',
     title: 'Servers and Web Server Fundamentals',
-    description: 'Understand client-server communication and the role of a web server.',
+    description: 'Client-server communication and the role of a web server.',
     intro:
-      'A server provides a service to clients. For a website, the browser sends an HTTP request and a web server returns an HTTP response containing a page or other resource.',
+      'A server provides a service to clients. For a website, the browser sends an HTTP request and the web server returns an HTTP response containing a page or other resource.',
     concepts: [
-      {
-        icon: 'computer',
-        title: 'Client',
-        text: 'A browser or application that requests a resource or service.',
-      },
-      {
-        icon: 'dns',
-        title: 'Web server',
-        text: 'Software such as Nginx or Apache receives HTTP requests and serves content or forwards requests to an application.',
-      },
-      {
-        icon: 'sync_alt',
-        title: 'Request and response',
-        text: 'HTTP methods, status codes, headers, and response bodies describe web communication.',
-      },
+      ['computer', 'Client', 'A browser or app that requests a resource.'],
+      [
+        'dns',
+        'Web server',
+        'Software such as Nginx or Apache accepts requests and serves files or passes them to an application.',
+      ],
+      [
+        'sync_alt',
+        'Request and response',
+        'Methods (GET, POST), status codes (200, 404, 500), and headers describe each exchange.',
+      ],
     ],
-    example: true,
-    exampleText: 'Check an HTTP response locally and confirm the web server is running.',
-    command: 'curl -I http://127.0.0.1\nsudo systemctl status nginx',
-    note: 'Run these on a Linux machine where you have permission. The first command checks an HTTP response from the local machine; the second checks the Nginx service.',
+    take: '2xx means success, 3xx redirect, 4xx client error, 5xx server error.',
+    sec: 'Keep server software patched and hide version banners. Both reduce what attackers can learn.',
+    cmds: [
+      { c: 'curl -I http://127.0.0.1', n: 'Requests only the headers from the local web server.' },
+      { c: 'systemctl status nginx', n: 'Checks that the Nginx service is running.' },
+      { c: 'dig example.com +short', n: 'Quick DNS lookup that prints only the answer.' },
+    ],
   },
 ]
 
-const NETWORK_PDF_URL = '/learning/Networking_Presentation.pdf'
+/* ---------- Hero terminal ---------- */
+const quick = [
+  'ip addr',
+  'ping -c 4 example.com',
+  'traceroute example.com',
+  'ss -tulpn',
+  'curl -I http://127.0.0.1',
+]
+const termLines = ref([{ k: 'out', t: 'Simulated lab shell. Type help to see the commands.' }])
+const termInput = ref('')
+const busy = ref(false)
+const termBody = ref(null)
+const timers = []
+const sleep = (ms) => new Promise((r) => timers.push(setTimeout(r, ms)))
+async function stream(lines, push) {
+  for (const l of lines) {
+    await sleep(l.startsWith('64 bytes') ? 420 : 90)
+    push(l)
+  }
+}
+async function runHero(raw) {
+  const c = (raw || '').trim()
+  termInput.value = ''
+  if (!c || busy.value) return
+  if (c === 'clear') {
+    termLines.value = []
+    return
+  }
+  busy.value = true
+  termLines.value.push({ k: 'cmd', t: c })
+  const res =
+    c === 'help'
+      ? ['Available: ' + Object.keys(OUT).join(', '), 'Also: ping <host>, clear']
+      : lookup(c) || [`${c.split(/\s+/)[0]}: command not found in this simulation. Type help.`]
+  await stream(res, (t) => {
+    termLines.value.push({ k: 'out', t })
+    scrollTerm()
+  })
+  busy.value = false
+  await nextTick()
+  scrollTerm()
+}
+async function scrollTerm() {
+  await nextTick()
+  if (termBody.value) termBody.value.scrollTop = termBody.value.scrollHeight
+}
 
+/* ---------- Lesson commands ---------- */
+const outs = reactive({})
+const running = reactive({})
+async function runLesson(key, c) {
+  if (running[key]) return
+  running[key] = true
+  outs[key] = []
+  await stream(lookup(c) || ['(no sample output available)'], (l) => outs[key].push(l))
+  running[key] = false
+}
+
+/* ---------- Journey ---------- */
+const step = ref(0)
+const playing = ref(true)
+let tick = null
+function goStep(i) {
+  step.value = (i + hops.length) % hops.length
+}
+
+/* ---------- OSI ---------- */
+const osiSel = ref(7)
+const cur = computed(() => osi.find((x) => x.n === osiSel.value))
+
+/* ---------- Progress ---------- */
+const done = ref(new Set())
+function toggleDone(id) {
+  const s = new Set(done.value)
+  s.has(id) ? s.delete(id) : s.add(id)
+  done.value = s
+}
+
+/* ---------- Subnet calculator ---------- */
+const ip = ref('192.168.1.10')
+const cidr = ref(24)
+const sub = computed(() => {
+  const p = ip.value.trim().split('.')
+  if (p.length !== 4 || p.some((x) => !/^\d{1,3}$/.test(x) || +x > 255)) return null
+  const n = p.reduce((a, x) => a * 256 + +x, 0) >>> 0
+  const c = Number(cidr.value)
+  const mask = c === 0 ? 0 : (0xffffffff << (32 - c)) >>> 0
+  const net = (n & mask) >>> 0
+  const bc = (net | (~mask >>> 0)) >>> 0
+  const str = (v) => [24, 16, 8, 0].map((s) => (v >>> s) & 255).join('.')
+  const hosts = c === 32 ? 1 : c === 31 ? 2 : 2 ** (32 - c) - 2
+  const first = c >= 31 ? net : net + 1
+  const last = c >= 31 ? bc : bc - 1
+  const bits = n.toString(2).padStart(32, '0')
+  const priv = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(ip.value)
+  return {
+    bits,
+    rows: [
+      ['Network address', `${str(net)}/${c}`],
+      ['Subnet mask', str(mask)],
+      ['Broadcast', str(bc)],
+      ['Usable range', `${str(first)} - ${str(last)}`],
+      ['Usable hosts', hosts.toLocaleString()],
+      ['Address type', priv ? 'Private (RFC 1918)' : 'Public or special-use'],
+    ],
+  }
+})
+
+/* ---------- PDF ---------- */
+const NETWORK_PDF_URL = '/learning/Networking_Presentation.pdf'
 const zoom = ref(100)
 const isFullscreen = ref(false)
-
 const viewerUrl = computed(
   () => `${NETWORK_PDF_URL}#toolbar=1&navpanes=1&view=FitH&zoom=${zoom.value}`,
 )
-
-function changeZoom(amount) {
-  zoom.value = Math.min(150, Math.max(50, zoom.value + amount))
+const changeZoom = (a) => {
+  zoom.value = Math.min(150, Math.max(50, zoom.value + a))
 }
-
-function openPdf() {
-  window.open(NETWORK_PDF_URL, '_blank', 'noopener,noreferrer')
-}
-
+const openPdf = () => window.open(NETWORK_PDF_URL, '_blank', 'noopener,noreferrer')
 function downloadPdf() {
-  const link = document.createElement('a')
-  link.href = NETWORK_PDF_URL
-  link.download = 'Networking_Presentation.pdf'
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
+  const a = document.createElement('a')
+  a.href = NETWORK_PDF_URL
+  a.download = 'Networking_Presentation.pdf'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
 }
+const scrollTo = (id) =>
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
-function startLearning() {
-  document.getElementById('network-study-material')?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start',
-  })
+/* ---------- Scroll progress and autoplay ---------- */
+const progress = ref(0)
+function onScroll() {
+  const h = document.documentElement.scrollHeight - window.innerHeight
+  progress.value = h > 0 ? Math.min(1, window.scrollY / h) : 0
 }
-
-// Scroll-reveal animation (visual only)
-let observer = null
-
 onMounted(() => {
-  const targets = document.querySelectorAll('.networking-page .reveal')
-  if (!('IntersectionObserver' in window)) {
-    targets.forEach((el) => el.classList.add('is-visible'))
-    return
-  }
-  observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible')
-          observer?.unobserve(entry.target)
-        }
-      })
-    },
-    { threshold: 0.12 },
-  )
-  targets.forEach((el) => observer.observe(el))
+  window.addEventListener('scroll', onScroll, { passive: true })
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduce) playing.value = false
+  tick = setInterval(() => {
+    if (playing.value) goStep(step.value + 1)
+  }, 3000)
 })
-
 onBeforeUnmount(() => {
-  observer?.disconnect()
+  window.removeEventListener('scroll', onScroll)
+  clearInterval(tick)
+  timers.forEach(clearTimeout)
 })
 </script>
 
 <style scoped>
-.networking-page {
-  --network-blue: #2563eb;
-  --network-cyan: #06b6d4;
-  --network-ink: #172554;
-  --network-muted: #64748b;
-  --network-line: #dbeafe;
-  background: #f6f9ff;
-  color: var(--network-ink);
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+.nx {
+  --paper: #eaf0ee;
+  --card: #f8fbfa;
+  --ink: #12222c;
+  --mute: #51646c;
+  --line: #cbd9d5;
+  --teal: #0b7a75;
+  --teal-2: #14b8a6;
+  --amber: #ffb454;
+  --deep: #0f1d26;
+  background: var(--paper);
+  background-image:
+    linear-gradient(#0b7a7512 1px, transparent 1px),
+    linear-gradient(90deg, #0b7a7512 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
   min-height: 100vh;
 }
-.network-shell {
-  max-width: 1240px;
-  width: calc(100% - 48px);
+.nx h1,
+.nx h2,
+.nx h3 {
+  font-family: 'IBM Plex Sans Condensed', 'IBM Plex Sans', sans-serif;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.nx code,
+.nx pre,
+.nx-term,
+.nx-bits,
+.nx-ticker {
+  font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+}
+.nx-shell {
+  max-width: 1200px;
+  width: calc(100% - 40px);
   margin: 0 auto;
-  padding: 34px 0 64px;
+  padding: 28px 0 72px;
+}
+.nx-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--teal-2);
+  transform-origin: left;
+  z-index: 2000;
+}
+.nx button {
+  font-family: inherit;
+  cursor: pointer;
+}
+.nx :focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
 }
 
-/* ---------- Keyframes ---------- */
-@keyframes fadeUp {
+/* LED */
+.nx-led {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 0 #ffb45499;
+  animation: led 2s infinite;
+}
+@keyframes led {
+  70% {
+    box-shadow: 0 0 0 8px #ffb45400;
+  }
+  100% {
+    box-shadow: 0 0 0 0 #ffb45400;
+  }
+}
+
+/* Hero */
+.nx-hero {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 40px;
+  align-items: center;
+  padding: 28px 0 40px;
+}
+.nx-crumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 22px;
+  color: var(--mute);
+  font-size: 13px;
+}
+.nx-hero h1 {
+  font-size: clamp(38px, 5.2vw, 64px);
+  line-height: 1.04;
+  font-weight: 700;
+  max-width: 560px;
+}
+.nx-lead {
+  max-width: 520px;
+  margin: 20px 0 26px;
+  color: var(--mute);
+  font-size: 16px;
+  line-height: 1.7;
+}
+.nx-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.nx-btn {
+  border: 2px solid var(--deep);
+  border-radius: 6px;
+  background: var(--deep);
+  color: #fff;
+  padding: 12px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+.nx-btn:hover {
+  background: var(--teal);
+  border-color: var(--teal);
+  transform: translateY(-2px);
+}
+.nx-btn-ghost {
+  background: transparent;
+  color: var(--deep);
+}
+.nx-btn-ghost:hover {
+  color: #fff;
+}
+
+/* Terminal */
+.nx-term {
+  background: var(--deep);
+  border-radius: 10px;
+  box-shadow:
+    0 24px 50px #0f1d2633,
+    0 0 0 1px #1d3340;
+  overflow: hidden;
+  color: #d6e4e0;
+}
+.nx-term-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 14px;
+  background: #162833;
+  font-size: 12px;
+  color: #8ba3a8;
+}
+.nx-term-bar i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #35505c;
+}
+.nx-term-bar span {
+  margin-left: 8px;
+}
+.nx-term-body {
+  height: 330px;
+  overflow-y: auto;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.nx-term-body b {
+  color: var(--amber);
+  font-weight: 500;
+}
+.nx-term-body .out {
+  color: #b8cdc8;
+  animation: line 0.18s ease both;
+}
+@keyframes line {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateX(-6px);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+}
+.nx-term-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nx-term-form input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  caret-color: var(--amber);
+}
+.nx-term-form input:focus {
+  outline: none;
+}
+.nx-spin {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #35505c;
+  border-top-color: var(--amber);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
 }
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
-@keyframes spinReverse {
-  to {
-    transform: rotate(-360deg);
-  }
-}
-@keyframes floatY {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-9px);
-  }
-}
-@keyframes drift {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(24px, -18px) scale(1.08);
-  }
-}
-@keyframes gridMove {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 48px 48px;
-  }
-}
-@keyframes pulseDot {
-  0% {
-    box-shadow: 0 0 0 0 #22d3ee99;
-  }
-  70% {
-    box-shadow: 0 0 0 9px #22d3ee00;
-  }
-  100% {
-    box-shadow: 0 0 0 0 #22d3ee00;
-  }
-}
-@keyframes ripple {
-  0% {
-    transform: scale(1);
-    opacity: 0.55;
-  }
-  100% {
-    transform: scale(2.1);
-    opacity: 0;
-  }
-}
-
-/* ---------- Hero ---------- */
-.network-hero {
-  position: relative;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1.08fr 0.92fr;
-  gap: 30px;
-  align-items: center;
-  min-height: 470px;
-  padding: clamp(28px, 5vw, 60px);
-  border-radius: 30px;
-  background: linear-gradient(125deg, #0b1635 0%, #153c78 58%, #087eaa 100%);
-  color: white;
-  box-shadow: 0 24px 60px #173d7633;
-  animation: fadeUp 0.7s ease both;
-}
-.hero-grid-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image:
-    linear-gradient(#7dd3fc14 1px, transparent 1px),
-    linear-gradient(90deg, #7dd3fc14 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse at 70% 45%, #000 20%, transparent 75%);
-  animation: gridMove 8s linear infinite;
-}
-.hero-glow {
-  position: absolute;
-  z-index: 0;
-  border-radius: 50%;
-  filter: blur(70px);
-  animation: drift 10s ease-in-out infinite;
-}
-.glow-one {
-  width: 280px;
-  height: 280px;
-  top: -80px;
-  right: 8%;
-  background: #22d3ee40;
-}
-.glow-two {
-  width: 220px;
-  height: 220px;
-  bottom: -70px;
-  left: 30%;
-  background: #6366f133;
-  animation-delay: -4s;
-}
-.hero-copy {
-  position: relative;
-  z-index: 2;
-}
-.breadcrumb {
+.nx-term-chips {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
-  color: #c5dcff;
-  font-size: 12px;
-  margin-bottom: 32px;
-}
-.crumb-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22d3ee;
-  animation: pulseDot 2s infinite;
-}
-.crumb-sep {
-  opacity: 0.55;
-}
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
-  color: #0284c7;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.13em;
+  padding: 12px 14px;
+  border-top: 1px solid #1d3340;
+  background: #12232d;
 }
-.network-hero .eyebrow {
-  color: #7ee7ff;
+.nx-term-chips button {
+  border: 1px solid #2a4452;
+  border-radius: 4px;
+  background: transparent;
+  color: #9fe3d9;
+  padding: 5px 9px;
+  font:
+    12px 'IBM Plex Mono',
+    monospace;
 }
-.network-hero h1 {
-  max-width: 650px;
-  margin: 18px 0;
-  font-size: clamp(36px, 4.4vw, 58px);
-  line-height: 1.08;
-  letter-spacing: -0.045em;
-  font-weight: 850;
+.nx-term-chips button:hover:not(:disabled) {
+  background: #1c3846;
 }
-.network-hero h1 span {
-  background: linear-gradient(90deg, #67e8f9, #a5b4fc);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.hero-subtitle {
-  max-width: 570px;
-  color: #d7e8ff;
-  font-size: 15px;
-  line-height: 1.85;
-}
-.hero-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 18px;
-  padding: 0;
-  margin: 24px 0;
-  list-style: none;
-}
-.hero-tags li {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: #dbeafe;
-  font-size: 12px;
-}
-.hero-jump,
-.next-step button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  border: 0;
-  border-radius: 12px;
-  background: #67e8f9;
-  color: #082f49;
-  padding: 13px 18px;
-  font-weight: 800;
-  cursor: pointer;
-  transition:
-    transform 0.2s,
-    background 0.2s,
-    box-shadow 0.2s;
-}
-.hero-jump:hover,
-.next-step button:hover {
-  transform: translateY(-2px);
-  background: #a5f3fc;
-  box-shadow: 0 10px 24px #22d3ee40;
-}
-.hero-jump .q-icon {
-  animation: floatY 1.6s ease-in-out infinite;
+.nx-term-chips button:disabled {
+  opacity: 0.4;
+  cursor: wait;
 }
 
-/* ---------- Network art ---------- */
-.network-art {
-  min-height: 320px;
-  position: relative;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  isolation: isolate;
-}
-.network-orbit {
-  position: absolute;
-  border: 1px solid #a5f3fc35;
-  border-radius: 50%;
-}
-.network-orbit::after {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: calc(50% - 4px);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #67e8f9;
-  box-shadow: 0 0 14px 3px #22d3eecc;
-}
-.orbit-one {
-  width: 290px;
-  height: 290px;
-  animation: spin 16s linear infinite;
-}
-.orbit-two {
-  width: 215px;
-  height: 215px;
-  border-style: dashed;
-  animation: spinReverse 11s linear infinite;
-}
-.orbit-two::after {
-  background: #a5b4fc;
-  box-shadow: 0 0 14px 3px #818cf8cc;
-}
-.network-core {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 88px;
-  height: 88px;
-  border: 1px solid #a5f3fc70;
-  border-radius: 25px;
-  background: #0b274d;
-  color: #67e8f9;
-  box-shadow: 0 0 45px #22d3ee38;
-}
-.network-core::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1px solid #67e8f9;
-  border-radius: 25px;
-  animation: ripple 2.6s ease-out infinite;
-}
-.network-node {
-  position: absolute;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 5px;
-  width: 94px;
-  padding: 12px 6px;
-  border: 1px solid #bfe9ff50;
-  border-radius: 15px;
-  background: #ffffff14;
-  backdrop-filter: blur(8px);
-  color: white;
-  animation: floatY 5s ease-in-out infinite;
-}
-.network-node span {
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  font-weight: 800;
-}
-.node-router {
-  top: 0;
-  left: calc(50% - 47px);
-}
-.node-server {
-  right: 0;
-  top: calc(50% - 43px);
-  animation-delay: -1.2s;
-}
-.node-client {
-  bottom: 14px;
-  left: calc(50% - 47px);
-  animation-delay: -2.4s;
-}
-.node-cloud {
-  left: 0;
-  top: calc(50% - 43px);
-  animation-delay: -3.6s;
-}
-.float-chip {
-  position: absolute;
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 11px;
-  border: 1px solid #a5f3fc40;
-  border-radius: 999px;
-  background: #0b1f40cc;
-  backdrop-filter: blur(8px);
-  color: #a5f3fc;
-  font-size: 10px;
-  font-weight: 700;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  animation: floatY 6s ease-in-out infinite;
-}
-.chip-ip {
-  top: 18%;
-  left: 10%;
-  animation-delay: -1s;
-}
-.chip-port {
-  top: 22%;
-  right: 8%;
-  color: #c7d2fe;
-  border-color: #a5b4fc40;
-  animation-delay: -3s;
-}
-.chip-ping {
-  bottom: 22%;
-  right: 4%;
-  animation-delay: -2s;
-}
-.chip-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #4ade80;
-  animation: pulseDot 1.8s infinite;
-}
-.art-caption {
-  position: absolute;
-  bottom: -4px;
-  color: #a5d9f8;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-}
-
-/* ---------- Stats ---------- */
-.stats-strip {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  margin-top: 22px;
-  border: 1px solid #e2eaf7;
-  border-radius: 18px;
-  background: white;
+/* Ticker */
+.nx-ticker {
   overflow: hidden;
-  animation: fadeUp 0.7s ease 0.15s both;
-}
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 20px 22px;
-  border-right: 1px solid #e2eaf7;
-}
-.stat-item:last-child {
-  border-right: 0;
-}
-.stat-item .q-icon {
-  color: var(--network-blue);
-}
-.stat-item strong {
-  display: block;
-  font-size: 15px;
-  font-weight: 800;
-}
-.stat-item span {
-  color: var(--network-muted);
-  font-size: 11px;
-}
-
-/* ---------- Overview ---------- */
-.overview-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 16px 0 76px;
-}
-.overview-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 23px;
-  border: 1px solid #e2eaf7;
-  border-radius: 18px;
-  background: white;
-  transition:
-    transform 0.25s,
-    box-shadow 0.25s,
-    border-color 0.25s;
-  animation: fadeUp 0.7s ease 0.25s both;
-}
-.overview-item:hover {
-  transform: translateY(-4px);
-  border-color: #93c5fd;
-  box-shadow: 0 16px 32px #1d4ed814;
-}
-.overview-icon {
-  display: grid;
-  place-items: center;
-  flex: 0 0 46px;
-  height: 46px;
-  border-radius: 14px;
-  background: #eff6ff;
-  color: var(--network-blue);
-}
-.overview-item h2 {
-  margin: 1px 0 7px;
-  font-size: 15px;
-  font-weight: 800;
-}
-.overview-item p,
-.section-heading p {
-  margin: 0;
-  color: var(--network-muted);
+  border-block: 1px solid var(--line);
+  background: var(--card);
+  padding: 11px 0;
   font-size: 13px;
-  line-height: 1.7;
+  color: var(--mute);
+}
+.nx-ticker-track {
+  display: flex;
+  gap: 34px;
+  width: max-content;
+  animation: scroll 40s linear infinite;
+}
+.nx-ticker:hover .nx-ticker-track {
+  animation-play-state: paused;
+}
+.nx-ticker b {
+  color: var(--teal);
+  margin-right: 6px;
+  font-weight: 500;
+}
+@keyframes scroll {
+  to {
+    transform: translateX(-50%);
+  }
 }
 
-/* ---------- Lesson index ---------- */
-.study-section {
+/* Sections */
+.nx-sec {
+  margin-top: 84px;
   scroll-margin-top: 24px;
 }
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 20px;
-  margin-bottom: 24px;
+.nx-head {
+  margin-bottom: 26px;
 }
-.section-heading h2 {
-  margin: 8px 0;
-  font-size: clamp(26px, 3vw, 36px);
-  letter-spacing: -0.035em;
+.nx-head h2 {
+  font-size: clamp(28px, 3.4vw, 40px);
+  font-weight: 700;
 }
-.module-count {
-  padding: 9px 12px;
-  border: 1px solid #bfdbfe;
-  border-radius: 10px;
-  background: #eff6ff;
-  color: #1d4ed8;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
+.nx-head p {
+  margin: 8px 0 0;
+  color: var(--mute);
+  max-width: 620px;
+  line-height: 1.65;
 }
-.lesson-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-.lesson-card {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-height: 235px;
-  padding: 22px;
-  border: 1px solid #e2eaf7;
-  border-radius: 19px;
-  background: white;
-  color: var(--network-ink);
-  text-decoration: none;
-  transition:
-    transform 0.25s,
-    border-color 0.25s,
-    box-shadow 0.25s;
-  animation: fadeUp 0.6s ease both;
-}
-.lesson-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #2563eb, #06b6d4);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.35s ease;
-}
-.lesson-card:hover {
-  transform: translateY(-5px);
-  border-color: #93c5fd;
-  box-shadow: 0 18px 36px #1d4ed817;
-}
-.lesson-card:hover::before {
-  transform: scaleX(1);
-}
-.lesson-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  color: #94a3b8;
-}
-.lesson-card-top .q-icon {
-  transition:
-    transform 0.25s,
-    color 0.25s;
-}
-.lesson-card:hover .lesson-card-top .q-icon {
-  color: var(--network-blue);
-  transform: translate(3px, -3px);
-}
-.lesson-number,
-.detail-number {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 11px;
-  background: #eff6ff;
-  color: #2563eb;
-  font-weight: 850;
-  font-size: 12px;
-}
-.lesson-icon {
-  margin-top: 19px;
-  color: #0284c7;
-  transition: transform 0.3s;
-}
-.lesson-card:hover .lesson-icon {
-  transform: scale(1.12) rotate(-4deg);
-}
-.lesson-card h3 {
-  margin: 12px 0 7px;
-  font-size: 17px;
-  font-weight: 800;
-}
-.lesson-card p {
-  margin: 0 0 18px;
-  color: var(--network-muted);
-  font-size: 12px;
-  line-height: 1.75;
-}
-.lesson-link {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-top: auto;
-  color: #2563eb;
-  font-size: 12px;
-  font-weight: 800;
-}
-.lesson-link .q-icon {
-  transition: transform 0.25s;
-}
-.lesson-card:hover .lesson-link .q-icon {
-  transform: translateX(5px);
-}
-
-/* ---------- Lesson details ---------- */
-.lesson-detail {
-  display: grid;
-  grid-template-columns: 0.72fr 1.28fr;
-  gap: 34px;
-  margin-top: 30px;
-  padding: clamp(22px, 4vw, 38px);
-  border: 1px solid #e2eaf7;
-  border-radius: 23px;
-  background: white;
-  scroll-margin-top: 22px;
-}
-.detail-heading {
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-}
-.detail-number {
-  flex: 0 0 42px;
-  height: 42px;
-}
-.detail-heading .eyebrow {
-  font-size: 9px;
-}
-.detail-heading h2 {
-  margin: 10px 0;
-  font-size: clamp(22px, 2.3vw, 29px);
-  line-height: 1.2;
-  letter-spacing: -0.03em;
-}
-.detail-heading p {
-  margin: 0;
-  color: var(--network-muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
-.lesson-intro {
-  margin: 0 0 20px;
-  color: #475569;
-  font-size: 14px;
-  line-height: 1.9;
-}
-.concept-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-.concept-card {
-  padding: 16px;
-  border: 1px solid #e5edf8;
-  border-radius: 14px;
-  background: #f8fbff;
-  transition:
-    transform 0.25s,
-    border-color 0.25s,
-    background 0.25s;
-}
-.concept-card:hover {
-  transform: translateY(-3px);
-  border-color: #93c5fd;
-  background: #f0f7ff;
-}
-.concept-card > .q-icon {
-  color: #0284c7;
-}
-.concept-card h3 {
-  margin: 9px 0 6px;
-  font-size: 13px;
-  font-weight: 800;
-}
-.concept-card p {
-  margin: 0;
-  color: var(--network-muted);
-  font-size: 12px;
-  line-height: 1.75;
-}
-.example-panel {
-  margin-top: 16px;
-  padding: 18px;
-  border: 1px solid #dbeafe;
-  border-radius: 14px;
-  background: #f0f7ff;
-}
-.example-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #1d4ed8;
-  font-size: 10px;
-  font-weight: 850;
-  letter-spacing: 0.1em;
-}
-.example-panel > p {
-  color: #475569;
-  font-size: 12px;
-  line-height: 1.75;
-}
-.example-panel pre {
-  overflow-x: auto;
-  margin: 12px 0;
-  padding: 16px;
-  border: 1px solid #1e3a8a;
-  border-radius: 10px;
-  background: #0b1630;
-  color: #a5f3fc;
-  font-size: 12px;
-  line-height: 1.8;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-}
-.example-panel .example-note {
-  margin-bottom: 0;
-  font-size: 11px;
-}
-.back-to-lessons {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin-top: 18px;
-  color: #2563eb;
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 800;
-}
-.back-to-lessons:hover {
-  text-decoration: underline;
-}
-
-/* ---------- Scroll reveal ---------- */
-.reveal {
-  opacity: 0;
-  transform: translateY(26px);
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s ease;
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ---------- Next step ---------- */
-.next-step {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-top: 36px;
-  padding: 26px;
-  border-radius: 20px;
-  background: linear-gradient(120deg, #e5f5ff, #e0e7ff);
-  color: #12345a;
-}
-.next-step > .q-icon {
-  flex: 0 0 auto;
-  color: #0284c7;
-}
-.next-step h2 {
-  margin: 0 0 6px;
-  font-size: 17px;
-}
-.next-step p {
-  margin: 0;
-  color: #47647f;
-  font-size: 12px;
-  line-height: 1.7;
-}
-.next-step button {
-  margin-left: auto;
-  flex: 0 0 auto;
-  background: #1d4ed8;
-  color: white;
-}
-.next-step button:hover {
-  background: #1e40af;
-}
-
-/* ---------- PDF presentation ---------- */
-.network-pdf-section {
-  margin-top: 72px;
-  scroll-margin-top: 30px;
-}
-.network-pdf-heading {
+.nx-head-row {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 22px;
+  gap: 18px;
+  flex-wrap: wrap;
 }
-.network-pdf-eyebrow {
-  color: #2563eb;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-}
-.network-pdf-heading h2 {
-  margin: 8px 0;
-  color: #172554;
-  font-size: clamp(26px, 3vw, 36px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-}
-.network-pdf-heading p {
-  margin: 0;
-  color: #64748b;
-  line-height: 1.7;
-}
-.network-pdf-status {
+.nx-done {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
-  color: #475569;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--mute);
+}
+
+/* Journey */
+.nx-journey {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  padding: 34px clamp(16px, 4vw, 44px) 22px;
+}
+.nx-track {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 6px;
+}
+.nx-wire {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 34px;
+  height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+}
+.nx-wire-fill {
+  height: 100%;
+  background: var(--teal-2);
+  border-radius: 2px;
+  transition: width 0.9s cubic-bezier(0.6, 0, 0.2, 1);
+}
+.nx-packet {
+  position: absolute;
+  top: 22px;
+  width: 28px;
+  height: 28px;
+  margin-left: -14px;
+  display: grid;
+  place-items: center;
+  background: var(--amber);
+  color: var(--deep);
+  border-radius: 6px;
+  box-shadow: 0 6px 16px #ffb45466;
+  transition: left 0.9s cubic-bezier(0.6, 0, 0.2, 1);
+  z-index: 3;
+  left: 6%;
+}
+.nx-packet {
+  margin-left: calc(-14px);
+}
+.nx-hop {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 88px;
+  border: 0;
+  background: transparent;
+  color: var(--mute);
+  font-size: 13px;
+  font-weight: 500;
+}
+.nx-hop .q-icon {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  transition: all 0.3s;
+}
+.nx-hop.past .q-icon {
+  border-color: var(--teal-2);
+  color: var(--teal);
+}
+.nx-hop.on {
+  color: var(--ink);
+}
+.nx-hop.on .q-icon {
+  border-color: var(--deep);
+  background: var(--deep);
+  color: var(--amber);
+  transform: translateY(-4px);
+}
+.nx-hop-info {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px dashed var(--line);
+  animation: swap 0.4s ease both;
+}
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.nx-hop-info h3 {
+  font-size: 21px;
+  margin-bottom: 6px;
+}
+.nx-hop-info p {
+  margin: 0;
+  color: var(--mute);
+  line-height: 1.7;
+  font-size: 14px;
+}
+.nx-hop-info code {
+  display: block;
+  padding: 14px;
+  border-radius: 8px;
+  background: var(--deep);
+  color: #9fe3d9;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.nx-ctrl {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+.nx-ctrl button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+}
+.nx-ctrl button:hover {
+  background: var(--deep);
+  color: #fff;
+}
+
+/* OSI */
+.nx-osi {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 20px;
+}
+.nx-osi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nx-osi-list button {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  padding: 11px 13px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  transition: all 0.2s;
+}
+.nx-osi-list em {
+  font:
+    500 12px 'IBM Plex Mono',
+    monospace;
+  color: var(--teal);
+  font-style: normal;
+}
+.nx-osi-list button:hover {
+  transform: translateX(4px);
+}
+.nx-osi-list button.on {
+  background: var(--deep);
+  color: #fff;
+  border-color: var(--deep);
+}
+.nx-osi-list button.on em {
+  color: var(--amber);
+}
+.nx-osi-view {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  padding: 26px;
+  animation: swap 0.35s ease both;
+}
+.nx-stack {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.nx-stack span {
+  display: grid;
+  place-items: center;
+  padding: 14px 10px;
+  background: color-mix(in srgb, var(--teal-2) calc(100% - var(--d) * 12%), #fff);
+  color: var(--deep);
+  border-right: 2px solid var(--card);
+  font-family: 'IBM Plex Mono', monospace;
+  animation: pop 0.35s ease both;
+}
+.nx-stack strong {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-width: 90px;
+  background: var(--amber);
+  color: var(--deep);
+  font-weight: 600;
+  padding: 14px;
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scaleX(0.4);
+  }
+}
+.nx-osi-view h3 {
+  font-size: 24px;
+}
+.nx-osi-view > p {
+  margin: 8px 0 18px;
+  color: var(--mute);
+  line-height: 1.7;
+}
+.nx-osi-view dl,
+.nx-calc-out {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+.nx-osi-view dl > div,
+.nx-calc-out > div {
+  display: flex;
+  gap: 16px;
+  padding: 11px 0;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+.nx-osi-view dt,
+.nx-calc-out dt {
+  flex: 0 0 130px;
+  color: var(--mute);
+}
+.nx-osi-view dd,
+.nx-calc-out dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Index */
+.nx-index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  overflow: hidden;
+}
+.nx-index li + li {
+  border-top: 1px solid var(--line);
+}
+.nx-index a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    background 0.2s,
+    padding 0.2s;
+}
+.nx-index a:hover {
+  background: #fff;
+  padding-left: 30px;
+}
+.nx-idx-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line);
+  flex: 0 0 auto;
+  transition: all 0.3s;
+}
+.nx-idx-led.lit {
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+}
+.nx-idx-no {
+  font:
+    500 13px 'IBM Plex Mono',
+    monospace;
+  color: var(--mute);
+}
+.nx-index .q-icon {
+  color: var(--teal);
+}
+.nx-idx-t {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.nx-idx-t small {
+  color: var(--mute);
   font-size: 13px;
 }
-.network-pdf-status span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #06b6d4;
-  animation: pulseDot 2s infinite;
+.nx-idx-go {
+  transition: transform 0.2s;
 }
-.network-pdf-card {
-  overflow: hidden;
-  border: 1px solid #dbeafe;
-  border-radius: 16px;
+.nx-index a:hover .nx-idx-go {
+  transform: translateX(6px);
+}
+
+/* Lessons */
+.nx-lesson {
+  display: grid;
+  grid-template-columns: 0.8fr 1.5fr;
+  gap: 40px;
+  margin-top: 28px;
+  padding: clamp(22px, 4vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  scroll-margin-top: 20px;
+}
+.nx-lesson-side {
+  align-self: start;
+  position: sticky;
+  top: 20px;
+}
+.nx-lesson-no {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 4px 9px;
+  border-radius: 4px;
+  background: var(--deep);
+  color: var(--amber);
+  font:
+    500 12px 'IBM Plex Mono',
+    monospace;
+}
+.nx-lesson-side h2 {
+  font-size: clamp(26px, 2.6vw, 34px);
+  line-height: 1.12;
+  font-weight: 700;
+}
+.nx-lesson-side > p {
+  margin: 10px 0 18px;
+  color: var(--mute);
+  line-height: 1.65;
+  font-size: 14px;
+}
+.nx-sec-note {
+  display: flex;
+  gap: 10px;
+  padding: 13px;
+  border-left: 3px solid var(--amber);
+  background: #fff7e8;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #5b4313;
+}
+.nx-intro {
+  margin: 0 0 20px;
+  font-size: 16px;
+  line-height: 1.85;
+  max-width: 68ch;
+}
+.nx-concepts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.nx-concepts article {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
   background: #fff;
-  box-shadow: 0 14px 40px #1e3a8a0d;
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
 }
-.network-pdf-toolbar,
-.network-pdf-fullscreen-toolbar {
+.nx-concepts article:hover {
+  border-color: var(--teal-2);
+  transform: translateY(-3px);
+}
+.nx-concepts .q-icon {
+  color: var(--teal);
+}
+.nx-concepts h3 {
+  margin: 10px 0 6px;
+  font-size: 17px;
+}
+.nx-concepts p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--mute);
+}
+.nx-take {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: #e3f3f0;
+  color: #0a4f4b;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.nx-cmds {
+  margin-top: 24px;
+}
+.nx-cmds > h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+.nx-cmd {
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background: var(--deep);
+  overflow: hidden;
+}
+.nx-cmd-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding: 16px 20px;
-  border-bottom: 1px solid #dbeafe;
-  background: #fff;
+  gap: 12px;
+  padding: 10px 12px 10px 16px;
 }
-.network-pdf-file {
+.nx-cmd-bar code {
+  color: #fff;
+  font-size: 13px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.nx-cmd-bar b {
+  color: var(--amber);
+  font-weight: 500;
+  margin-right: 6px;
+}
+.nx-cmd-bar button {
   display: flex;
   align-items: center;
-  min-width: 0;
-  gap: 12px;
+  gap: 4px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 5px;
+  background: var(--amber);
+  color: var(--deep);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
 }
-.network-pdf-file-icon {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
-  place-items: center;
-  border-radius: 12px;
-  background: #eff6ff;
-  color: #2563eb;
+.nx-cmd-bar button:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
-.network-pdf-file-copy {
+.nx-cmd pre {
+  margin: 0;
+  padding: 4px 16px 14px;
+  color: #9fe3d9;
+  font-size: 12.5px;
+  line-height: 1.7;
+  overflow-x: auto;
+  animation: line 0.25s ease both;
+}
+.nx-cmd > p {
+  margin: 0;
+  padding: 9px 16px;
+  background: #162833;
+  color: #9db4b8;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.nx-lesson-foot {
   display: flex;
-  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+  font-size: 13px;
+}
+.nx-lesson-foot a {
+  color: var(--teal);
+  font-weight: 600;
+  text-decoration: none;
+}
+.nx-lesson-foot a:hover {
+  text-decoration: underline;
+}
+.nx-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.nx-check.on {
+  border-color: #22c55e;
+  background: #e9f9ee;
+  color: #14532d;
+}
+
+/* Calculator */
+.nx-calc {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 30px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.nx-calc-in {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+.nx-calc label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mute);
+}
+.nx-calc input[type='text'],
+.nx-calc input:not([type]) {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 11px 12px;
+  background: #fff;
+  color: var(--ink);
+  font:
+    500 16px 'IBM Plex Mono',
+    monospace;
+}
+.nx-calc input[type='range'] {
+  accent-color: var(--teal);
+}
+.nx-bits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-size: 13px;
+}
+.nx-bits span {
+  width: 20px;
+  padding: 6px 0;
+  text-align: center;
+  border-radius: 3px;
+  background: #ffe9c7;
+  color: #6b4a0f;
+  transition: background 0.25s;
+}
+.nx-bits span.net {
+  background: #bfece6;
+  color: #0a4f4b;
+}
+.nx-bits span.gap {
+  margin-left: 8px;
+}
+.nx-calc small {
+  color: var(--mute);
+}
+.nx-err {
+  align-self: center;
+  color: #b42318;
+  margin: 0;
+}
+.nx-calc-out dd {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+}
+
+/* PDF */
+.nx-pdf {
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+.nx-pdf-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--card);
+}
+.nx-pdf-file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--teal);
+}
+.nx-pdf-file div {
+  display: flex;
   flex-direction: column;
+  color: var(--ink);
+}
+.nx-pdf-file strong {
+  font-size: 14px;
+}
+.nx-pdf-file span {
+  font-size: 12px;
+  color: var(--mute);
+}
+.nx-pdf-act {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 4px;
 }
-.network-pdf-file-copy strong {
-  overflow: hidden;
-  color: #172554;
-  font-size: 14px;
-  text-overflow: ellipsis;
-}
-.network-pdf-file-copy span {
-  color: #64748b;
-  font-size: 12px;
-}
-.network-pdf-actions,
-.network-pdf-zoom-group {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.network-pdf-zoom-group {
-  padding-right: 10px;
-  border-right: 1px solid #dbeafe;
-}
-.network-pdf-zoom-value {
+.nx-zoom {
   min-width: 42px;
-  color: #334155;
-  font-size: 12px;
-  font-weight: 700;
   text-align: center;
+  font-size: 12px;
+  font-weight: 600;
 }
-.network-pdf-toolbar-btn {
-  color: #334155;
-}
-.network-pdf-download-btn {
-  border-radius: 9px;
-  background: #2563eb;
+.nx-dl {
+  background: var(--deep);
   color: #fff;
-  transition: background 0.2s;
+  border-radius: 6px;
 }
-.network-pdf-download-btn:hover {
-  background: #1d4ed8;
-}
-.network-pdf-fullscreen-btn {
-  color: #2563eb;
-}
-.network-pdf-viewer {
+.nx-pdf-view {
   height: min(80vh, 920px);
-  min-height: 520px;
-  background: #eaf1fb;
+  min-height: 480px;
+  background: #dde8e5;
 }
-.network-pdf-frame {
+.nx-pdf-view iframe,
+.nx-full-frame {
   display: block;
   width: 100%;
   height: 100%;
   border: 0;
 }
-.network-pdf-footer {
+.nx-full {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+}
+.nx-full-frame {
+  flex: 1;
+  background: #dde8e5;
+}
+
+/* Next */
+.nx-next {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 13px 20px;
-  color: #64748b;
-  font-size: 12px;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 60px;
+  padding: 34px;
+  border-radius: 12px;
+  background: var(--deep);
+  color: #fff;
 }
-.network-pdf-footer span:first-child {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+.nx-next h2 {
+  font-size: 26px;
 }
-.network-pdf-fullscreen-card {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: #f8fafc;
+.nx-next p {
+  margin: 8px 0 0;
+  color: #9db4b8;
+  max-width: 520px;
+  line-height: 1.65;
 }
-.network-pdf-fullscreen-frame {
-  width: 100%;
-  flex: 1;
-  border: 0;
-  background: #eaf1fb;
+.nx-next .nx-btn {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--deep);
 }
 
-/* ---------- Responsive ---------- */
-@media (max-width: 900px) {
-  .network-hero {
+/* Responsive */
+@media (max-width: 960px) {
+  .nx-hero,
+  .nx-osi,
+  .nx-lesson,
+  .nx-calc,
+  .nx-hop-info {
     grid-template-columns: 1fr;
   }
-  .network-art {
-    min-height: 320px;
+  .nx-lesson-side {
+    position: static;
   }
-  .stats-strip {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .stat-item:nth-child(2) {
-    border-right: 0;
-  }
-  .stat-item:nth-child(-n + 2) {
-    border-bottom: 1px solid #e2eaf7;
-  }
-  .overview-grid {
+  .nx-concepts {
     grid-template-columns: 1fr;
   }
-  .lesson-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .lesson-detail {
-    grid-template-columns: 1fr;
-    gap: 22px;
-  }
-}
-@media (max-width: 760px) {
-  .network-pdf-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .network-pdf-toolbar {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 14px;
-  }
-  .network-pdf-actions {
-    justify-content: flex-start;
-    width: 100%;
-  }
-  .network-pdf-zoom-group {
+  .nx-osi-list {
+    flex-direction: row;
     flex-wrap: wrap;
-    padding-right: 0;
-    border-right: 0;
   }
-  .network-pdf-viewer {
-    height: 68vh;
-    min-height: 400px;
-  }
-  .network-pdf-footer {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 12px 14px;
+  .nx-osi-list li {
+    flex: 1 1 130px;
   }
 }
 @media (max-width: 560px) {
-  .network-shell {
-    width: calc(100% - 28px);
-    padding-top: 16px;
+  .nx-hop {
+    width: 56px;
+    font-size: 11px;
   }
-  .network-hero {
-    padding: 25px 21px;
-    border-radius: 22px;
+  .nx-hop .q-icon {
+    width: 44px;
+    height: 44px;
   }
-  .network-hero h1 {
-    font-size: 37px;
+  .nx-wire {
+    top: 28px;
   }
-  .breadcrumb {
-    margin-bottom: 25px;
+  .nx-packet {
+    top: 16px;
   }
-  .network-art {
-    min-height: 280px;
-    transform: scale(0.9);
+  .nx-bits span {
+    width: 14px;
+    font-size: 11px;
   }
-  .float-chip {
-    display: none;
-  }
-  .stats-strip {
-    grid-template-columns: 1fr;
-  }
-  .stat-item {
-    border-right: 0;
-    border-bottom: 1px solid #e2eaf7;
-  }
-  .stat-item:last-child {
-    border-bottom: 0;
-  }
-  .lesson-grid,
-  .concept-grid {
-    grid-template-columns: 1fr;
-  }
-  .section-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .next-step {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-  .next-step button {
-    margin-left: 0;
-  }
-  .overview-item {
-    padding: 18px;
+  .nx-stack span {
+    padding: 12px 6px;
   }
 }
-
-/* ---------- Accessibility ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
-    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-  .reveal {
-    opacity: 1;
-    transform: none;
   }
 }
 </style>

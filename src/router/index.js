@@ -20,6 +20,9 @@ import DockerLearningPage from '../pages/docker-learning.vue'
 import RedBluePage from '../pages/redblue.vue'
 import RedBlueLearningPage from '../pages/redblue-learning.vue'
 import LinuxPage from '../pages/linux.vue'
+import LinuxServicesPage from '../pages/linux-services.vue'
+import LinuxServerHardeningPage from '../pages/linux-server-hardening.vue'
+import LinuxMonitoringPage from '../pages/linux-monitoring.vue'
 import NetworkingPage from '../pages/networking.vue'
 
 const routes = [
@@ -45,6 +48,15 @@ const routes = [
       {
         path: '',
         component: IndexPage,
+      },
+
+      // PROTECTED - NETWORKING
+      {
+        path: 'networking',
+        component: NetworkingPage,
+        meta: {
+          requiresAuth: true,
+        },
       },
 
       // PROTECTED â€” CYBERSECURITY
@@ -109,9 +121,28 @@ const routes = [
           requiresAuth: true,
         },
       },
+
       {
-        path: 'networking',
-        component: NetworkingPage,
+        path: 'linux/services',
+        component: LinuxServicesPage,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+
+      // PROTECTED - LINUX SERVER MONITORING
+      {
+        path: 'linux/monitoring',
+        component: LinuxMonitoringPage,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+
+      // PROTECTED - LINUX SERVER HARDENING
+      {
+        path: 'linux/hardening',
+        component: LinuxServerHardeningPage,
         meta: {
           requiresAuth: true,
         },

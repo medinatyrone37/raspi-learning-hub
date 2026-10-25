@@ -11761,5 +11761,4 @@ const SlideHeading = defineComponent({
 .theme-docker .docker-flow-node {
   padding: 12px 10px;
 }
-
 </style>
