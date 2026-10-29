@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <q-page ref="root" class="home">
     <!-- HERO -->
     <section id="top" class="hero">
@@ -15,20 +15,22 @@
           </div>
 
           <h1 class="reveal" style="--d: 60ms">
-            <span class="h1-line">Learn.</span>
-            <span class="h1-line">Build.</span>
-            <span class="h1-line h1-hot">Deploy.</span>
+            <span class="h1-line">Explore.</span>
+            <span class="h1-line">Configure.</span>
+            <span class="h1-line h1-hot">Secure.</span>
           </h1>
 
           <p class="hero-sub reveal" style="--d: 120ms">
-            Your hands-on learning hub for modern IT technologies.
+            Your gateway to practical IT and server administration.
           </p>
 
           <p class="hero-desc reveal" style="--d: 180ms">
-            Work through practical lessons in cybersecurity, Docker, Linux, and networking. Every
-            topic is broken into short, structured steps with real commands, real architecture, and
-            real-world scenarios, built for IT students and aspiring developers.
+            Explore hands-on lessons in Linux server management, networking, cybersecurity, and
+            essential server services. Learn through real commands, practical configurations,
+            network architectures, and security monitoring tools designed to help you develop
+            the skills needed to manage, troubleshoot, and secure modern IT infrastructure.
           </p>
+
 
           <div class="hero-actions reveal" style="--d: 240ms">
             <q-btn
