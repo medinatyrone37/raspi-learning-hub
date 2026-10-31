@@ -336,6 +336,16 @@
             class="tool-card reveal"
             :style="{ transitionDelay: i * 100 + 'ms' }"
           >
+            <figure v-if="tool.image" class="tool-shot" @click="previewImage = tool">
+              <img
+                :src="tool.image"
+                :alt="tool.name + ' interface screenshot'"
+                loading="lazy"
+                @error="$event.target.closest('.tool-shot').style.display = 'none'"
+              />
+              <figcaption><q-icon name="zoom_in" /> {{ tool.imageCaption }}</figcaption>
+            </figure>
+
             <div class="tool-icon" :class="tool.className">
               <q-icon :name="tool.icon" />
             </div>
@@ -359,6 +369,15 @@
             <div class="tool-tags">
               <span v-for="tag in tool.tags" :key="tag">{{ tag }}</span>
             </div>
+
+            <q-btn
+              outline
+              no-caps
+              class="btn-ghost explore-btn"
+              icon="travel_explore"
+              :label="'Explore ' + tool.name"
+              @click="openExplore(tool)"
+            />
           </article>
         </div>
 
@@ -407,6 +426,262 @@
             </p>
           </div>
         </div>
+
+        <!-- Explore dialog -->
+        <q-dialog
+          :model-value="!!exploreTool"
+          @update:model-value="exploreTool = null"
+        >
+          <q-card v-if="exploreTool" class="explore-dialog">
+            <div class="explore-head">
+              <div class="explore-icon" :class="exploreTool.className">
+                <q-icon :name="exploreTool.icon" />
+              </div>
+              <div class="explore-title">
+                <span class="tool-type">{{ exploreTool.type }}</span>
+                <h3>{{ exploreTool.name }}</h3>
+              </div>
+              <q-btn
+                flat
+                round
+                dense
+                icon="close"
+                class="explore-close"
+                aria-label="Close"
+                @click="exploreTool = null"
+              />
+            </div>
+
+            <q-tabs
+              v-model="exploreTab"
+              dense
+              no-caps
+              align="left"
+              inline-label
+              mobile-arrows
+              active-color="green-4"
+              indicator-color="green-4"
+              class="explore-tabs"
+            >
+              <q-tab name="overview" icon="info" label="Overview" />
+              <q-tab name="components" icon="extension" label="Components" />
+              <q-tab name="features" icon="star" label="Features" />
+              <q-tab name="usecases" icon="work" label="Use cases" />
+              <q-tab name="try" icon="terminal" label="Try it" />
+              <q-tab name="discuss" icon="forum" label="Discuss" />
+            </q-tabs>
+
+            <q-tab-panels v-model="exploreTab" animated class="explore-panels">
+              <!-- Overview -->
+              <q-tab-panel name="overview">
+                <img
+                  v-if="exploreTool.image"
+                  :src="exploreTool.image"
+                  :alt="exploreTool.name + ' interface screenshot'"
+                  class="explore-shot"
+                  @error="$event.target.style.display = 'none'"
+                />
+                <p class="explore-lead">{{ exploreTool.explore.summary }}</p>
+
+                <div class="flow-label">How data moves</div>
+                <div class="flow-row">
+                  <template v-for="(f, i) in exploreTool.explore.flow" :key="f">
+                    <span class="flow-step">{{ f }}</span>
+                    <q-icon
+                      v-if="i < exploreTool.explore.flow.length - 1"
+                      name="arrow_forward"
+                      class="flow-arrow"
+                    />
+                  </template>
+                </div>
+
+                <div class="fact-grid">
+                  <div v-for="f in exploreTool.explore.facts" :key="f.label" class="fact">
+                    <span>{{ f.label }}</span>
+                    <strong>{{ f.value }}</strong>
+                  </div>
+                </div>
+
+                <div class="explore-links">
+                  <q-btn
+                    v-for="l in exploreTool.explore.links"
+                    :key="l.url"
+                    outline
+                    no-caps
+                    dense
+                    class="btn-ghost"
+                    icon="open_in_new"
+                    :label="l.label"
+                    :href="l.url"
+                    target="_blank"
+                    rel="noopener"
+                  />
+                </div>
+              </q-tab-panel>
+
+              <!-- Components -->
+              <q-tab-panel name="components">
+                <p class="explore-note">The main building blocks and what each one does.</p>
+                <div class="explore-grid">
+                  <div v-for="c in exploreTool.explore.components" :key="c.name" class="explore-item">
+                    <q-icon :name="c.icon" />
+                    <div>
+                      <strong>{{ c.name }}</strong>
+                      <span>{{ c.text }}</span>
+                    </div>
+                  </div>
+                </div>
+              </q-tab-panel>
+
+              <!-- Features -->
+              <q-tab-panel name="features">
+                <p class="explore-note">What the tool can do for you.</p>
+                <div class="explore-grid">
+                  <div v-for="f in exploreTool.explore.features" :key="f.title" class="explore-item">
+                    <q-icon :name="f.icon" />
+                    <div>
+                      <strong>{{ f.title }}</strong>
+                      <span>{{ f.text }}</span>
+                    </div>
+                  </div>
+                </div>
+              </q-tab-panel>
+
+              <!-- Use cases -->
+              <q-tab-panel name="usecases">
+                <p class="explore-note">Realistic situations where this tool helps.</p>
+                <ul class="usecase-list">
+                  <li v-for="u in exploreTool.explore.useCases" :key="u.title">
+                    <q-icon name="check_circle" />
+                    <div>
+                      <strong>{{ u.title }}</strong>
+                      <span>{{ u.text }}</span>
+                    </div>
+                  </li>
+                </ul>
+              </q-tab-panel>
+
+              <!-- Try it -->
+              <q-tab-panel name="try">
+                <p class="explore-note">
+                  Commands you can run on a lab machine where the tool is installed. Only use them
+                  on systems you own or are authorized to administer.
+                </p>
+                <div class="flow-label">Where to practice</div>
+                <div class="practice-list">
+                  <div class="practice-row here">
+                    <q-icon name="terminal" />
+                    <div>
+                      <strong>Right here: the Practice Terminal</strong>
+                      <span>
+                        Press the play button on any command below to run it in the simulator and
+                        see sample output. Nothing touches a real system.
+                      </span>
+                    </div>
+                  </div>
+                  <div v-for="p in exploreTool.explore.practice" :key="p.title" class="practice-row">
+                    <q-icon name="computer" />
+                    <div>
+                      <strong>{{ p.title }}</strong>
+                      <span>{{ p.text }}</span>
+                      <code v-if="p.cmd">{{ p.cmd }}</code>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flow-label spaced">Commands and sample output</div>
+                <div class="try-list">
+                  <div v-for="c in exploreTool.explore.commands" :key="c.cmd" class="try-row">
+                    <div class="try-text">
+                      <code><span class="dollar">$</span> {{ c.cmd }}</code>
+                      <span>{{ c.desc }}</span>
+                      <details v-if="c.out" class="try-details">
+                        <summary>Show sample output</summary>
+                        <pre class="try-out">{{ c.out.join('\n') }}</pre>
+                      </details>
+                    </div>
+                    <div class="try-actions">
+                      <q-btn
+                        flat
+                        round
+                        dense
+                        color="cyan-4"
+                        icon="play_arrow"
+                        aria-label="Run in simulator"
+                        @click="runToolCommand(c.cmd)"
+                      >
+                        <q-tooltip>Run in simulator</q-tooltip>
+                      </q-btn>
+                      <q-btn
+                        flat
+                        round
+                        dense
+                        color="positive"
+                        icon="content_copy"
+                        aria-label="Copy command"
+                        @click="copyCommand(c.cmd)"
+                      >
+                        <q-tooltip>Copy command</q-tooltip>
+                      </q-btn>
+                    </div>
+                  </div>
+                </div>
+                <p class="explore-note small">
+                  Sample outputs are examples for learning. Your real output will differ by
+                  version, hostnames, and IP addresses.
+                </p>
+
+                <div v-if="exploreTool.explore.rule" class="rule-box">
+                  <div class="flow-label">Example rule</div>
+                  <code class="rule-code">{{ exploreTool.explore.rule.text }}</code>
+                  <ul class="rule-parts">
+                    <li v-for="r in exploreTool.explore.rule.parts" :key="r.k">
+                      <code>{{ r.k }}</code>
+                      <span>{{ r.v }}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div v-if="exploreTool.explore.installNote" class="explore-callout">
+                  <q-icon name="lightbulb" />
+                  <span>{{ exploreTool.explore.installNote }}</span>
+                </div>
+              </q-tab-panel>
+
+              <!-- Discuss -->
+              <q-tab-panel name="discuss">
+                <p class="explore-note">
+                  Think about your own answer first, then open the question to compare.
+                </p>
+                <q-expansion-item
+                  v-for="d in exploreTool.explore.discuss"
+                  :key="d.q"
+                  dark
+                  class="discuss-item"
+                  expand-icon-class="text-grey-5"
+                >
+                  <template #header>
+                    <q-item-section avatar>
+                      <q-icon name="help_outline" color="cyan-4" />
+                    </q-item-section>
+                    <q-item-section>{{ d.q }}</q-item-section>
+                  </template>
+                  <div class="discuss-answer">{{ d.a }}</div>
+                </q-expansion-item>
+              </q-tab-panel>
+            </q-tab-panels>
+          </q-card>
+        </q-dialog>
+
+        <!-- Click-to-enlarge screenshot preview -->
+        <q-dialog :model-value="!!previewImage" @update:model-value="previewImage = null">
+          <q-card v-if="previewImage" class="shot-dialog">
+            <img :src="previewImage.image" :alt="previewImage.name + ' interface screenshot'" />
+            <div class="shot-dialog-cap">
+              {{ previewImage.name }}: {{ previewImage.imageCaption }}
+            </div>
+          </q-card>
+        </q-dialog>
       </section>
 
       <!-- ================= PRACTICE LAB ================= -->
@@ -951,6 +1226,19 @@ const openArea = ref(-1)
 const scrollProgress = ref(0)
 const activeSection = ref('top')
 const bgCanvas = ref(null)
+const previewImage = ref(null)
+const exploreTool = ref(null)
+const exploreTab = ref('overview')
+
+function runToolCommand(cmd) {
+  exploreTool.value = null
+  setTimeout(() => runInTerminal(cmd), 400)
+}
+
+function openExplore(tool) {
+  exploreTab.value = 'overview'
+  exploreTool.value = tool
+}
 
 const sections = [
   { id: 'top', label: 'Home' },
@@ -1109,6 +1397,179 @@ const securityTools = [
     ],
     feature: 'Endpoint security monitoring and alerting',
     tags: ['SIEM', 'XDR', 'Endpoint'],
+    image: '/learning/wazuh-dashboard.png',
+    imageCaption: 'Wazuh Dashboard: security events and agent overview',
+    explore: {
+      summary:
+        'Wazuh is a free, open source security platform that combines SIEM and XDR capabilities. Lightweight agents on your servers send events to a central server, which analyzes them with rules, stores the results, and shows them in a web dashboard.',
+      flow: ['Agent on server', 'Wazuh server', 'Wazuh indexer', 'Wazuh dashboard'],
+      facts: [
+        { label: 'License', value: 'Open source (GPLv2)' },
+        { label: 'Agents run on', value: 'Linux, Windows, macOS and more' },
+        { label: 'Common ports', value: '1514 events, 1515 enrollment, 55000 API' },
+      ],
+      links: [
+        { label: 'wazuh.com', url: 'https://wazuh.com' },
+        { label: 'Documentation', url: 'https://documentation.wazuh.com' },
+      ],
+      components: [
+        {
+          name: 'Wazuh agent',
+          icon: 'devices',
+          text: 'Installed on the monitored endpoint. Reads logs, checks file integrity, collects software inventory, and forwards the data securely.',
+        },
+        {
+          name: 'Wazuh server',
+          icon: 'dns',
+          text: 'Receives agent data, decodes it, and matches it against rules to create alerts. It also manages agents and triggers active responses.',
+        },
+        {
+          name: 'Wazuh indexer',
+          icon: 'storage',
+          text: 'A search and analytics engine that stores and indexes alerts so they can be queried quickly.',
+        },
+        {
+          name: 'Wazuh dashboard',
+          icon: 'dashboard',
+          text: 'The web interface shown in the screenshot. Used to review alerts, agent status, vulnerabilities, and compliance views.',
+        },
+      ],
+      features: [
+        {
+          title: 'File integrity monitoring',
+          icon: 'difference',
+          text: 'Alerts when watched files or directories are added, changed, or deleted, such as /etc or a web root.',
+        },
+        {
+          title: 'Vulnerability detection',
+          icon: 'bug_report',
+          text: 'Compares installed software against known vulnerability data to show which hosts need patching.',
+        },
+        {
+          title: 'Configuration assessment',
+          icon: 'fact_check',
+          text: 'Checks systems against hardening guidelines and reports settings that fail the benchmark.',
+        },
+        {
+          title: 'Log data analysis',
+          icon: 'article',
+          text: 'Collects logs such as auth.log and syslog and applies decoders and rules to spot suspicious events.',
+        },
+        {
+          title: 'Active response',
+          icon: 'bolt',
+          text: 'Can run an automatic action, for example blocking an IP address, when a specific rule fires.',
+        },
+        {
+          title: 'Regulatory compliance',
+          icon: 'verified_user',
+          text: 'Maps alerts to frameworks such as PCI DSS, GDPR, HIPAA, and NIST 800-53 to support audits.',
+        },
+      ],
+      useCases: [
+        {
+          title: 'Catch SSH brute force across many servers',
+          text: 'Agents forward authentication logs, and a rule fires when failed logins pile up from one source.',
+        },
+        {
+          title: 'Detect unexpected file changes',
+          text: 'A change to /etc/passwd or a website file at an odd hour raises an integrity alert.',
+        },
+        {
+          title: 'Prioritize patching',
+          text: 'The vulnerability view shows which servers run packages with known issues.',
+        },
+        {
+          title: 'Prepare audit evidence',
+          text: 'Compliance dashboards help show that required controls are monitored.',
+        },
+      ],
+      commands: [
+        {
+          cmd: 'sudo systemctl status wazuh-manager',
+          desc: 'On the Wazuh server: check that the manager service is running.',
+          out: [
+            "● wazuh-manager.service - Wazuh manager",
+            "     Loaded: loaded (/lib/systemd/system/wazuh-manager.service; enabled)",
+            "     Active: active (running) since Sun 2026-10-25 08:12:31 PST; 6 days ago",
+            "    Process: 1042 ExecStart=/usr/bin/env /var/ossec/bin/wazuh-control start (code=exited, status=0/SUCCESS)",
+            "      Tasks: 138 (limit: 9301)",
+          ],
+        },
+        {
+          cmd: 'sudo systemctl status wazuh-agent',
+          desc: 'On a monitored server: check that the agent is running.',
+          out: [
+            "● wazuh-agent.service - Wazuh agent",
+            "     Loaded: loaded (/lib/systemd/system/wazuh-agent.service; enabled)",
+            "     Active: active (running) since Sun 2026-10-25 08:15:02 PST; 6 days ago",
+            "      Tasks: 32 (limit: 4557)",
+          ],
+        },
+        {
+          cmd: 'sudo /var/ossec/bin/agent_control -l',
+          desc: 'List the agents known to the server and their connection status.',
+          out: [
+            "Wazuh agent_control. List of available agents:",
+            "   ID: 000, Name: wazuh-server (server), IP: 127.0.0.1, Active/Local",
+            "   ID: 001, Name: web-01, IP: 192.168.1.30, Active",
+            "   ID: 002, Name: db-01, IP: 192.168.1.31, Active",
+            "   ID: 003, Name: backup-01, IP: 192.168.1.32, Disconnected",
+            "",
+            "List of agentless devices:",
+          ],
+        },
+        {
+          cmd: 'sudo tail -f /var/ossec/logs/alerts/alerts.json',
+          desc: 'Watch alerts as they are written on the server.',
+          out: [
+            "{\"timestamp\":\"2026-10-30T02:11:15.402+0000\",\"rule\":{\"level\":10,\"description\":\"sshd: brute force trying to get access to the system. Authentication failed.\",\"id\":\"5763\",\"groups\":[\"syslog\",\"sshd\",\"authentication_failures\"]},\"agent\":{\"id\":\"001\",\"name\":\"web-01\",\"ip\":\"192.168.1.30\"},\"data\":{\"srcip\":\"203.0.113.45\"},\"location\":\"/var/log/auth.log\"}",
+            "(each alert is one JSON line; the command keeps waiting for new alerts, press Ctrl+C to stop)",
+          ],
+        },
+        {
+          cmd: 'sudo tail -n 50 /var/ossec/logs/ossec.log',
+          desc: 'Read the manager or agent log when troubleshooting.',
+          out: [
+            "2026/10/30 08:12:35 wazuh-modulesd: INFO: Started (pid: 1190).",
+            "2026/10/30 08:12:36 wazuh-remoted: INFO: (1410): Reading authentication keys file.",
+            "2026/10/30 08:12:36 wazuh-remoted: INFO: Started (pid: 1102). Listening on port 1514/TCP (secure).",
+            "2026/10/30 08:12:38 wazuh-analysisd: INFO: Started (pid: 1087).",
+            "2026/10/30 08:14:51 wazuh-remoted: INFO: (1409): Agent web-01 (001) connected.",
+          ],
+        },
+      ],
+      practice: [
+        {
+          title: 'Virtual machine with the official quickstart',
+          text: 'Install Ubuntu Server in VirtualBox, VMware, or Hyper-V and run the all-in-one installer from documentation.wazuh.com. Wazuh also publishes a ready-made virtual machine image you can import.',
+        },
+        {
+          title: 'Add a second VM as the monitored server',
+          text: 'Install the Wazuh agent on another Ubuntu VM and enroll it, then run the failed-login and file-change tests from the lab sections of this page.',
+        },
+      ],
+      installNote:
+        'For a lab, the official quickstart script installs everything on one machine. Always check documentation.wazuh.com for the current command and version, because it changes between releases.',
+      discuss: [
+        {
+          q: 'Why install an agent instead of only sending logs over the network?',
+          a: 'Agents can also do file integrity checks, inventory, and configuration assessment, and they send data over an authenticated, encrypted channel. Plain log forwarding only covers what the log files contain.',
+        },
+        {
+          q: 'Do you still need Suricata if you already run Wazuh?',
+          a: 'They see different things. Wazuh watches what happens on the host, while Suricata watches traffic on the network. Wazuh can also ingest Suricata alerts, so the two work well together.',
+        },
+        {
+          q: 'A file integrity alert shows /etc/passwd changed at 3 AM. What do you do next?',
+          a: 'Find out who made the change using auth logs and recent logins, compare it with approved change records, and look for other activity from the same account or source. If it is unauthorized, follow your incident process and consider isolating the host.',
+        },
+        {
+          q: 'How can you reduce alert fatigue in Wazuh?',
+          a: 'Learn the normal baseline first, then tune or disable noisy rules, adjust alert levels, and focus notifications on events that need action.',
+        },
+      ],
+    },
   },
   {
     name: 'Security Onion',
@@ -1124,6 +1585,191 @@ const securityTools = [
     ],
     feature: 'Centralized security investigation',
     tags: ['NSM', 'Hunting', 'Analysis'],
+    image: '/learning/security-onion-console.png',
+    imageCaption: 'Security Onion Console: alerts and hunting interface',
+    explore: {
+      summary:
+        'Security Onion is a free and open platform for network security monitoring, threat hunting, and log management. It bundles several open source tools behind one web interface called the Security Onion Console (SOC), so analysts can move from an alert to the evidence without switching tools.',
+      flow: ['Network traffic', 'Suricata + Zeek', 'Elastic storage', 'SOC console'],
+      facts: [
+        { label: 'Maintained by', value: 'Security Onion Solutions' },
+        { label: 'Built from', value: 'Suricata, Zeek, Elastic and more' },
+        { label: 'Deployment types', value: 'Import, Evaluation, Standalone, Distributed (varies by version)' },
+      ],
+      links: [
+        { label: 'securityonionsolutions.com', url: 'https://securityonionsolutions.com' },
+        { label: 'Documentation', url: 'https://docs.securityonion.net' },
+      ],
+      components: [
+        {
+          name: 'Security Onion Console (SOC)',
+          icon: 'web',
+          text: 'The web interface with Alerts, Dashboards, Hunt, Cases, PCAP, and Grid pages.',
+        },
+        {
+          name: 'Suricata',
+          icon: 'radar',
+          text: 'The network IDS engine that generates alerts when traffic matches a rule.',
+        },
+        {
+          name: 'Zeek',
+          icon: 'travel_explore',
+          text: 'Turns network traffic into detailed metadata logs such as connections, DNS, HTTP, and TLS.',
+        },
+        {
+          name: 'Elastic stack',
+          icon: 'storage',
+          text: 'Stores and indexes the events so they can be searched and visualized.',
+        },
+        {
+          name: 'Full packet capture',
+          icon: 'download_for_offline',
+          text: 'Keeps raw packets so an analyst can open the exact traffic behind an alert.',
+        },
+      ],
+      features: [
+        {
+          title: 'Alerts',
+          icon: 'notifications_active',
+          text: 'A triage queue of IDS and other detections that can be grouped, filtered, and acknowledged.',
+        },
+        {
+          title: 'Dashboards',
+          icon: 'dashboard',
+          text: 'Ready-made views for a quick picture of events, protocols, and top talkers.',
+        },
+        {
+          title: 'Hunt',
+          icon: 'manage_search',
+          text: 'Query and pivot through logs to look for activity that did not trigger an alert.',
+        },
+        {
+          title: 'Cases',
+          icon: 'folder_special',
+          text: 'Track an investigation with notes, related events, and findings in one place.',
+        },
+        {
+          title: 'PCAP',
+          icon: 'lan',
+          text: 'Open the raw packets for an event to confirm what really happened on the wire.',
+        },
+        {
+          title: 'Grid',
+          icon: 'hub',
+          text: 'Shows the health and status of the nodes that make up the deployment.',
+        },
+      ],
+      useCases: [
+        {
+          title: 'Investigate an IDS alert',
+          text: 'Start at the alert, pivot to related Zeek logs, then open the PCAP to confirm.',
+        },
+        {
+          title: 'Hunt for odd behavior',
+          text: 'Search for unusual DNS names, rare destinations, or long-lived connections from one host.',
+        },
+        {
+          title: 'Run an investigation',
+          text: 'Collect the evidence for an incident in a Case so the team shares one record.',
+        },
+        {
+          title: 'Practice with captured traffic',
+          text: 'Import a packet capture to analyze it safely without a live network.',
+        },
+      ],
+      commands: [
+        {
+          cmd: 'sudo so-status',
+          desc: 'Show whether the Security Onion services are running.',
+          out: [
+            "Status:",
+            "  * so-elasticsearch         [  OK  ]",
+            "  * so-logstash              [  OK  ]",
+            "  * so-soc                   [  OK  ]",
+            "  * so-suricata              [  OK  ]",
+            "  * so-zeek                  [  OK  ]",
+            "(simplified example: the real list is longer and depends on your version)",
+          ],
+        },
+        {
+          cmd: 'sudo so-allow',
+          desc: 'Allow an IP address or network to reach the console and other services.',
+          out: [
+            "What type of device do you want to allow?",
+            "  [a] Analyst: can open the Security Onion Console",
+            "  [b] Sensor or forwarder: can send data to this node",
+            "Enter a letter: a",
+            "Enter the IP address or CIDR range to allow: 192.168.1.50",
+            "Firewall rule added for 192.168.1.50.",
+            "(simplified example: the real prompts differ by version)",
+          ],
+        },
+        {
+          cmd: 'sudo so-user-add',
+          desc: 'Create a new user for the Security Onion Console.',
+          out: [
+            "Enter new user email address: analyst@example.local",
+            "Enter password for the new user:",
+            "Confirm password:",
+            "User analyst@example.local created.",
+            "(simplified example: the real prompts differ by version)",
+          ],
+        },
+        {
+          cmd: 'sudo so-import-pcap /path/to/file.pcap',
+          desc: 'Import a packet capture so it can be analyzed in the console.',
+          out: [
+            "Processing import: file.pcap",
+            "Running Suricata and Zeek against the capture...",
+            "Import complete.",
+            "Open the Security Onion Console and set the time range to match the capture to view the results.",
+            "(simplified example: the real output includes a direct link to the results)",
+          ],
+        },
+        {
+          cmd: 'sudo so-restart',
+          desc: 'Restart the Security Onion services after a change.',
+          out: [
+            "Restarting Security Onion services...",
+            "  * so-elasticsearch         restarted",
+            "  * so-suricata              restarted",
+            "  * so-zeek                  restarted",
+            "  * so-soc                   restarted",
+            "(simplified example: the real list is longer)",
+          ],
+        },
+      ],
+      practice: [
+        {
+          title: 'Import mode in a virtual machine',
+          text: 'Install Security Onion from its ISO in Import mode, then analyze a saved packet capture. This needs no live network traffic. It needs more RAM and disk than the other tools, so check the hardware requirements in the docs.',
+        },
+        {
+          title: 'Use a sample capture',
+          text: 'Public sites such as malware-traffic-analysis.net and the Wireshark sample captures page share .pcap files for practice. Use them only inside your isolated lab.',
+        },
+      ],
+      installNote:
+        'Security Onion is normally installed from its own ISO or installer on a dedicated machine. Follow docs.securityonion.net for the hardware requirements and the steps for your version.',
+      discuss: [
+        {
+          q: 'How is Security Onion different from Wazuh?',
+          a: 'Wazuh is host-focused and uses agents on each server. Security Onion is network-focused and watches traffic through sensors. Many teams run both to see the host and the network.',
+        },
+        {
+          q: 'Full packet capture uses a lot of storage. Is it worth it?',
+          a: 'It gives the most reliable evidence of what happened, but it fills disks quickly, so it is kept for a short time. Zeek metadata is much smaller and can be kept for longer.',
+        },
+        {
+          q: 'You get an alert. What is a good pivot path?',
+          a: 'Open the alert, check the related Zeek logs such as conn, dns, and http for that host, open the PCAP if you need proof, and record the findings in a Case.',
+        },
+        {
+          q: 'What limits visibility when traffic is encrypted?',
+          a: 'The payload is hidden, so content-based rules cannot read it. Metadata such as DNS, TLS server names, and connection patterns is still useful.',
+        },
+      ],
+    },
   },
   {
     name: 'Suricata',
@@ -1139,8 +1785,210 @@ const securityTools = [
     ],
     feature: 'Network IDS/IPS and traffic analysis',
     tags: ['IDS', 'IPS', 'NSM'],
+    image: '/learning/suricata-alerts.png',
+    imageCaption: 'Suricata alerts viewed in a dashboard (Suricata itself is CLI-based)',
+    explore: {
+      summary:
+        'Suricata is an open source network threat detection engine from the Open Information Security Foundation (OISF). It inspects traffic in real time, compares it with rules, and writes alerts and detailed protocol logs. It has no built-in GUI, so you read its output in log files or in tools such as Security Onion, Wazuh, or Elastic.',
+      flow: ['Network packets', 'Decode + rule match', 'eve.json / fast.log', 'SIEM or dashboard'],
+      facts: [
+        { label: 'License', value: 'Open source (GPLv2)' },
+        { label: 'Maintained by', value: 'OISF' },
+        { label: 'Main config file', value: '/etc/suricata/suricata.yaml' },
+      ],
+      links: [
+        { label: 'suricata.io', url: 'https://suricata.io' },
+        { label: 'Documentation', url: 'https://docs.suricata.io' },
+      ],
+      components: [
+        {
+          name: 'Packet capture',
+          icon: 'cable',
+          text: 'Reads packets from a network interface or a capture file, often from a mirrored port.',
+        },
+        {
+          name: 'Decoder and app-layer parsers',
+          icon: 'code',
+          text: 'Understands protocols such as HTTP, DNS, TLS, and SMB so rules can match on meaningful fields.',
+        },
+        {
+          name: 'Detection engine',
+          icon: 'radar',
+          text: 'Matches traffic against signature rules and generates an alert on a match.',
+        },
+        {
+          name: 'Outputs',
+          icon: 'description',
+          text: 'Writes eve.json for structured events, fast.log for one-line alerts, and stats.log for performance.',
+        },
+        {
+          name: 'Rule sources',
+          icon: 'rule',
+          text: 'Rule sets such as Emerging Threats Open, usually managed with the suricata-update tool.',
+        },
+      ],
+      features: [
+        {
+          title: 'Multi-threaded engine',
+          icon: 'speed',
+          text: 'Spreads the work across CPU cores so it can handle higher traffic rates.',
+        },
+        {
+          title: 'IDS and IPS modes',
+          icon: 'shield',
+          text: 'Run passively to detect only, or inline to drop malicious traffic.',
+        },
+        {
+          title: 'Protocol detection',
+          icon: 'lan',
+          text: 'Identifies the protocol by inspecting traffic, not only by the port number.',
+        },
+        {
+          title: 'EVE JSON logging',
+          icon: 'data_object',
+          text: 'One structured format for alerts, DNS, HTTP, TLS, flows, and file events that is easy to ship to a SIEM.',
+        },
+        {
+          title: 'File extraction',
+          icon: 'folder_zip',
+          text: 'Can log and store files seen in traffic for later analysis.',
+        },
+        {
+          title: 'TLS and DNS visibility',
+          icon: 'travel_explore',
+          text: 'Logs server names and queries even when the payload is encrypted.',
+        },
+      ],
+      useCases: [
+        {
+          title: 'Detect exploit attempts on a web server',
+          text: 'Rules flag known attack patterns in HTTP requests aimed at your site.',
+        },
+        {
+          title: 'Log DNS and TLS activity',
+          text: 'Review which domains hosts contact to spot malware callbacks or odd destinations.',
+        },
+        {
+          title: 'Block known bad traffic',
+          text: 'In IPS mode, matching rules can drop packets before they reach the server.',
+        },
+        {
+          title: 'Feed a SIEM',
+          text: 'Send eve.json to Wazuh, Elastic, or Security Onion for search and alerting.',
+        },
+      ],
+      commands: [
+        {
+          cmd: 'sudo suricata-update',
+          desc: 'Download and merge the latest rule sets.',
+          out: [
+            "30/10/2026 -- 08:30:11 - <Info> -- Using data-directory /var/lib/suricata.",
+            "30/10/2026 -- 08:30:11 - <Info> -- Using Suricata configuration /etc/suricata/suricata.yaml",
+            "30/10/2026 -- 08:30:12 - <Info> -- Fetching https://rules.emergingthreats.net/open/suricata-7.0.7/emerging.rules.tar.gz.",
+            " 100% - 4087241/4087241",
+            "30/10/2026 -- 08:30:16 - <Info> -- Done.",
+            "30/10/2026 -- 08:30:18 - <Info> -- Loaded 45012 rules.",
+            "30/10/2026 -- 08:30:19 - <Info> -- Writing rules to /var/lib/suricata/rules/suricata.rules: total: 45012; enabled: 36000; added: 0; removed 0; modified: 0",
+          ],
+        },
+        {
+          cmd: 'sudo suricata -T -c /etc/suricata/suricata.yaml -v',
+          desc: 'Test the configuration and rules before restarting.',
+          out: [
+            "Info: suricata: This is Suricata version 7.0.7 RELEASE running in SYSTEM mode",
+            "Info: detect: 1 rule files processed. 36000 rules successfully loaded, 0 rules failed",
+            "Notice: suricata: Configuration provided was successfully loaded. Exiting.",
+          ],
+        },
+        {
+          cmd: 'sudo systemctl status suricata',
+          desc: 'Check that the Suricata service is running.',
+          out: [
+            "● suricata.service - Suricata IDS/IDP daemon",
+            "     Loaded: loaded (/lib/systemd/system/suricata.service; enabled)",
+            "     Active: active (running) since Sun 2026-10-25 08:20:44 PST; 6 days ago",
+            "   Main PID: 1288 (Suricata-Main)",
+            "      Tasks: 9 (limit: 9301)",
+          ],
+        },
+        {
+          cmd: 'sudo tail -f /var/log/suricata/fast.log',
+          desc: 'Watch one-line alerts as they appear.',
+          out: [
+            "10/30/2026-02:11:15.402301  [**] [1:2100498:7] GPL ATTACK_RESPONSE id check returned root [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 203.0.113.80:80 -> 192.168.1.25:41618",
+            "(each alert is one line; the command keeps waiting for new alerts, press Ctrl+C to stop)",
+          ],
+        },
+        {
+          cmd: "sudo jq -c 'select(.event_type==\"alert\")' /var/log/suricata/eve.json | tail -n 5",
+          desc: 'Show the last five alerts from the structured EVE log (needs jq).',
+          out: [
+            "{\"timestamp\":\"2026-10-30T02:11:15.402301+0000\",\"event_type\":\"alert\",\"src_ip\":\"203.0.113.80\",\"src_port\":80,\"dest_ip\":\"192.168.1.25\",\"dest_port\":41618,\"proto\":\"TCP\",\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2100498,\"rev\":7,\"signature\":\"GPL ATTACK_RESPONSE id check returned root\",\"category\":\"Potentially Bad Traffic\",\"severity\":2}}",
+          ],
+        },
+      ],
+      rule: {
+        text: 'alert http any any -> $HOME_NET any (msg:"LAB Suspicious User-Agent"; flow:established,to_server; http.user_agent; content:"BadBot"; sid:1000001; rev:1;)',
+        parts: [
+          { k: 'alert', v: 'The action: raise an alert (drop is used in IPS mode).' },
+          { k: 'http any any -> $HOME_NET any', v: 'Protocol, source, and destination: any HTTP traffic going to your network.' },
+          { k: 'msg', v: 'The text shown in the alert.' },
+          { k: 'flow:established,to_server', v: 'Only match requests sent from the client to the server.' },
+          { k: 'http.user_agent; content:"BadBot"', v: 'Look inside the User-Agent header for the text BadBot.' },
+          { k: 'sid / rev', v: 'Unique rule ID and revision number. Custom rules usually start at 1000000.' },
+        ],
+      },
+      practice: [
+        {
+          title: 'Ubuntu VM, the easiest option',
+          text: 'Install Suricata from the Ubuntu repositories, update the rules, and start the service.',
+          cmd: 'sudo apt update && sudo apt install suricata -y',
+        },
+        {
+          title: 'Trigger a test alert',
+          text: 'The Suricata quickstart uses this harmless test page, which matches a built-in rule. Run it from the VM, then read fast.log.',
+          cmd: 'curl http://testmynids.org/uid/index.html',
+        },
+        {
+          title: 'Replay a capture file offline',
+          text: 'Run Suricata against a saved capture instead of live traffic and write the output to a folder.',
+          cmd: 'sudo suricata -r sample.pcap -l /tmp/suricata-out/',
+        },
+      ],
+      installNote:
+        'Suricata is available from the Ubuntu package repositories and from the OISF project. Start in IDS mode, review the alerts, tune the rules, and only then consider inline IPS mode.',
+      discuss: [
+        {
+          q: 'What can go wrong when you run Suricata inline as an IPS?',
+          a: 'A false positive can block legitimate traffic, and if the sensor fails or is overloaded it can interrupt the network path. Teams usually run in IDS mode first, tune the rules, and then enable drop actions carefully.',
+        },
+        {
+          q: 'An alert shows a SQL injection attempt from an outside IP. Is the server compromised?',
+          a: 'Not necessarily. An alert shows an attempt, not a success. Check the server response, the application and web logs, and whether the request reached a vulnerable page before deciding.',
+        },
+        {
+          q: 'How does Suricata help when most traffic is encrypted?',
+          a: 'It cannot read the payload, but it still logs DNS queries, TLS server names, and flow details. Those can reveal suspicious destinations and unusual behavior.',
+        },
+        {
+          q: 'Why do teams disable or tune some rules?',
+          a: 'Noisy or irrelevant rules create alert fatigue and use CPU time. Tuning keeps the alerts that matter for your environment visible.',
+        },
+      ],
+    },
   },
 ]
+
+function normCmd(c) {
+  return c.trim().replace(/\s+/g, ' ').toLowerCase().replace(/^sudo /, '')
+}
+
+/* Sample outputs of the tool commands, used by the Explore dialog and the simulator */
+const toolOutputs = Object.fromEntries(
+  securityTools.flatMap((t) =>
+    t.explore.commands.filter((c) => c.out).map((c) => [normCmd(c.cmd), c.out]),
+  ),
+)
 
 const compareRows = [
   { cap: 'Host / endpoint monitoring', values: ['yes', 'partial', 'no'] },
@@ -1850,6 +2698,11 @@ const supportedList = [
   ['sudo ufw status verbose', 'Firewall rules'],
 ]
 
+/* make the Wazuh, Security Onion and Suricata commands available in the simulator */
+securityTools.forEach((t) =>
+  t.explore.commands.forEach((c) => supportedList.push([c.cmd, t.name + ' (sample output)'])),
+)
+
 function liveNum(n, d = 1) {
   return Number(n).toFixed(d)
 }
@@ -2158,6 +3011,10 @@ function simulate(raw) {
       { text: '80/tcp                     ALLOW IN    Anywhere', cls: 'output' },
       { text: '443/tcp                    ALLOW IN    Anywhere', cls: 'output' },
     ]
+  }
+
+  if (toolOutputs[norm]) {
+    return toolOutputs[norm].map((text) => ({ text, cls: 'output' }))
   }
 
   if (norm.startsWith('rm ') || norm.startsWith('shutdown') || norm.startsWith('reboot')) {
@@ -3467,6 +4324,7 @@ code,
   gap: 17px;
 }
 .tool-card {
+  overflow: hidden;
   padding: 25px;
   transition:
     transform 0.3s ease,
@@ -3474,6 +4332,448 @@ code,
     box-shadow 0.3s ease,
     opacity 0.7s ease;
 }
+
+/* tool screenshots */
+.tool-shot {
+  position: relative;
+  margin: -25px -25px 20px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background: #070c14;
+  cursor: zoom-in;
+}
+.tool-shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top left;
+  transition: transform 0.4s ease;
+}
+.tool-card:hover .tool-shot img {
+  transform: scale(1.04);
+}
+.tool-shot figcaption {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 14px 10px;
+  background: linear-gradient(to top, rgba(6, 11, 20, 0.95), transparent);
+  color: #cbd5e1;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+.shot-dialog {
+  max-width: min(1100px, 92vw) !important;
+  width: 100%;
+  background: #0d1625;
+  color: #e6edf6;
+}
+.shot-dialog img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.shot-dialog-cap {
+  padding: 12px 16px;
+  color: #8da0b8;
+  font-size: 0.85rem;
+}
+
+.explore-btn {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.explore-dialog {
+  width: 100%;
+  max-width: min(860px, 94vw) !important;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #243249;
+  border-radius: 16px;
+  background: #0b1424;
+  color: #e6edf6;
+  font-family: var(--sans);
+}
+.explore-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px 12px;
+}
+.explore-icon {
+  display: grid;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 1.5rem;
+}
+.explore-title h3 {
+  margin: 2px 0 0;
+  color: #f8fafc;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.explore-close {
+  margin-left: auto;
+  color: var(--muted) !important;
+}
+.explore-tabs {
+  padding: 0 12px;
+  color: var(--muted);
+  border-bottom: 1px solid #243249;
+}
+.explore-panels {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: transparent;
+  color: #e6edf6;
+}
+.explore-panels .q-tab-panel {
+  padding: 20px 22px 26px;
+}
+.explore-shot {
+  display: block;
+  width: 100%;
+  max-height: 280px;
+  margin-bottom: 18px;
+  border: 1px solid #243249;
+  border-radius: 10px;
+  object-fit: cover;
+  object-position: top left;
+}
+.explore-lead {
+  margin: 0 0 18px;
+  color: #b8c5d8;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+.explore-note {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+.flow-label {
+  margin-bottom: 8px;
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.flow-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.flow-step {
+  padding: 7px 12px;
+  border: 1px solid #263548;
+  border-radius: 8px;
+  background: #070c14;
+  color: #6ee7b7;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+}
+.flow-arrow {
+  color: #4a5d78;
+}
+.fact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0a111d;
+}
+.fact span {
+  color: #5f738d;
+  font-size: 0.72rem;
+}
+.fact strong {
+  color: #e2e8f0;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+.explore-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.explore-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0a111d;
+}
+.explore-item > .q-icon {
+  flex-shrink: 0;
+  padding: 8px;
+  border-radius: 9px;
+  background: rgba(34, 211, 238, 0.09);
+  color: var(--cyan);
+  font-size: 1.3rem;
+}
+.explore-item strong,
+.usecase-list strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+}
+.explore-item span,
+.usecase-list span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+.usecase-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.usecase-list li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0a111d;
+}
+.usecase-list .q-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--green);
+  font-size: 1.2rem;
+}
+.try-list {
+  display: grid;
+  gap: 10px;
+}
+.try-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0a111d;
+}
+.try-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.try-text code {
+  display: block;
+  padding: 7px 10px;
+  overflow-wrap: anywhere;
+  border: 1px solid #263548;
+  border-radius: 7px;
+  background: #070c14;
+  color: #6ee7b7;
+  font-size: 0.78rem;
+}
+.try-text span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.flow-label.spaced {
+  margin-top: 24px;
+}
+.explore-note.small {
+  margin: 14px 0 0;
+  font-size: 0.78rem;
+}
+.practice-list {
+  display: grid;
+  gap: 10px;
+}
+.practice-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0a111d;
+}
+.practice-row.here {
+  border-color: rgba(52, 211, 153, 0.35);
+  background: rgba(16, 185, 129, 0.06);
+}
+.practice-row > .q-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--green);
+  font-size: 1.3rem;
+}
+.practice-row strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #e2e8f0;
+  font-size: 0.88rem;
+}
+.practice-row span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+.practice-row code {
+  display: block;
+  margin-top: 8px;
+  padding: 7px 10px;
+  overflow-wrap: anywhere;
+  border: 1px solid #263548;
+  border-radius: 7px;
+  background: #070c14;
+  color: #6ee7b7;
+  font-size: 0.76rem;
+}
+.try-actions {
+  display: flex;
+  flex-shrink: 0;
+}
+.try-details {
+  margin-top: 2px;
+}
+.try-details summary {
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+.try-out {
+  margin: 8px 0 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  border: 1px solid #243249;
+  border-radius: 8px;
+  background: #070c14;
+  color: #9fb0c6;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  white-space: pre;
+}
+.rule-box {
+  margin-top: 22px;
+}
+.rule-code {
+  display: block;
+  padding: 12px 14px;
+  overflow-wrap: anywhere;
+  border: 1px solid #263548;
+  border-radius: 8px;
+  background: #070c14;
+  color: #6ee7b7;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+.rule-parts {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.rule-parts li {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+  gap: 12px;
+  align-items: start;
+}
+.rule-parts code {
+  overflow-wrap: anywhere;
+  color: var(--amber);
+  font-size: 0.76rem;
+}
+.rule-parts span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+.explore-callout {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.06);
+  color: #e6d9b3;
+  font-size: 0.84rem;
+  line-height: 1.7;
+}
+.explore-callout .q-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--amber);
+}
+.discuss-item {
+  margin-bottom: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0a111d;
+  color: #e2e8f0;
+}
+.discuss-answer {
+  padding: 4px 20px 18px 56px;
+  color: #b8c5d8;
+  font-size: 0.86rem;
+  line-height: 1.75;
+}
+@media (max-width: 700px) {
+  .fact-grid,
+  .explore-grid {
+    grid-template-columns: 1fr;
+  }
+  .rule-parts li {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .discuss-answer {
+    padding-left: 20px;
+  }
+}
+
 .tool-icon {
   display: grid;
   width: 52px;
