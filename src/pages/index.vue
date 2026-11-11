@@ -76,7 +76,7 @@
 
           <div class="chip chip-status">
             <span class="status-dot" :class="{ off: apiStatus !== 'Online' }"></span>
-            Django API · {{ apiStatus }}
+            Django API Â· {{ apiStatus }}
           </div>
 
           <div class="chip chip-nodes" aria-hidden="true">
@@ -411,7 +411,7 @@
               <div class="box">db<br /><small class="mono">mysql</small></div>
             </div>
             <div class="stack-row s-eng">Docker Engine + Compose network</div>
-            <div class="stack-row s-os">Linux kernel · namespaces · cgroups</div>
+            <div class="stack-row s-os">Linux kernel Â· namespaces Â· cgroups</div>
             <div class="stack-row s-hw">Raspberry Pi hardware</div>
           </div>
           <ul class="mini-list">
@@ -575,7 +575,7 @@
       </div>
 
       <div class="wrap footer-base">
-        <span>© 2026 Linux Cybersecurity Learning Hub</span>
+        <span>Â© 2026 Linux Cybersecurity Learning Hub</span>
         <span class="footer-credit">Developed by <strong>Tyrone Justine A. Medina</strong></span>
       </div>
     </footer>
@@ -1047,7 +1047,7 @@ function runCounters() {
 
 async function checkApi() {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/status/')
+    const response = await fetch('/api/status/')
     if (!response.ok) throw new Error('API unavailable')
     const data = await response.json()
     apiStatus.value = data.status === 'online' ? 'Online' : 'Offline'
@@ -1315,10 +1315,10 @@ async function run(cmdline) {
         await sleep(450)
         printAll(
           [
-            ' ✔ Network learning-hub_default  Created',
-            ' ✔ Container db   Healthy',
-            ' ✔ Container api  Started',
-            ' ✔ Container web  Started',
+            ' âœ” Network learning-hub_default  Created',
+            ' âœ” Container db   Healthy',
+            ' âœ” Container api  Started',
+            ' âœ” Container web  Started',
           ],
           'ok',
         )
@@ -1335,7 +1335,7 @@ async function run(cmdline) {
       break
     case 'systemctl':
       printAll([
-        '● ssh.service - OpenBSD Secure Shell server',
+        'SSH ssh.service - OpenBSD Secure Shell server',
         '   Loaded: loaded (/lib/systemd/system/ssh.service; enabled)',
         '   Active: active (running) since Mon 2026-10-12 08:14:02',
       ])
@@ -3094,3 +3094,4 @@ onBeforeUnmount(() => {
   }
 }
 </style>
+

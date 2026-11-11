@@ -1,4 +1,4 @@
-const API_URL = 'http://127.0.0.1:8000/api'
+﻿const API_URL = '/api'
 
 const ACCESS_TOKEN_KEY = 'raspi_access_token'
 const REFRESH_TOKEN_KEY = 'raspi_refresh_token'
@@ -89,3 +89,4 @@ export function getUser() {
 export function isAuthenticated() {
   return Boolean(getAccessToken())
 }
+

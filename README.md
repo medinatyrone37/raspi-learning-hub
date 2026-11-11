@@ -1,166 +1,130 @@
-Raspi Learning Hub
+# Raspi Learning Hub
 
-A web-based learning platform for cybersecurity and Linux server administration, designed to run on a Raspberry Pi.
+A web-based learning platform for cybersecurity and Linux server
+administration, designed to run on a Raspberry Pi.
 
-Project Overview
+## Project Overview
 
-Raspi Learning Hub provides learning materials and demonstrations related to:
+Raspi Learning Hub provides learning materials and demonstrations
+related to:
 
-Linux Server Administration
+-   Linux Server Administration
+-   Cybersecurity Fundamentals
+-   Red Team and Blue Team
+-   Web Server Configuration
+-   Linux Server Security Hardening
+-   FTP and Database Services
+-   Squid Proxy
+-   Security Onion and Suricata
 
-Cybersecurity Fundamentals
+## Technology Stack
 
-Red Team and Blue Team
+  Component            Technology
+  -------------------- -------------------------------
+  Frontend             Vue 3
+  Frontend Framework   Quasar
+  Backend              Django
+  API                  Django REST Framework
+  Database             MariaDB / MySQL
+  Application Server   Gunicorn
+  Web Server           Nginx
+  Operating System     Raspberry Pi OS Lite (64-bit)
 
-Web Server Configuration
+## System Requirements
 
-Linux Server Security Hardening
+-   Raspberry Pi capable of running a 64-bit operating system
+-   Raspberry Pi OS Lite (64-bit), based on Debian
+-   Internet connection
+-   MicroSD card or other suitable storage
+-   SSH access or a keyboard and monitor
+-   At least 2 GB RAM recommended
 
-FTP and Database Services
+> These instructions target a 64-bit Debian-based Raspberry Pi OS
+> installation. Other operating systems may require adjusted package
+> names or commands. The deployment steps have not yet been verified on
+> every Raspberry Pi model.
 
-Squid Proxy
+------------------------------------------------------------------------
 
-Security Onion and Suricata
+## 1. Update Raspberry Pi OS
 
-Technology Stack
-
-Component
-
-Technology
-
-Frontend
-
-Vue 3
-
-Frontend Framework
-
-Quasar
-
-Backend
-
-Django
-
-API
-
-Django REST Framework
-
-Database
-
-MariaDB / MySQL
-
-Application Server
-
-Gunicorn
-
-Web Server
-
-Nginx
-
-Operating System
-
-Raspberry Pi OS Lite 64-bit
-
-System Requirements
-
-Before installation, prepare the following:
-
-Raspberry Pi with a 64-bit compatible processor
-
-Raspberry Pi OS Lite (64-bit)
-
-MicroSD card or storage device
-
-Internet connection
-
-SSH access or keyboard and monitor
-
-At least 2 GB RAM recommended
-
-Another computer for SSH access (optional)
-
-Note: These instructions are intended for a 64-bit Debian-based Raspberry Pi OS installation. Commands may need adjustment for other operating systems.
-
-1. Update Raspberry Pi
-
-Open the Raspberry Pi terminal and update the system:
-
+``` bash
 sudo apt update
 sudo apt upgrade -y
 sudo reboot
+```
 
-After restarting, reconnect to the Raspberry Pi.
+After the Raspberry Pi restarts, reconnect to it and check the OS and
+architecture:
 
-Check the operating system:
-
+``` bash
 cat /etc/os-release
-
-Check the processor architecture:
-
 uname -m
+```
 
-For a 64-bit ARM installation, the expected output is usually:
+For a 64-bit ARM installation, `uname -m` should normally return
+`aarch64`.
 
-aarch64
+## 2. Install Required Packages
 
-2. Install Required Packages
-
-Install Git, Nginx, MariaDB, Python, and the required development packages:
-
+``` bash
 sudo apt update
 
 sudo apt install -y \
-git \
-nginx \
-mariadb-server \
-python3 \
-python3-pip \
-python3-venv \
-python3-dev \
-build-essential \
-pkg-config \
-default-libmysqlclient-dev \
-curl \
-gnupg
+  git \
+  nginx \
+  mariadb-server \
+  python3 \
+  python3-pip \
+  python3-venv \
+  python3-dev \
+  build-essential \
+  pkg-config \
+  default-libmysqlclient-dev \
+  curl
+```
 
-Verify the installations:
+Check the installed tools:
 
+``` bash
 git --version
 python3 --version
 nginx -v
 mariadb --version
+```
 
-3. Install Node.js and npm
+## 3. Install Node.js and npm
 
-The frontend requires Node.js and npm.
+The Quasar frontend requires a supported Node.js version. This project
+specifies Node.js 22.12 or later in the supported Node 22 line, Node 24,
+or Node 26 and later. Node.js 24 LTS is a suitable choice.
 
-Install Node.js 24:
+Install Node.js 24 using the NodeSource setup script:
 
+``` bash
 curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
-
 sudo apt install -y nodejs
+```
 
 Verify:
 
+``` bash
 node -v
 npm -v
+```
 
-4. Clone the GitHub Repository
+## 4. Clone the GitHub Repository
 
-Clone the project:
-
+``` bash
 cd ~
 git clone https://github.com/medinatyrone37/raspi-learning-hub.git
+cd raspi-learning-hub
+```
 
-Open the project directory:
+The project contains the Django backend, Quasar frontend, and database
+backup.
 
-cd ~/raspi-learning-hub
-
-Check the project files:
-
-ls -la
-
-The project structure includes:
-
+``` text
 raspi-learning-hub/
 ├── backend/
 │   ├── api/
@@ -173,122 +137,149 @@ raspi-learning-hub/
 ├── package.json
 ├── quasar.config.js
 └── README.md
+```
 
-5. Configure MariaDB Database
+## 5. Configure MariaDB
 
 Start and enable MariaDB:
 
-sudo systemctl enable mariadb
-sudo systemctl start mariadb
+``` bash
+sudo systemctl enable --now mariadb
+```
 
 Open the MariaDB console:
 
+``` bash
 sudo mariadb
+```
 
-Create the database and application user.
+Create the database and application user. Replace
+`CHANGE_THIS_DB_PASSWORD` with a strong password of your own.
 
-Important: Replace CHANGE_THIS_DB_PASSWORD with your own strong database password. Use the same password later in the Django environment configuration.
-
+``` sql
 CREATE DATABASE raspi_web_server
-CHARACTER SET utf8mb4
-COLLATE utf8mb4_unicode_ci;
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
 
 CREATE USER 'django'@'localhost'
-IDENTIFIED BY 'CHANGE_THIS_DB_PASSWORD';
+  IDENTIFIED BY 'CHANGE_THIS_DB_PASSWORD';
 
 GRANT ALL PRIVILEGES ON raspi_web_server.*
-TO 'django'@'localhost';
+  TO 'django'@'localhost';
 
 FLUSH PRIVILEGES;
-
 EXIT;
+```
 
-6. Restore the Database Backup
+Keep the database password. You will need it when configuring Django.
 
-The repository contains an SQL backup:
+## 6. Restore the Database Backup
 
+The repository includes this backup:
+
+``` text
 database/raspi_web_server_backup.sql
+```
 
-This backup contains the database structure and records from the existing project database.
+From the project root directory, import it into the newly created
+database:
 
-From the project root, import the backup:
-
+``` bash
 mariadb -u django -p raspi_web_server < database/raspi_web_server_backup.sql
+```
 
-Enter the database password created in the previous step.
+Enter the database password created in Step 5.
 
-Verify that the database was restored:
+Verify that the tables were imported:
 
+``` bash
 sudo mariadb
+```
 
+``` sql
 USE raspi_web_server;
-
 SHOW TABLES;
-
 EXIT;
+```
 
-Important: This restoration procedure is intended for a newly created, empty database. Do not import the backup into a database containing important existing records without creating another backup first.
+> **Important:** Restore this backup into a new, empty database.
+> Importing it into a database that already contains important records
+> may cause conflicts or overwrite data. Back up any existing database
+> before attempting a restore. The backup may contain existing user
+> records and password hashes; keep the GitHub repository private if
+> those records are not intended for public access.
 
-The SQL backup may contain existing user accounts and password hashes. Keep the repository private if the backup contains personal or confidential records.
+## 7. Set Up the Django Backend
 
-7. Set Up the Django Backend
+Go to the backend directory:
 
-Open the backend directory:
-
+``` bash
 cd ~/raspi-learning-hub/backend
+```
 
-Create a Python virtual environment:
+Create and activate a Python virtual environment:
 
+``` bash
 python3 -m venv venv
-
-Activate it:
-
 source venv/bin/activate
+```
 
 Upgrade pip:
 
+``` bash
 pip install --upgrade pip
+```
 
 Install the backend dependencies:
 
+``` bash
 pip install \
-Django==6.1.1 \
-django-cors-headers==4.9.0 \
-djangorestframework==3.18.1 \
-djangorestframework-simplejwt==5.5.1 \
-mysqlclient==2.3.0 \
-PyJWT==2.15.1 \
-asgiref==3.12.1 \
-sqlparse==0.6.0 \
-tzdata==2026.4 \
-gunicorn
+  Django==6.1.1 \
+  django-cors-headers==4.9.0 \
+  djangorestframework==3.18.1 \
+  djangorestframework-simplejwt==5.5.1 \
+  mysqlclient==2.3.0 \
+  PyJWT==2.15.1 \
+  asgiref==3.12.1 \
+  sqlparse==0.6.0 \
+  tzdata==2026.4 \
+  gunicorn
+```
 
-If mysqlclient fails to install, verify that the MariaDB development packages and build tools from Step 2 were installed.
+If `mysqlclient` fails to install, confirm that the development packages
+from Step 2 are installed, then retry inside the activated virtual
+environment.
 
-8. Configure Django Settings
+## 8. Configure Django for Deployment
 
-Open the Django settings file:
+Open the settings file:
 
-nano config/settings.py
+``` bash
+nano ~/raspi-learning-hub/backend/config/settings.py
+```
 
-For production deployment, configure the following settings.
+For a production deployment, make sure `os` is imported near the top:
 
-First, add this import near the beginning of the file:
-
+``` python
 import os
+```
 
-Replace the existing SECRET_KEY and DEBUG settings with:
+Configure the secret key and debug mode using environment variables:
 
+``` python
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
-
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
-
 ALLOWED_HOSTS = ["*"]
+```
 
-The wildcard allows access using different Raspberry Pi IP addresses and hostnames. For a more restrictive production setup, replace it with the specific hostnames and IP addresses that should be allowed.
+The wildcard allows requests using different hostnames and IP addresses.
+For a public-facing deployment, it is safer to replace `["*"]` with the
+Raspberry Pi's known IP address and hostname.
 
-Update the database configuration to read the password from the environment:
+Configure the database connection to use the environment variable for
+the password:
 
+``` python
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -299,99 +290,141 @@ DATABASES = {
         "PORT": "3306",
     }
 }
+```
 
 Configure static files:
 
+``` python
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+```
 
-Save the file:
+Save and close the file (`Ctrl+O`, `Enter`, then `Ctrl+X`).
 
-Press CTRL + O
+> Keep the existing installed apps, middleware, URL configuration, and
+> other project settings. Do not replace the entire settings file with
+> only the snippets above.
 
-Press ENTER
+## 9. Create the Environment File
 
-Press CTRL + X
+Generate a new Django secret key:
 
-Important: Do not commit production passwords or Django secret keys to GitHub.
-
-9. Create the Environment Configuration
-
-Generate a Django secret key:
-
+``` bash
 python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+```
 
 Copy the generated value.
 
-Create the environment configuration file:
+Create a system environment file:
 
+``` bash
 sudo nano /etc/raspi-learning-hub.env
+```
 
-Add the following:
+Add the following, replacing the placeholders:
 
+``` env
 DJANGO_SECRET_KEY=PASTE_YOUR_GENERATED_SECRET_KEY
 DJANGO_DEBUG=False
 DB_PASSWORD=YOUR_DATABASE_PASSWORD
+```
 
-Replace the placeholders with the actual values you created.
+Save the file and restrict access:
 
-Save the file, then secure it:
-
-sudo chmod 600 /etc/raspi-learning-hub.env
+``` bash
 sudo chown root:root /etc/raspi-learning-hub.env
+sudo chmod 600 /etc/raspi-learning-hub.env
+```
 
-10. Run Django Migrations
+Do not commit this environment file or its values to GitHub.
 
-Return to the backend directory:
+## 10. Run Django Migrations and Collect Static Files
 
+Return to the backend directory and activate the virtual environment:
+
+``` bash
 cd ~/raspi-learning-hub/backend
-
-Activate the virtual environment if it is not active:
-
 source venv/bin/activate
+```
 
-Run the database migrations:
+Load the environment variables into the current shell before running
+Django commands:
 
+``` bash
+set -a
+source /etc/raspi-learning-hub.env
+set +a
+```
+
+Run migrations and collect static files:
+
+``` bash
 python manage.py migrate
-
-Collect static files:
-
 python manage.py collectstatic --noinput
-
-Check the Django configuration:
-
 python manage.py check
+```
 
-The expected result is:
+The Django check should complete without configuration errors.
 
-System check identified no issues
+> If migration commands report schema conflicts after restoring the SQL
+> backup, stop and inspect the database and migration state before
+> attempting to delete or recreate tables. Do not run destructive
+> migration commands against data you need to preserve.
 
-11. Create a Dedicated Application User
+## 11. Prepare the Application Directory
 
-Create a system account for running the Django application:
+Create a dedicated system account:
 
-sudo useradd --system --create-home --home-dir /opt/raspi-learning-hub --shell /usr/sbin/nologin raspiapp
+``` bash
+sudo useradd --system --create-home \
+  --home-dir /opt/raspi-learning-hub \
+  --shell /usr/sbin/nologin raspiapp
+```
 
-Copy the project into the application directory:
+Copy the project into the deployment directory:
 
+``` bash
 sudo cp -a ~/raspi-learning-hub/. /opt/raspi-learning-hub/
+```
 
-Set the appropriate ownership:
+The virtual environment created in the home directory must also be
+available in the deployment directory. Create it directly in the
+deployment directory instead, then install the same dependencies from
+Step 7:
 
+``` bash
+sudo python3 -m venv /opt/raspi-learning-hub/backend/venv
+sudo /opt/raspi-learning-hub/backend/venv/bin/pip install --upgrade pip
+sudo /opt/raspi-learning-hub/backend/venv/bin/pip install \
+  Django==6.1.1 \
+  django-cors-headers==4.9.0 \
+  djangorestframework==3.18.1 \
+  djangorestframework-simplejwt==5.5.1 \
+  mysqlclient==2.3.0 \
+  PyJWT==2.15.1 \
+  asgiref==3.12.1 \
+  sqlparse==0.6.0 \
+  tzdata==2026.4 \
+  gunicorn
+```
+
+Set ownership:
+
+``` bash
 sudo chown -R raspiapp:www-data /opt/raspi-learning-hub
+```
 
-The deployed project will be located at:
+## 12. Configure Gunicorn with systemd
 
-/opt/raspi-learning-hub/
+Create the service file:
 
-12. Configure Gunicorn
-
-Create a systemd service:
-
+``` bash
 sudo nano /etc/systemd/system/raspi-learning-hub.service
+```
 
-Paste this configuration:
+Add:
 
+``` ini
 [Unit]
 Description=Raspi Learning Hub Django Application
 After=network.target mariadb.service
@@ -408,62 +441,63 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
+```
 
-Save the file.
+Save the file, then reload systemd and start the service:
 
-Reload systemd:
-
+``` bash
 sudo systemctl daemon-reload
+sudo systemctl enable --now raspi-learning-hub
+```
 
-Enable and start the service:
+Check its status:
 
-sudo systemctl enable raspi-learning-hub
-sudo systemctl start raspi-learning-hub
-
-Check the service:
-
+``` bash
 sudo systemctl status raspi-learning-hub
+```
 
-The service should show:
+The service should show `active (running)`.
 
-Active: active (running)
+## 13. Build the Quasar Frontend
 
-13. Build the Quasar Frontend
+Open the deployed project directory:
 
-Open the frontend project directory:
-
+``` bash
 cd /opt/raspi-learning-hub
+```
 
-Install frontend dependencies:
+Install dependencies and build the production frontend:
 
+``` bash
 npm install
-
-Build the production frontend:
-
 npm run build
+```
 
-The generated production files should be located at:
+The generated files should be in:
 
+``` text
 /opt/raspi-learning-hub/dist/spa
+```
 
-Copy the generated frontend files to the Nginx web directory:
+Copy the frontend build to the Nginx web directory:
 
+``` bash
 sudo mkdir -p /var/www/raspi-learning-hub
-
 sudo cp -a /opt/raspi-learning-hub/dist/spa/. /var/www/raspi-learning-hub/
-
-Set the directory permissions:
-
 sudo chown -R www-data:www-data /var/www/raspi-learning-hub
+```
 
-14. Configure Nginx
+## 14. Configure Nginx
 
-Create the Nginx configuration:
+Create the Nginx site configuration:
 
+``` bash
 sudo nano /etc/nginx/sites-available/raspi-learning-hub
+```
 
-Paste the following:
+Add:
 
+``` nginx
 server {
     listen 80;
     server_name _;
@@ -473,7 +507,6 @@ server {
 
     location /api/ {
         proxy_pass http://127.0.0.1:8000;
-
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -482,7 +515,6 @@ server {
 
     location /admin/ {
         proxy_pass http://127.0.0.1:8000;
-
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -497,182 +529,202 @@ server {
         try_files $uri $uri/ /index.html;
     }
 }
+```
 
-Enable the website:
+Enable the site and disable the default site:
 
-sudo ln -s /etc/nginx/sites-available/raspi-learning-hub /etc/nginx/sites-enabled/
-
-Disable the default Nginx website:
-
+``` bash
+sudo ln -s /etc/nginx/sites-available/raspi-learning-hub /etc/nginx/sites-enabled/raspi-learning-hub
 sudo rm -f /etc/nginx/sites-enabled/default
+```
 
-Test the configuration:
+Test and restart Nginx:
 
+``` bash
 sudo nginx -t
-
-If the configuration is successful, restart Nginx:
-
-sudo systemctl restart nginx
-
-Enable Nginx at startup:
-
 sudo systemctl enable nginx
-
-15. Access the Web Application
-
-Find the Raspberry Pi IP address:
-
-hostname -I
-
-Example output:
-
-192.168.1.100
-
-Open a browser on another device connected to the same network.
-
-Visit:
-
-http://192.168.1.100
-
-Replace the example IP address with the actual Raspberry Pi IP address.
-
-The application should now load through the Nginx web server.
-
-16. Test the Application
-
-Test the Django API:
-
-curl http://127.0.0.1/api/status/
-
-Expected response:
-
-{
-    "status": "online",
-    "message": "Raspi Web Server API is working!"
-}
-
-Test the application using another device:
-
-Open the Raspberry Pi IP address in a browser.
-
-Check whether the homepage loads.
-
-Open the Login page.
-
-Test user registration.
-
-Test user login.
-
-Open the Cybersecurity learning section.
-
-Verify that the learning pages require authentication.
-
-Check whether the database records are accessible.
-
-17. Useful Maintenance Commands
-
-Check the Django service
-
-sudo systemctl status raspi-learning-hub
-
-Restart Django
-
-sudo systemctl restart raspi-learning-hub
-
-View Django logs
-
-sudo journalctl -u raspi-learning-hub -n 100 --no-pager
-
-Follow Django logs
-
-sudo journalctl -u raspi-learning-hub -f
-
-Check Nginx
-
-sudo systemctl status nginx
-
-Restart Nginx
-
 sudo systemctl restart nginx
+```
 
-Check Nginx configuration
+## 15. Access the Application
 
+Find the Raspberry Pi's IP address:
+
+``` bash
+hostname -I
+```
+
+For example, if the output is `192.168.1.100`, open this address from a
+device connected to the same network:
+
+``` text
+http://192.168.1.100
+```
+
+Replace the example IP with the actual Raspberry Pi IP address.
+
+## 16. Test the Application
+
+Check the API locally on the Raspberry Pi:
+
+``` bash
+curl http://127.0.0.1/api/status/
+```
+
+The expected response is:
+
+``` json
+{
+  "status": "online",
+  "message": "Raspi Web Server API is working!"
+}
+```
+
+Then test the website in a browser:
+
+1.  Open the Raspberry Pi IP address.
+2.  Confirm that the homepage loads.
+3.  Open the Login page.
+4.  Test user registration and login.
+5.  Open the Cybersecurity learning section.
+6.  Confirm that protected learning pages require authentication.
+
+## 17. Useful Maintenance Commands
+
+Check the Django service:
+
+``` bash
+sudo systemctl status raspi-learning-hub
+```
+
+Restart Django:
+
+``` bash
+sudo systemctl restart raspi-learning-hub
+```
+
+View Django logs:
+
+``` bash
+sudo journalctl -u raspi-learning-hub -n 100 --no-pager
+```
+
+Follow Django logs:
+
+``` bash
+sudo journalctl -u raspi-learning-hub -f
+```
+
+Check Nginx:
+
+``` bash
+sudo systemctl status nginx
+```
+
+Restart Nginx:
+
+``` bash
+sudo systemctl restart nginx
+```
+
+Check Nginx configuration:
+
+``` bash
 sudo nginx -t
+```
 
-View Nginx error logs
+View Nginx error logs:
 
+``` bash
 sudo tail -f /var/log/nginx/error.log
+```
 
-Check MariaDB
+Check MariaDB:
 
+``` bash
 sudo systemctl status mariadb
+```
 
-Restart Raspberry Pi
+Restart the Raspberry Pi:
 
+``` bash
 sudo reboot
+```
 
-18. Troubleshooting
+## 18. Troubleshooting
 
-Problem
+  -----------------------------------------------------------------------
+  Problem                             Possible solution
+  ----------------------------------- -----------------------------------
+  Website cannot be accessed          Check the Raspberry Pi IP address,
+                                      network connection, and Nginx
+                                      service.
 
-Possible Solution
+  API returns 502 Bad Gateway         Check whether the Gunicorn service
+                                      is running.
 
-Website cannot be accessed
+  API returns 404                     Verify Django URL configuration and
+                                      the Nginx proxy configuration.
 
-Check the Raspberry Pi IP address and Nginx service.
+  Database connection error           Check MariaDB status, database
+                                      name, username, and password.
 
-API returns 502 Bad Gateway
+  Frontend does not load              Rebuild the Quasar frontend and
+                                      verify the Nginx root directory.
 
-Check whether Gunicorn is running.
+  Static files are missing            Run `collectstatic` and verify the
+                                      Nginx `/static/` alias.
 
-API returns 404
+  Gunicorn fails to start             Inspect the service logs with
+                                      `journalctl`.
 
-Verify Django URL configuration and Nginx proxy settings.
+  npm install fails                   Check the Node.js version, internet
+                                      connection, and available storage.
+  -----------------------------------------------------------------------
 
-Database connection error
+## 19. Security Notes
 
-Check MariaDB status, database name, username, and password.
+-   Keep Django `DEBUG` disabled in production.
+-   Generate a unique Django secret key for each deployment.
+-   Use a strong MariaDB password.
+-   Do not commit environment files, passwords, or secret keys to
+    GitHub.
+-   Keep the SQL backup private if it contains personal or confidential
+    user records.
+-   Do not expose Gunicorn port `8000` directly to the network; it
+    should listen on `127.0.0.1`.
+-   Keep Raspberry Pi OS and installed packages updated.
+-   Back up the database before making major changes.
+-   For internet-facing deployments, configure HTTPS and restrict
+    allowed hosts and network access.
 
-Frontend does not load
-
-Rebuild the Quasar frontend and check the Nginx root directory.
-
-Static files are missing
-
-Run python manage.py collectstatic --noinput and restart Nginx.
-
-Gunicorn fails to start
-
-Check Django logs using journalctl.
-
-npm install fails
-
-Check the Node.js version and internet connection.
-
-19. Security Recommendations
-
-Keep Django DEBUG disabled in production.
-
-Use a unique and strong Django secret key.
-
-Use a strong MariaDB password.
-
-Never commit production credentials to GitHub.
-
-Keep the SQL backup private because it may contain user account records.
-
-Do not expose Gunicorn port 8000 directly to the network.
-
-Keep the Raspberry Pi OS and installed packages updated.
-
-Back up the database before making major changes.
-
-20. Project Repository
+## 20. Repository
 
 GitHub Repository:
 
 https://github.com/medinatyrone37/raspi-learning-hub
 
-Database Backup:
+Database backup:
 
-database/raspi_web_server_backup.sql
+`database/raspi_web_server_backup.sql`
+
+## Deployment Checklist
+
+-   [ ] Raspberry Pi OS Lite 64-bit installed
+-   [ ] Required system packages installed
+-   [ ] Node.js and npm installed
+-   [ ] Repository cloned
+-   [ ] MariaDB installed and configured
+-   [ ] SQL backup restored
+-   [ ] Django dependencies installed
+-   [ ] Django environment variables configured
+-   [ ] Django migrations completed
+-   [ ] Gunicorn service running
+-   [ ] Quasar frontend built
+-   [ ] Nginx configured and running
+-   [ ] Website accessible through the Raspberry Pi IP address
+-   [ ] Login and registration tested
+-   [ ] API status endpoint tested
+
+**Deployment is complete when all checklist items have been verified on
+the Raspberry Pi.**
